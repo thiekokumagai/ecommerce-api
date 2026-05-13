@@ -96,3 +96,35 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+Produto com variação
+{
+"nextProductId": "uuid-magna-spearmint",
+"items": [
+{
+"stock": 2,
+"hash": "id-opcao-35mg",
+"options": [
+{ "variationId": "id-variacao-nicotina", "optionId": "id-opcao-35mg" }
+]
+},
+{
+"stock": 1,
+"hash": "id-opcao-50mg",
+"options": [
+{ "variationId": "id-variacao-nicotina", "optionId": "id-opcao-50mg" }
+]
+}
+]
+}
+Produto sem variação
+{
+"nextProductId": "uuid-ignite-v250",
+"items": [
+{
+"stock": 2,
+"hash": "simple",
+"options": []
+}
+]
+}
