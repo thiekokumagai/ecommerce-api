@@ -14,7 +14,15 @@ import {
 import { Type } from 'class-transformer';
 
 export class CreateProductItemInputDto {
-  @ApiProperty({ example: ['optionId1', 'optionId2'] })
+  @ApiPropertyOptional({
+    example: [
+      '550e8400-e29b-41d4-a716-446655440000',
+      '660e8400-e29b-41d4-a716-446655440000',
+    ],
+    description:
+      'Lista de IDs das opções de variação. Obrigatório apenas para produtos com variações.',
+  })
+  @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
   @ArrayUnique()
@@ -33,7 +41,15 @@ export class CreateProductItemInputDto {
 }
 
 export class CreateProductItemsDto {
-  @ApiProperty({ type: [CreateProductItemInputDto] })
+  @ApiProperty({
+    type: [CreateProductItemInputDto],
+    example: [
+      {
+        sku: 'SKU-001',
+        stock: 10,
+      },
+    ],
+  })
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })

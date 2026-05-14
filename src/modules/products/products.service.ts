@@ -217,7 +217,7 @@ export class ProductsService {
 
       const item = dto.items[0];
 
-      if ((item.options ?? []).length > 0)
+      if (item.options && item.options.length > 0)
         throw new BadRequestException(
           'Produto simples não aceita opções de variação',
         );
@@ -256,7 +256,9 @@ export class ProductsService {
     const hashes = new Set<string>();
 
     for (const item of dto.items) {
-      const optionIds = [...(item.options ?? [])].sort();
+      const optionIds = (item.options ?? [])
+        .map((o: any) => (typeof o === 'string' ? o : o.optionId))
+        .sort();
 
       if (optionIds.length === 0)
         throw new BadRequestException(
@@ -300,7 +302,9 @@ export class ProductsService {
 
     await this.prisma.$transaction(async (tx) => {
       for (const item of dto.items) {
-        const optionIds = [...(item.options ?? [])].sort();
+        const optionIds = (item.options ?? [])
+          .map((o: any) => (typeof o === 'string' ? o : o.optionId))
+          .sort();
         const createdItem = await tx.productItem.create({
           data: {
             productId,
