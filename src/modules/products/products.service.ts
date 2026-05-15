@@ -15,8 +15,11 @@ import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) { }
-
+  constructor(private prisma: PrismaService) {}
+  private extractOptionIds(
+    options: (string | { optionId: string })[] = []): string[] {
+    return options.map((o) => (typeof o === 'string' ? o : o.optionId)).sort();
+  }
   async create(dto: CreateProductDto) {
     await this.ensureCategoryExists(dto.categoryId);
 
@@ -198,51 +201,69 @@ export class ProductsService {
 
   async createItems(productId: string, dto: CreateProductItemsDto) {
     const product = await this.prisma.product.findFirst({
-      where: { id: productId, deletedAt: null },
+      where: {
+        id: productId,
+        deletedAt: null,
+      },
       include: {
         variations: {
-          include: { variation: { include: { options: true } } },
+          include: {
+            variation: {
+              include: {
+                options: true,
+              },
+            },
+          },
         },
       },
     });
 
-    if (!product) throw new NotFoundException('Produto não encontrado');
+    if (!product) {
+      throw new NotFoundException('Produto não encontrado');
+    }
 
     const isSimple = product.variations.length === 0;
 
-    // --- PRODUTO SIMPLES ---
+    // =====================================================
+    // PRODUTO SIMPLES
+    // =====================================================
     if (isSimple) {
-      if (dto.items.length > 1)
-        throw new BadRequestException('Produto simples só pode ter um item');
+      if (dto.items.length !== 1) {
+        throw new BadRequestException(
+          'Produto simples deve possuir exatamente um item',
+        );
+      }
 
       const item = dto.items[0];
 
-      if (item.options && item.options.length > 0)
+      if ((item.options ?? []).length > 0) {
         throw new BadRequestException(
           'Produto simples não aceita opções de variação',
         );
+      }
 
-      const hash = `simple_${productId}`;
-
-      const existing = await this.prisma.productItem.findFirst({
-        where: { productId, hash },
+      // Remove todos os itens existentes e recria o item simples
+      await this.prisma.productItem.deleteMany({
+        where: { productId },
       });
-      if (existing)
-        throw new ConflictException('Item já cadastrado para este produto');
 
       await this.prisma.productItem.create({
         data: {
           productId,
           stock: item.stock,
           sku: item.sku,
-          hash,
+          hash: `simple_${productId}`,
         },
       });
 
       return this.listItems(productId);
     }
 
-    // --- PRODUTO COM VARIAÇÕES (sem alteração) ---
+    // =====================================================
+    // PRODUTO COM VARIAÇÕES
+    // =====================================================
+
+    // Mapeia opções permitidas e suas variações
     const allowedOptionsMap = new Map<string, string>();
     const variationIdsByOptionId = new Map<string, string>();
 
@@ -253,58 +274,113 @@ export class ProductsService {
       }
     }
 
-    const hashes = new Set<string>();
+    // Busca itens existentes
+    const existingItems = await this.prisma.productItem.findMany({
+      where: { productId },
+      include: {
+        options: {
+          include: {
+            option: true,
+          },
+        },
+      },
+    });
+
+    // Remove item simples antigo, se existir
+    await this.prisma.productItem.deleteMany({
+      where: {
+        productId,
+        hash: `simple_${productId}`,
+      },
+    });
+
+    // Hashes existentes
+    const existingHashes = new Set(
+      existingItems
+        .filter((item) => item.hash !== `simple_${productId}`)
+        .map((item) => item.hash),
+    );
+
+    // Variações existentes
+    const existingVariationIds = new Set<string>();
+    for (const item of existingItems) {
+      for (const itemOption of item.options) {
+        existingVariationIds.add(itemOption.option.variationId);
+      }
+    }
+
+    // Validação dos itens recebidos
+    const incomingVariationIds = new Set<string>();
+    const requestHashes = new Set<string>();
 
     for (const item of dto.items) {
-      const optionIds = (item.options ?? [])
-        .map((o: any) => (typeof o === 'string' ? o : o.optionId))
-        .sort();
+      const optionIds = this.extractOptionIds(item.options);
 
-      if (optionIds.length === 0)
+      if (optionIds.length === 0) {
         throw new BadRequestException(
           'Item com variação precisa ter ao menos uma opção',
         );
+      }
 
       const hash = this.generateHash(optionIds);
 
-      if (hashes.has(hash))
+      if (requestHashes.has(hash)) {
         throw new ConflictException(
           'Não pode existir duplicação de combinação de item (SKU)',
         );
-
-      hashes.add(hash);
-
-      for (const optionId of optionIds) {
-        if (!allowedOptionsMap.has(optionId))
-          throw new BadRequestException('Variação inválida para este produto');
       }
 
-      const variationIds = optionIds.map((optionId) => {
-        const variationId = variationIdsByOptionId.get(optionId);
-        if (!variationId)
-          throw new BadRequestException('Variação inválida para este produto');
-        return variationId;
-      });
+      requestHashes.add(hash);
 
-      if (new Set(variationIds).size !== optionIds.length)
+      for (const optionId of optionIds) {
+        if (!allowedOptionsMap.has(optionId)) {
+          throw new BadRequestException('Variação inválida para este produto');
+        }
+
+        const variationId = variationIdsByOptionId.get(optionId)!;
+        incomingVariationIds.add(variationId);
+      }
+
+      const variationIds = optionIds.map(
+        (optionId) => variationIdsByOptionId.get(optionId)!,
+      );
+
+      if (new Set(variationIds).size !== optionIds.length) {
         throw new BadRequestException(
           'Cada item deve possuir no máximo uma opção por variação',
         );
+      }
     }
 
-    const existingItems = await this.prisma.productItem.findMany({
-      where: { productId, hash: { in: [...hashes] } },
-      select: { hash: true },
+    // Detecta mudança estrutural nas variações
+    const existingKey = [...existingVariationIds].sort().join('|');
+    const incomingKey = [...incomingVariationIds].sort().join('|');
+
+    const variationStructureChanged = existingKey !== incomingKey;
+
+    // Se mudou a estrutura das variações, remove todos os itens
+    if (variationStructureChanged) {
+      await this.prisma.productItem.deleteMany({
+        where: { productId },
+      });
+
+      existingHashes.clear();
+    }
+
+    // Itens realmente novos
+    const itemsToCreate = dto.items.filter((item) => {
+      const optionIds = this.extractOptionIds(item.options);
+
+      const hash = this.generateHash(optionIds);
+
+      return !existingHashes.has(hash);
     });
 
-    if (existingItems.length > 0)
-      throw new ConflictException('Item já existente para esta combinação');
-
+    // Cria somente os novos itens
     await this.prisma.$transaction(async (tx) => {
-      for (const item of dto.items) {
-        const optionIds = (item.options ?? [])
-          .map((o: any) => (typeof o === 'string' ? o : o.optionId))
-          .sort();
+      for (const item of itemsToCreate) {
+        const optionIds = this.extractOptionIds(item.options);
+
         const createdItem = await tx.productItem.create({
           data: {
             productId,

@@ -45,7 +45,7 @@ export class ProductsController {
   constructor(
     private service: ProductsService,
     private minioService: MinioService,
-  ) { }
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Listar produtos' })
