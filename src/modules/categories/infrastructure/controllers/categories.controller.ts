@@ -24,14 +24,20 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CategoriesService } from './categories.service';
-import { MinioService } from '../../minio/minio.service';
+import { JwtAuthGuard } from '../../../../modules/auth/guards/jwt-auth.guard';
+import { MinioService } from '../../../../minio/minio.service';
 
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto, UpdateOrderDto } from './dto/update-category.dto';
-import { CategoryResponseDto } from './dto/category-response.dto';
-import { UploadedFile as UploadedFileType } from '../../common/types/uploaded-file.type';
+import { CreateCategoryDto } from '../dtos/create-category.dto';
+import { UpdateCategoryDto, UpdateOrderDto } from '../dtos/update-category.dto';
+import { CategoryResponseDto } from '../dtos/category-response.dto';
+import { UploadedFile as UploadedFileType } from '../../../../common/types/uploaded-file.type';
+
+import { ListCategoriesUseCase } from '../../domain/use-cases/list-categories.use-case';
+import { GetCategoryUseCase } from '../../domain/use-cases/get-category.use-case';
+import { CreateCategoryUseCase } from '../../domain/use-cases/create-category.use-case';
+import { UpdateCategoryUseCase } from '../../domain/use-cases/update-category.use-case';
+import { UpdateBatchOrderUseCase } from '../../domain/use-cases/update-batch-order.use-case';
+import { DeleteCategoryUseCase } from '../../domain/use-cases/delete-category.use-case';
 
 @ApiTags('Categories')
 @ApiBearerAuth('access-token')
@@ -39,8 +45,13 @@ import { UploadedFile as UploadedFileType } from '../../common/types/uploaded-fi
 @Controller('categories')
 export class CategoriesController {
   constructor(
-    private service: CategoriesService,
-    private minioService: MinioService,
+    private readonly listCategoriesUseCase: ListCategoriesUseCase,
+    private readonly getCategoryUseCase: GetCategoryUseCase,
+    private readonly createCategoryUseCase: CreateCategoryUseCase,
+    private readonly updateCategoryUseCase: UpdateCategoryUseCase,
+    private readonly updateBatchOrderUseCase: UpdateBatchOrderUseCase,
+    private readonly deleteCategoryUseCase: DeleteCategoryUseCase,
+    private readonly minioService: MinioService,
   ) {}
 
   @Get()
@@ -50,7 +61,7 @@ export class CategoriesController {
     type: [CategoryResponseDto],
   })
   findAll() {
-    return this.service.findAll();
+    return this.listCategoriesUseCase.execute();
   }
 
   @Post()
@@ -96,7 +107,7 @@ export class CategoriesController {
       );
       image = upload.fileName;
     }
-    return this.service.create({
+    return this.createCategoryUseCase.execute({
       title: body.title,
       image,
       isVisible: body.isVisible,
@@ -122,7 +133,7 @@ export class CategoriesController {
     @Body() body: UpdateCategoryDto,
   ) {
     let image: string | null | undefined;
-    const current = await this.service.findById(id);
+    const current = await this.getCategoryUseCase.execute(id);
     if (body.removeImage) {
       if (current?.image) {
         await this.minioService.deleteFile(current.image);
@@ -156,7 +167,7 @@ export class CategoriesController {
       image = upload.fileName;
     }
 
-    return this.service.update(id, {
+    return this.updateCategoryUseCase.execute(id, {
       ...(body.title !== undefined && { title: body.title }),
       ...(body.isVisible !== undefined && { isVisible: body.isVisible }),
       ...(image !== undefined && { image }),
@@ -167,18 +178,19 @@ export class CategoriesController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reordenar categorias' })
   async updateBatchOrder(@Body() body: UpdateOrderDto) {
-    return this.service.updateBatchOrder(body.items);
+    await this.updateBatchOrderUseCase.execute(body.items);
+    return { success: true };
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Deletar categoria' })
   async delete(@Param('id') id: string) {
-    const category = await this.service.findById(id);
+    const category = await this.getCategoryUseCase.execute(id);
     if (category?.image) {
       await this.minioService.deleteFile(category.image);
     }
 
-    return this.service.delete(id);
+    await this.deleteCategoryUseCase.execute(id);
   }
 }
