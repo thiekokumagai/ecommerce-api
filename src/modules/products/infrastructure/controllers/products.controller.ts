@@ -24,18 +24,31 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { MinioService } from '../../minio/minio.service';
-import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { ListProductsDto } from './dto/list-products.dto';
-import { ProductResponseDto } from './dto/product-response.dto';
-import { AttachProductVariationsDto } from './dto/attach-product-variations.dto';
-import { CreateProductItemsDto } from './dto/create-product-items.dto';
-import { UpdateProductItemStockDto } from './dto/update-product-item-stock.dto';
-import { UploadProductImagesDto } from './dto/upload-product-images.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UploadedFile as UploadedFileType } from '../../common/types/uploaded-file.type';
+import { MinioService } from '../../../../minio/minio.service';
+import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
+import { UploadedFile as UploadedFileType } from '../../../../common/types/uploaded-file.type';
+
+import { CreateProductDto } from '../dtos/create-product.dto';
+import { ListProductsDto } from '../dtos/list-products.dto';
+import { ProductResponseDto } from '../dtos/product-response.dto';
+import { AttachProductVariationsDto } from '../dtos/attach-product-variations.dto';
+import { CreateProductItemsDto } from '../dtos/create-product-items.dto';
+import { UpdateProductItemStockDto } from '../dtos/update-product-item-stock.dto';
+import { UploadProductImagesDto } from '../dtos/upload-product-images.dto';
+import { UpdateProductDto } from '../dtos/update-product.dto';
+
+import { ListProductsUseCase } from '../../domain/use-cases/list-products.use-case';
+import { FindProductByIdUseCase } from '../../domain/use-cases/find-product-by-id.use-case';
+import { CreateProductUseCase } from '../../domain/use-cases/create-product.use-case';
+import { UpdateProductUseCase } from '../../domain/use-cases/update-product.use-case';
+import { AttachProductVariationsUseCase } from '../../domain/use-cases/attach-product-variations.use-case';
+import { CreateProductItemsUseCase } from '../../domain/use-cases/create-product-items.use-case';
+import { ListProductItemsUseCase } from '../../domain/use-cases/list-product-items.use-case';
+import { UpdateProductItemStockUseCase } from '../../domain/use-cases/update-product-item-stock.use-case';
+import { ManageProductImagesUseCase } from '../../domain/use-cases/manage-product-images.use-case';
+import { DeleteProductUseCase } from '../../domain/use-cases/delete-product.use-case';
+import { DeleteProductVariationUseCase } from '../../domain/use-cases/delete-product-variation.use-case';
+import { DeleteProductVariationOptionUseCase } from '../../domain/use-cases/delete-product-variation-option.use-case';
 
 @ApiTags('Products')
 @ApiBearerAuth('access-token')
@@ -43,8 +56,19 @@ import { UploadedFile as UploadedFileType } from '../../common/types/uploaded-fi
 @Controller('products')
 export class ProductsController {
   constructor(
-    private service: ProductsService,
-    private minioService: MinioService,
+    private readonly listProductsUseCase: ListProductsUseCase,
+    private readonly findProductByIdUseCase: FindProductByIdUseCase,
+    private readonly createProductUseCase: CreateProductUseCase,
+    private readonly updateProductUseCase: UpdateProductUseCase,
+    private readonly attachProductVariationsUseCase: AttachProductVariationsUseCase,
+    private readonly createProductItemsUseCase: CreateProductItemsUseCase,
+    private readonly listProductItemsUseCase: ListProductItemsUseCase,
+    private readonly updateProductItemStockUseCase: UpdateProductItemStockUseCase,
+    private readonly manageProductImagesUseCase: ManageProductImagesUseCase,
+    private readonly deleteProductUseCase: DeleteProductUseCase,
+    private readonly deleteProductVariationUseCase: DeleteProductVariationUseCase,
+    private readonly deleteProductVariationOptionUseCase: DeleteProductVariationOptionUseCase,
+    private readonly minioService: MinioService,
   ) {}
 
   @Get()
@@ -55,7 +79,7 @@ export class ProductsController {
     type: [ProductResponseDto],
   })
   findAll(@Query() query: ListProductsDto) {
-    return this.service.findAll(query);
+    return this.listProductsUseCase.execute(query);
   }
 
   @Get(':id')
@@ -66,7 +90,7 @@ export class ProductsController {
     type: ProductResponseDto,
   })
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.findProductByIdUseCase.execute(id);
   }
 
   @Post()
@@ -77,7 +101,7 @@ export class ProductsController {
     type: ProductResponseDto,
   })
   create(@Body() dto: CreateProductDto) {
-    return this.service.create(dto);
+    return this.createProductUseCase.execute(dto);
   }
 
   @Patch(':id')
@@ -88,7 +112,7 @@ export class ProductsController {
     type: ProductResponseDto,
   })
   update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
-    return this.service.update(id, dto);
+    return this.updateProductUseCase.execute(id, dto);
   }
 
   @Post(':id/variations')
@@ -97,19 +121,19 @@ export class ProductsController {
     @Param('id') id: string,
     @Body() dto: AttachProductVariationsDto,
   ) {
-    return this.service.attachVariations(id, dto);
+    return this.attachProductVariationsUseCase.execute(id, dto);
   }
 
   @Post(':id/items')
   @ApiOperation({ summary: 'Criar itens do produto' })
   createItems(@Param('id') id: string, @Body() dto: CreateProductItemsDto) {
-    return this.service.createItems(id, dto);
+    return this.createProductItemsUseCase.execute(id, dto);
   }
 
   @Get(':id/items')
   @ApiOperation({ summary: 'Listar itens do produto' })
   listItems(@Param('id') id: string) {
-    return this.service.listItems(id);
+    return this.listProductItemsUseCase.execute(id);
   }
 
   @Patch('items/:itemId')
@@ -118,7 +142,7 @@ export class ProductsController {
     @Param('itemId') itemId: string,
     @Body() dto: UpdateProductItemStockDto,
   ) {
-    return this.service.updateItemStock(itemId, dto);
+    return this.updateProductItemStockUseCase.execute(itemId, dto);
   }
 
   @Post(':id/images')
@@ -130,7 +154,9 @@ export class ProductsController {
     @Param('id') id: string,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    if (!files || files.length === 0) return this.service.findOne(id);
+    if (!files || files.length === 0) {
+      return this.findProductByIdUseCase.execute(id);
+    }
 
     const urls: string[] = [];
 
@@ -170,7 +196,7 @@ export class ProductsController {
       urls.push(mainUpload.fileName);
     }
 
-    return this.service.addImages(id, urls);
+    return this.manageProductImagesUseCase.addImages(id, urls);
   }
 
   @Delete(':id/images/:imageId')
@@ -180,7 +206,7 @@ export class ProductsController {
     @Param('id') id: string,
     @Param('imageId') imageId: string,
   ) {
-    const image = await this.service.removeImage(id, imageId);
+    const image = await this.manageProductImagesUseCase.removeImage(id, imageId);
     if (image.url) {
       await this.minioService.deleteFile(image.url);
 
@@ -192,7 +218,7 @@ export class ProductsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string) {
-    const imageUrls = await this.service.delete(id);
+    const imageUrls = await this.deleteProductUseCase.execute(id);
 
     await Promise.all(
       imageUrls.flatMap((url) => {
@@ -218,7 +244,7 @@ export class ProductsController {
     type: ProductResponseDto,
   })
   async deleteVariation(@Param('id') id: string) {
-    return this.service.deleteVariation(id);
+    return this.deleteProductVariationUseCase.execute(id);
   }
 
   @Delete(':id/variation-options')
@@ -235,6 +261,6 @@ export class ProductsController {
     @Param('id') id: string,
     @Body() dto: { variationId: string; optionId: string },
   ) {
-    return this.service.deleteVariationOption(id, dto);
+    return this.deleteProductVariationOptionUseCase.execute(id, dto);
   }
 }

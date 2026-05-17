@@ -24,7 +24,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-import { JwtAuthGuard } from '../../../../modules/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { MinioService } from '../../../../minio/minio.service';
 
 import { CreateCategoryDto } from '../dtos/create-category.dto';

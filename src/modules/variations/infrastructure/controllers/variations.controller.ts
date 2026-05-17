@@ -18,7 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { CreateVariationDto } from '../dtos/create-variation.dto';
 import { UpdateVariationDto, UpdateOrderDto } from '../dtos/update-variation.dto';
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 
 import { ListVariationsUseCase } from '../../domain/use-cases/list-variations.use-case';
 import { GetVariationUseCase } from '../../domain/use-cases/get-variation.use-case';

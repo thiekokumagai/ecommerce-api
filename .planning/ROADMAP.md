@@ -13,8 +13,8 @@ Este roadmap detalha as fases necessárias para refatorar o backend `ecommerce-c
 - [x] **Phase 1: Diretrizes Arquiteturais** - Estabelecer o manual da arquitetura limpa e inicializar o projeto
 - [x] **Phase 2: Refatoração do Módulo Pioneiro (categories)** - Validar o padrão desacoplando categorias
 - [x] **Phase 3: Refatoração de Apoio (users, variations)** - Aplicar padrão aos módulos simples de suporte
-- [ ] **Phase 4: Refatoração Principal (products, auth)** - Migrar a lógica complexa de estoque e autenticação
-- [ ] **Phase 5: Verificação e Testes** - Garantir estabilidade com suite de testes unitários e E2E completa
+- [x] **Phase 4: Refatoração Principal (products, auth)** - Migrar a lógica complexa de estoque e autenticação (completed 2026-05-17)
+- [x] **Phase 5: Verificação e Testes** - Garantir estabilidade com suite de testes unitários e E2E completa (completed 2026-05-17)
 
 ## Phase Details
 
@@ -69,8 +69,8 @@ Plans:
 **Plans**: 2 planos
 
 Plans:
-- [ ] 04-01: Refatorar módulo de produtos (products)
-- [ ] 04-02: Refatorar módulo de autenticação (auth)
+- [x] 04-01: Refatorar módulo de produtos (products)
+- [x] 04-02: Refatorar módulo de autenticação (auth)
 
 ### Phase 5: Verificação e Testes
 **Goal**: Validar a integridade, compatibilidade pública e testabilidade do sistema
@@ -83,7 +83,7 @@ Plans:
 **Plans**: 1 plano
 
 Plans:
-- [ ] 05-01: Execução geral de testes unitários, E2E e validação Swagger
+- [x] 05-01: Execução geral de testes unitários, E2E e validação Swagger
 
 ## Progress
 
@@ -92,5 +92,5 @@ Plans:
 | 1. Diretrizes Arquiteturais | v1.0 | 1/1 | Completed | 2026-05-17 |
 | 2. Módulo Pioneiro (categories) | v1.0 | 1/1 | Completed | 2026-05-17 |
 | 3. Módulos Apoio (users, variations) | v1.0 | 2/2 | Completed | 2026-05-17 |
-| 4. Módulos Core (products, auth) | v1.0 | 0/2 | Not started | - |
-| 5. Verificação e Testes | v1.0 | 0/1 | Not started | - |
+| 4. Módulos Core (products, auth) | v1.0 | 2/2 | Complete    | 2026-05-17 |
+| 5. Verificação e Testes | v1.0 | 1/1 | Complete    | 2026-05-17 |

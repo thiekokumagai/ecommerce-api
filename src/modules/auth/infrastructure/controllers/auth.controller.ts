@@ -5,19 +5,23 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { LoginDto } from './dto/login.dto';
-import { AuthResponseDto } from './dto/auth-response.dto';
-import { Public } from './decorators/public.decorator';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
-import { CurrentUser } from './decorators/current-user.decorator';
-import type { JwtRefreshPayload } from './types/jwt-payload.type';
+import { LoginDto } from '../dtos/login.dto';
+import { AuthResponseDto } from '../dtos/auth-response.dto';
+import { Public } from '../decorators/public.decorator';
+import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import type { JwtRefreshPayload } from '../types/jwt-payload.type';
+import { LoginUseCase } from '../../domain/use-cases/login.use-case';
+import { RefreshTokenUseCase } from '../../domain/use-cases/refresh-token.use-case';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private service: AuthService) {}
+  constructor(
+    private readonly loginUseCase: LoginUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase,
+  ) {}
 
   @Post('login')
   @Public()
@@ -32,7 +36,7 @@ export class AuthController {
     description: 'Credenciais inválidas',
   })
   login(@Body() dto: LoginDto): Promise<AuthResponseDto> {
-    return this.service.login(dto.email, dto.password);
+    return this.loginUseCase.execute(dto.email, dto.password);
   }
 
   @Post('refresh')
@@ -52,6 +56,6 @@ export class AuthController {
     if (!user?.sub || !user.refreshToken) {
       throw new UnauthorizedException('Refresh token inválido ou ausente');
     }
-    return this.service.refresh(user.sub, user.refreshToken);
+    return this.refreshTokenUseCase.execute(user.sub, user.refreshToken);
   }
 }
