@@ -189,6 +189,12 @@ export class ProductsController {
     }
   }
 
+  @Post(':id/duplicate')
+  @ApiOperation({ summary: 'Duplicar produto completo com estoque zerado' })
+  duplicate(@Param('id') id: string) {
+    return this.service.duplicate(id);
+  }
+
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string) {

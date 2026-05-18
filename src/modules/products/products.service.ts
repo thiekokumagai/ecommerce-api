@@ -463,6 +463,94 @@ export class ProductsService {
     return createHash('sha256').update(optionIds.join('|')).digest('hex');
   }
 
+  async duplicate(id: string) {
+    const original = await this.prisma.product.findFirst({
+      where: { id, deletedAt: null },
+      include: {
+        images: true,
+        variations: true,
+        items: {
+          include: {
+            options: true,
+          },
+        },
+      },
+    });
+
+    if (!original) {
+      throw new NotFoundException('Produto original não encontrado');
+    }
+
+    const duplicated = await this.prisma.$transaction(async (tx) => {
+      const clone = await tx.product.create({
+        data: {
+          title: `${original.title} (Cópia)`,
+          description: original.description,
+          descriptionFormated: original.descriptionFormated,
+          categoryId: original.categoryId,
+          price: original.price,
+          promotionalPrice: original.promotionalPrice,
+          costPrice: original.costPrice,
+        },
+      });
+
+      if (original.images.length > 0) {
+        await tx.productImage.createMany({
+          data: original.images.map((img) => ({
+            url: img.url,
+            productId: clone.id,
+          })),
+        });
+      }
+
+      if (original.variations.length > 0) {
+        await tx.productVariation.createMany({
+          data: original.variations.map((v) => ({
+            productId: clone.id,
+            variationId: v.variationId,
+          })),
+        });
+      }
+
+      const isSimple = original.variations.length === 0;
+
+      if (isSimple) {
+        await tx.productItem.create({
+          data: {
+            productId: clone.id,
+            stock: 0,
+            sku: original.items[0]?.sku ?? null,
+            hash: `simple_${clone.id}`,
+          },
+        });
+      } else {
+        for (const item of original.items) {
+          const duplicatedItem = await tx.productItem.create({
+            data: {
+              productId: clone.id,
+              stock: 0,
+              sku: item.sku ?? null,
+              hash: item.hash,
+            },
+          });
+
+          if (item.options.length > 0) {
+            await tx.productItemOption.createMany({
+              data: item.options.map((opt) => ({
+                itemId: duplicatedItem.id,
+                optionId: opt.optionId,
+              })),
+            });
+          }
+        }
+      }
+
+      return clone;
+    });
+
+    return this.findOne(duplicated.id);
+  }
+
   async delete(id: string) {
     const product = await this.prisma.product.findUnique({
       where: { id },
