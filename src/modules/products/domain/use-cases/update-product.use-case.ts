@@ -1,0 +1,41 @@
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { IProductsRepository } from '../repositories/iproducts.repository';
+
+@Injectable()
+export class UpdateProductUseCase {
+  constructor(private readonly productsRepository: IProductsRepository) {}
+
+  async execute(id: string, dto: {
+    title?: string;
+    description?: string;
+    descriptionFormated?: string;
+    categoryId?: string;
+    price?: any;
+    promotionalPrice?: any;
+    costPrice?: any;
+  }) {
+    const existing = await this.productsRepository.findById(id);
+    if (!existing) {
+      throw new NotFoundException('Produto não encontrado');
+    }
+
+    if (dto.categoryId && dto.categoryId !== existing.categoryId) {
+      const categoryExists = await this.productsRepository.checkCategoryExists(dto.categoryId);
+      if (!categoryExists) {
+        throw new BadRequestException('Categoria inválida');
+      }
+    }
+
+    await this.productsRepository.update(id, {
+      title: dto.title?.trim(),
+      description: dto.description,
+      descriptionFormated: dto.descriptionFormated,
+      categoryId: dto.categoryId,
+      price: dto.price,
+      promotionalPrice: dto.promotionalPrice,
+      costPrice: dto.costPrice,
+    });
+
+    return this.productsRepository.findById(id);
+  }
+}

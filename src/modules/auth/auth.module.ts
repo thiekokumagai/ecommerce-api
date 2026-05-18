@@ -2,11 +2,15 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { AuthController } from './infrastructure/controllers/auth.controller';
+import { JwtAuthGuard } from './infrastructure/guards/jwt-auth.guard';
+import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
+import { JwtRefreshStrategy } from './infrastructure/strategies/jwt-refresh.strategy';
+import { IAuthRepository } from './domain/repositories/iauth.repository';
+import { PrismaAuthRepository } from './infrastructure/database/prisma-auth.repository';
+import { LoginUseCase } from './domain/use-cases/login.use-case';
+import { RefreshTokenUseCase } from './domain/use-cases/refresh-token.use-case';
+import { LogoutUseCase } from './domain/use-cases/logout.use-case';
 
 @Module({
   imports: [
@@ -17,7 +21,18 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard, JwtStrategy, JwtRefreshStrategy],
+  providers: [
+    LoginUseCase,
+    RefreshTokenUseCase,
+    LogoutUseCase,
+    JwtAuthGuard,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    {
+      provide: IAuthRepository,
+      useClass: PrismaAuthRepository,
+    },
+  ],
   exports: [JwtAuthGuard],
 })
 export class AuthModule {}

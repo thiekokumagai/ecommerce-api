@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { DomainExceptionsFilter } from './common/filters/domain-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,8 @@ async function bootstrap() {
     origin: true,
     credentials: true,
   });
+
+  app.useGlobalFilters(new DomainExceptionsFilter());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -41,6 +44,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('docs', app, document, {
+    useGlobalPrefix: true,
     swaggerOptions: {
       persistAuthorization: true,
     },
