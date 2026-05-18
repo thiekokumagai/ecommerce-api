@@ -26,6 +26,11 @@ export interface StoreSettings {
   complement: string | null;
   hideAddress: boolean;
   
+  deliveryOriginCep: string | null;
+  deliveryOriginNumber: string | null;
+  deliveryRanges: any;
+  installmentRules: any;
+  
   // Pagamentos
   pixEnabled: boolean;
   pixKeyType: string | null;

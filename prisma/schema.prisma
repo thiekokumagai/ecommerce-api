@@ -169,8 +169,13 @@ model StoreSettings {
   // Descontos/Taxas adicionais salvos como JSON para flexibilidade
   paymentRules            Json?    
   
+  deliveryOriginCep       String?
+  deliveryOriginNumber    String?
+  deliveryRanges          Json?
+  installmentRules        Json?
+
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
-
+  
   @@map("store_settings")
 }

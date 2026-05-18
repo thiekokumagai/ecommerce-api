@@ -18,6 +18,10 @@ export interface UpdateSettingsInput {
   state?: string;
   complement?: string | null;
   hideAddress?: boolean;
+  deliveryOriginCep?: string | null;
+  deliveryOriginNumber?: string | null;
+  deliveryRanges?: any;
+  installmentRules?: any;
   pixEnabled?: boolean;
   pixKeyType?: string | null;
   pixKey?: string | null;
@@ -51,6 +55,10 @@ export class UpdateSettingsUseCase {
       state: '',
       complement: null,
       hideAddress: false,
+      deliveryOriginCep: null,
+      deliveryOriginNumber: null,
+      deliveryRanges: [],
+      installmentRules: [],
       pixEnabled: false,
       pixKeyType: null,
       pixKey: null,
@@ -77,6 +85,10 @@ export class UpdateSettingsUseCase {
       state: input.state !== undefined ? input.state : base.state,
       complement: input.complement !== undefined ? input.complement : base.complement,
       hideAddress: input.hideAddress !== undefined ? input.hideAddress : base.hideAddress,
+      deliveryOriginCep: input.deliveryOriginCep !== undefined ? input.deliveryOriginCep : base.deliveryOriginCep,
+      deliveryOriginNumber: input.deliveryOriginNumber !== undefined ? input.deliveryOriginNumber : base.deliveryOriginNumber,
+      deliveryRanges: input.deliveryRanges !== undefined ? input.deliveryRanges : base.deliveryRanges,
+      installmentRules: input.installmentRules !== undefined ? input.installmentRules : base.installmentRules,
       pixEnabled: input.pixEnabled !== undefined ? input.pixEnabled : base.pixEnabled,
       pixKeyType: input.pixKeyType !== undefined ? input.pixKeyType : base.pixKeyType,
       pixKey: input.pixKey !== undefined ? input.pixKey : base.pixKey,

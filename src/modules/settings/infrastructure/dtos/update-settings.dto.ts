@@ -79,6 +79,24 @@ export class UpdateSettingsDto {
   @IsOptional()
   hideAddress?: boolean;
 
+  @ApiProperty({ example: '79002-075', required: false })
+  @IsString()
+  @IsOptional()
+  deliveryOriginCep?: string | null;
+
+  @ApiProperty({ example: '123A', required: false })
+  @IsString()
+  @IsOptional()
+  deliveryOriginNumber?: string | null;
+
+  @ApiProperty({ example: [], required: false })
+  @IsOptional()
+  deliveryRanges?: any;
+
+  @ApiProperty({ example: [], required: false })
+  @IsOptional()
+  installmentRules?: any;
+
   // Pagamentos
   @ApiProperty({ example: true, required: false })
   @IsBoolean()
