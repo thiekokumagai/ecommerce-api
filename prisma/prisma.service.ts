@@ -11,7 +11,11 @@ export class PrismaService
   }
 
   async onModuleInit() {
-    await this.$connect();
+    try {
+      await this.$connect();
+    } catch (error: any) {
+      console.warn('⚠️ [Prisma] Falha ao conectar ao banco de dados na inicialização:', error.message);
+    }
   }
 
   async onModuleDestroy() {
