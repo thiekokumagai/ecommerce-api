@@ -48,3 +48,8 @@ Este documento rastreia e detalha os requisitos da refatoração de arquitetura 
 - **Critérios de Aceitação**:
   - Manter testes unitários e E2E rodando e passando 100% via Jest.
   - As DTOs com class-validator e Swagger decorators continuam funcionando e gerando a documentação Swagger na rota configurada.
+
+### REQ-07: Dados de Inicialização (Seed) e Mock Data
+- **Critérios de Aceitação**:
+  - Não deve ser gerado mock data ou dados de exemplo para preenchimento de banco no arquivo de seed (`prisma/seed.ts`) ao criar novos módulos ou entidades.
+  - O uso do `prisma/seed.ts` é restrito exclusivamente para a criação de usuários essenciais (ex: Admin) ou configurações fundamentais de sistema. A IA desenvolvedora deve tratar essa diretriz como Regra de Sistema.

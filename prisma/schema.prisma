@@ -230,7 +230,7 @@ model Order {
 model OrderItem {
   id              String   @id @default(uuid())
   orderId         String
-  productId       String
+  productId       String?
   productItemId   String?
   productName     String
   price           Decimal  @db.Decimal(10, 2)
@@ -239,8 +239,8 @@ model OrderItem {
   imageUrl        String?
 
   order           Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product         Product      @relation(fields: [productId], references: [id])
-  productItem     ProductItem? @relation(fields: [productItemId], references: [id])
+  product         Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productItem     ProductItem? @relation(fields: [productItemId], references: [id], onDelete: SetNull)
 
   @@map("order_items")
 }

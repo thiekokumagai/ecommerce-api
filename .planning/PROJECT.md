@@ -38,6 +38,7 @@ O projeto atual sofre de alto acoplamento nos arquivos `*.service.ts`, que mistu
 
 - **Stack**: NestJS 11 + TypeScript + Prisma ORM (Manter a stack técnica) — Sem permissão para mudar framework ou ORM.
 - **Retrocompatibilidade**: Os contratos de API HTTP e endpoints atuais não podem quebrar (garantido por testes E2E).
+- **Sem Mock Data de Domínio**: É expressamente proibido popular mock data (categorias, produtos, vendas, pedidos) no arquivo `prisma/seed.ts` e em novos módulos. Apenas registros estritamente fundamentais do sistema, como contas de Admin, são permitidos. A IA deve tratar esta regra como primária no desenvolvimento.
 
 ## Key Decisions
 

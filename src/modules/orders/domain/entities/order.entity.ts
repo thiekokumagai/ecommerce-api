@@ -9,7 +9,7 @@ export enum OrderStatus {
 export interface OrderItem {
   id: string;
   orderId: string;
-  productId: string;
+  productId: string | null;
   productItemId: string | null;
   productName: string;
   price: number;
