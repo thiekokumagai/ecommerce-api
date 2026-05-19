@@ -114,8 +114,8 @@ Plans:
 | 3. Módulos Apoio (users, variations) | v1.0 | 2/2 | Completed | 2026-05-17 |
 | 4. Módulos Core (products, auth) | v1.0 | 2/2 | Complete    | 2026-05-17 |
 | 5. Verificação e Testes | v1.0 | 1/1 | Complete    | 2026-05-17 |
-| 6. Módulo de Configurações | v1.0 | 0/2 | Pending     |            |
-| 7. Módulo de Pedidos | v1.0 | 0/1 | Pending     |            |
+| 6. Módulo de Configurações | v1.0 | 2/2 | Completed   | 2026-05-17 |
+| 7. Módulo de Pedidos | v1.0 | 1/1 | Completed   | 2026-05-19 |
 
 ### Phase 6: Implementação do Módulo de Configurações (StoreSettings)
 
@@ -126,8 +126,8 @@ Plans:
 
 Plans:
 
-- [ ] 06-01: Banco de Dados e Módulo API de Configurações (Backend)
-- [ ] 06-02: Formulários e Integração no Painel Administrativo (Frontend)
+- [x] 06-01: Banco de Dados e Módulo API de Configurações (Backend)
+- [x] 06-02: Formulários e Integração no Painel Administrativo (Frontend)
 
 ### Phase 7: Módulo e Gestão de Pedidos (Orders)
 
@@ -138,5 +138,15 @@ Plans:
 
 Plans:
 
-- [ ] 07-01: Extensão do Schema, DTO e Repositório da API para Módulo de Pedidos (Backend)
+- [x] 07-01: Extensão do Schema, DTO e Repositório da API para Módulo de Pedidos (Backend)
 
+### Phase 8: Integração Dinâmica de Pedidos e Estoque (Dynamic Orders & Stock Integration)
+
+**Goal:** Interligar pedidos aos produtos e variações reais do banco de dados (remover mock no use case), decrementando o estoque do produto/variação quando o pedido for confirmado/criado e revertendo a baixa em caso de cancelamento.
+**Requirements**: REQ-08, REQ-09
+**Depends on:** Phase 7
+**Plans:** 1 plano
+
+Plans:
+
+- [x] 08-01: Associação de Pedidos a Produtos Reais, Validação e Atualização Dinâmica de Estoque (Backend & Frontend)

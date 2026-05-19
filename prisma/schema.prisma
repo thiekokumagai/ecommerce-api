@@ -79,6 +79,7 @@ model Product {
   costPrice        Decimal? @db.Decimal(10, 2)
   description         String?   @db.Text
   descriptionFormated String?   @db.Text
+  orderItems          OrderItem[]
   @@map("products")
 }
 
@@ -117,7 +118,8 @@ model ProductItem {
   updatedAt        DateTime @updatedAt
 
   product Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
-  options ProductItemOption[]
+  options    ProductItemOption[]
+  orderItems OrderItem[]
 
   @@unique([productId, hash])
   @@index([productId])
@@ -178,4 +180,67 @@ model StoreSettings {
   updatedAt               DateTime @updatedAt
   
   @@map("store_settings")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  DISPATCHED
+  COMPLETED
+  CANCELLED
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     Int         @unique @default(autoincrement())
+  customerName    String
+  customerPhone   String
+  
+  // Valores monetários
+  itemsTotal      Decimal     @db.Decimal(10, 2)
+  freight         Decimal     @db.Decimal(10, 2)
+  discount        Decimal     @db.Decimal(10, 2)
+  totalOrder      Decimal     @db.Decimal(10, 2)
+  totalReceived   Decimal     @db.Decimal(10, 2)
+
+  // Pagamento
+  paymentType     String      // Ex: "Online", "Presencial"
+  paymentMethod   String      // Ex: "PIX", "Cartão de Crédito", "Cartão de Débito", "Dinheiro"
+  pixKey          String?
+
+  // Endereço de Entrega
+  street          String
+  number          String
+  neighborhood    String
+  city            String
+  state           String
+  cep             String
+  complement      String?
+
+  status          OrderStatus @default(PENDING)
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  items           OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id              String   @id @default(uuid())
+  orderId         String
+  productId       String
+  productItemId   String?
+  productName     String
+  price           Decimal  @db.Decimal(10, 2)
+  quantity        Int
+  variation       String?  // Armazena a string descritiva da variação escolhida
+  imageUrl        String?
+
+  order           Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product         Product      @relation(fields: [productId], references: [id])
+  productItem     ProductItem? @relation(fields: [productItemId], references: [id])
+
+  @@map("order_items")
 }
