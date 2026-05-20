@@ -18,6 +18,7 @@ import {
 
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { QueryOrdersDto } from '../dtos/query-orders.dto';
+import { CreateOrderDto } from '../dtos/create-order.dto';
 import { ListOrdersUseCase } from '../../domain/use-cases/list-orders.use-case';
 import { GetOrderDetailUseCase } from '../../domain/use-cases/get-order-detail.use-case';
 import { CancelOrderUseCase } from '../../domain/use-cases/cancel-order.use-case';
@@ -53,10 +54,10 @@ export class OrdersController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Criar um novo pedido com verificação de estoque' })
-  @ApiResponse({ status: 201, description: 'Pedido criado com sucesso' })
+  @ApiResponse({ status: 201, description: 'Pedido criado com sucesso', type: CreateOrderDto })
   @ApiResponse({ status: 400, description: 'Estoque insuficiente ou dados inválidos' })
-  async create(@Body() body: any) {
-    return this.createOrderUseCase.execute(body);
+  async create(@Body() body: CreateOrderDto) {
+    return this.createOrderUseCase.execute(body as any);
   }
 
   @Post(':id/cancel')
@@ -68,3 +69,4 @@ export class OrdersController {
     return this.cancelOrderUseCase.execute(id);
   }
 }
+
