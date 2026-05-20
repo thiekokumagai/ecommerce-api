@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../../prisma/prisma.service';
-import { Order, OrderStatus, OrderItem } from '../../domain/entities/order.entity';
-import { IOrdersRepository, OrderFilters } from '../../domain/repositories/iorders.repository';
+import {
+  Order,
+  OrderStatus,
+  OrderItem,
+} from '../../domain/entities/order.entity';
+import {
+  IOrdersRepository,
+  OrderFilters,
+} from '../../domain/repositories/iorders.repository';
 
 @Injectable()
 export class PrismaOrdersRepository implements IOrdersRepository {
@@ -31,17 +38,18 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       status: record.status as OrderStatus,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
-      items: record.items?.map((item: any) => ({
-        id: item.id,
-        orderId: item.orderId,
-        productId: item.productId,
-        productItemId: item.productItemId,
-        productName: item.productName,
-        price: Number(item.price),
-        quantity: item.quantity,
-        variation: item.variation,
-        imageUrl: item.imageUrl,
-      })) ?? [],
+      items:
+        record.items?.map((item: any) => ({
+          id: item.id,
+          orderId: item.orderId,
+          productId: item.productId,
+          productItemId: item.productItemId,
+          productName: item.productName,
+          price: Number(item.price),
+          quantity: item.quantity,
+          variation: item.variation,
+          imageUrl: item.imageUrl,
+        })) ?? [],
     });
   }
 
@@ -69,7 +77,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       },
     });
 
-    return records.map(record => this.mapToDomain(record));
+    return records.map((record) => this.mapToDomain(record));
   }
 
   async findById(id: string): Promise<Order | null> {
@@ -127,15 +135,16 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         data: {
           ...payload,
           items: {
-            create: order.items?.map(item => ({
-              productId: item.productId,
-              productItemId: item.productItemId,
-              productName: item.productName,
-              price: item.price,
-              quantity: item.quantity,
-              variation: item.variation,
-              imageUrl: item.imageUrl,
-            })) ?? [],
+            create:
+              order.items?.map((item) => ({
+                productId: item.productId,
+                productItemId: item.productItemId,
+                productName: item.productName,
+                price: item.price,
+                quantity: item.quantity,
+                variation: item.variation,
+                imageUrl: item.imageUrl,
+              })) ?? [],
           },
         },
         include: {
@@ -152,7 +161,9 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       if (order.items && order.items.length > 0) {
         for (const item of order.items) {
           if (!item.productId) {
-            throw new Error(`Item productName ${item.productName} must be linked to a productId`);
+            throw new Error(
+              `Item productName ${item.productName} must be linked to a productId`,
+            );
           }
 
           let productItem: any;
@@ -167,11 +178,15 @@ export class PrismaOrdersRepository implements IOrdersRepository {
           }
 
           if (!productItem) {
-            throw new Error(`Estoque do produto ou variação de "${item.productName}" não cadastrado.`);
+            throw new Error(
+              `Estoque do produto ou variação de "${item.productName}" não cadastrado.`,
+            );
           }
 
           if (productItem.stock < item.quantity) {
-            throw new Error(`Estoque insuficiente para o item "${item.productName}". Disponível: ${productItem.stock}, Solicitado: ${item.quantity}`);
+            throw new Error(
+              `Estoque insuficiente para o item "${item.productName}". Disponível: ${productItem.stock}, Solicitado: ${item.quantity}`,
+            );
           }
 
           await tx.productItem.update({
@@ -212,15 +227,16 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         data: {
           ...payload,
           items: {
-            create: order.items?.map(item => ({
-              productId: item.productId,
-              productItemId: item.productItemId,
-              productName: item.productName,
-              price: item.price,
-              quantity: item.quantity,
-              variation: item.variation,
-              imageUrl: item.imageUrl,
-            })) ?? [],
+            create:
+              order.items?.map((item) => ({
+                productId: item.productId,
+                productItemId: item.productItemId,
+                productName: item.productName,
+                price: item.price,
+                quantity: item.quantity,
+                variation: item.variation,
+                imageUrl: item.imageUrl,
+              })) ?? [],
           },
         },
         include: {

@@ -1,23 +1,42 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsNumber, Min, IsOptional, IsUUID } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  Min,
+  IsOptional,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateOrderItemDto {
-  @ApiProperty({ example: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', description: 'ID do produto' })
+  @ApiProperty({
+    example: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+    description: 'ID do produto',
+  })
   @IsUUID()
   @IsNotEmpty()
   productId: string;
 
-  @ApiPropertyOptional({ example: 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', description: 'ID do item específico do produto (variação)' })
+  @ApiPropertyOptional({
+    example: 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
+    description: 'ID do item específico do produto (variação)',
+  })
   @IsUUID()
   @IsOptional()
   productItemId?: string;
 
-  @ApiProperty({ example: 'BLVK Spearmint 35mg', description: 'Nome do produto' })
+  @ApiProperty({
+    example: 'BLVK Spearmint 35mg',
+    description: 'Nome do produto',
+  })
   @IsString()
   @IsNotEmpty()
   productName: string;
 
-  @ApiProperty({ example: 75.00, description: 'Preço unitário do produto' })
+  @ApiProperty({
+    example: 75.0,
+    description: 'Preço unitário do produto',
+  })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   price: number;
@@ -32,7 +51,10 @@ export class CreateOrderItemDto {
   @IsOptional()
   variation?: string;
 
-  @ApiPropertyOptional({ example: 'products/blvk-spearmint.webp', description: 'URL da imagem do produto' })
+  @ApiPropertyOptional({
+    example: 'products/blvk-spearmint.webp',
+    description: 'URL da imagem do produto',
+  })
   @IsString()
   @IsOptional()
   imageUrl?: string;

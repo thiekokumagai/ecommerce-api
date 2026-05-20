@@ -23,7 +23,7 @@ export class Order {
   orderNumber: number;
   customerName: string;
   customerPhone: string;
-  
+
   itemsTotal: number;
   freight: number;
   discount: number;
@@ -43,7 +43,7 @@ export class Order {
   complement: string | null;
 
   status: OrderStatus;
-  
+
   createdAt: Date;
   updatedAt: Date;
 

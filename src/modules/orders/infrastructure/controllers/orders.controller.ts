@@ -38,14 +38,20 @@ export class OrdersController {
 
   @Get()
   @ApiOperation({ summary: 'Listar todos os pedidos com filtros' })
-  @ApiResponse({ status: 200, description: 'Lista de pedidos obtida com sucesso' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de pedidos obtida com sucesso',
+  })
   async list(@Query() query: QueryOrdersDto) {
     return this.listOrdersUseCase.execute(query);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Obter detalhes de um pedido por ID' })
-  @ApiResponse({ status: 200, description: 'Detalhes do pedido obtidos com sucesso' })
+  @ApiResponse({
+    status: 200,
+    description: 'Detalhes do pedido obtidos com sucesso',
+  })
   @ApiResponse({ status: 404, description: 'Pedido não encontrado' })
   async getDetail(@Param('id') id: string) {
     return this.getOrderDetailUseCase.execute(id);
@@ -54,8 +60,15 @@ export class OrdersController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Criar um novo pedido com verificação de estoque' })
-  @ApiResponse({ status: 201, description: 'Pedido criado com sucesso', type: CreateOrderDto })
-  @ApiResponse({ status: 400, description: 'Estoque insuficiente ou dados inválidos' })
+  @ApiResponse({
+    status: 201,
+    description: 'Pedido criado com sucesso',
+    type: CreateOrderDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Estoque insuficiente ou dados inválidos',
+  })
   async create(@Body() body: CreateOrderDto) {
     return this.createOrderUseCase.execute(body as any);
   }
@@ -69,4 +82,3 @@ export class OrdersController {
     return this.cancelOrderUseCase.execute(id);
   }
 }
-
