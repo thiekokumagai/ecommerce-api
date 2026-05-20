@@ -63,7 +63,9 @@ describe('Categories Use Cases', () => {
 
     it('should throw CategoryNotFoundError if category does not exist', async () => {
       mockRepository.findById.mockResolvedValue(null);
-      await expect(getUseCase.execute('invalid-id')).rejects.toThrow(CategoryNotFoundError);
+      await expect(getUseCase.execute('invalid-id')).rejects.toThrow(
+        CategoryNotFoundError,
+      );
     });
   });
 
@@ -113,7 +115,9 @@ describe('Categories Use Cases', () => {
 
     it('should throw CategoryNotFoundError if category to update does not exist', async () => {
       mockRepository.findById.mockResolvedValue(null);
-      await expect(updateUseCase.execute('invalid-id', { title: 'New' })).rejects.toThrow(CategoryNotFoundError);
+      await expect(
+        updateUseCase.execute('invalid-id', { title: 'New' }),
+      ).rejects.toThrow(CategoryNotFoundError);
     });
   });
 
@@ -131,12 +135,16 @@ describe('Categories Use Cases', () => {
       expect(result).toEqual({ id: 'uuid-1' });
       expect(mockRepository.findById).toHaveBeenCalledWith('uuid-1');
       expect(mockRepository.softDelete).toHaveBeenCalledWith('uuid-1');
-      expect(mockRepository.decrementOrdersAbove).toHaveBeenCalledWith(mockCategory.order);
+      expect(mockRepository.decrementOrdersAbove).toHaveBeenCalledWith(
+        mockCategory.order,
+      );
     });
 
     it('should throw CategoryNotFoundError if category to delete does not exist', async () => {
       mockRepository.findById.mockResolvedValue(null);
-      await expect(deleteUseCase.execute('invalid-id')).rejects.toThrow(CategoryNotFoundError);
+      await expect(deleteUseCase.execute('invalid-id')).rejects.toThrow(
+        CategoryNotFoundError,
+      );
     });
   });
 });

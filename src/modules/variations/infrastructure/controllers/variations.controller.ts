@@ -17,7 +17,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CreateVariationDto } from '../dtos/create-variation.dto';
-import { UpdateVariationDto, UpdateOrderDto } from '../dtos/update-variation.dto';
+import {
+  UpdateVariationDto,
+  UpdateOrderDto,
+} from '../dtos/update-variation.dto';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 
 import { ListVariationsUseCase } from '../../domain/use-cases/list-variations.use-case';

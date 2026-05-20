@@ -91,7 +91,7 @@ export class PrismaVariationsRepository implements IVariationsRepository {
           });
         }
       }
-      
+
       return tx.variation.findUniqueOrThrow({
         where: { id },
         include: {
@@ -126,7 +126,9 @@ export class PrismaVariationsRepository implements IVariationsRepository {
     return !!usedOption;
   }
 
-  async updateBatchOrder(items: { id: string; order: number }[]): Promise<void> {
+  async updateBatchOrder(
+    items: { id: string; order: number }[],
+  ): Promise<void> {
     const options = await this.prisma.variationOption.findMany({
       where: { id: { in: items.map((i) => i.id) } },
       select: { id: true, variationId: true },
@@ -137,13 +139,16 @@ export class PrismaVariationsRepository implements IVariationsRepository {
       return { ...item, variationId: option!.variationId };
     });
 
-    const grouped = merged.reduce((acc, item) => {
-      if (!acc[item.variationId]) {
-        acc[item.variationId] = [];
-      }
-      acc[item.variationId].push(item);
-      return acc;
-    }, {} as Record<string, typeof merged>);
+    const grouped = merged.reduce(
+      (acc, item) => {
+        if (!acc[item.variationId]) {
+          acc[item.variationId] = [];
+        }
+        acc[item.variationId].push(item);
+        return acc;
+      },
+      {} as Record<string, typeof merged>,
+    );
 
     await this.prisma.$transaction(async (tx) => {
       for (const variationId in grouped) {

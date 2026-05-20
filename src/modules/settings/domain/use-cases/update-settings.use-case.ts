@@ -70,33 +70,72 @@ export class UpdateSettingsUseCase {
     };
 
     return this.settingsRepository.save({
-      storeName: input.storeName !== undefined ? input.storeName : base.storeName,
+      storeName:
+        input.storeName !== undefined ? input.storeName : base.storeName,
       logoUrl: input.logoUrl !== undefined ? input.logoUrl : base.logoUrl,
-      faviconUrl: input.faviconUrl !== undefined ? input.faviconUrl : base.faviconUrl,
-      topHeaderText: input.topHeaderText !== undefined ? input.topHeaderText : base.topHeaderText,
-      bannerUrls: input.bannerUrls !== undefined ? input.bannerUrls : base.bannerUrls,
+      faviconUrl:
+        input.faviconUrl !== undefined ? input.faviconUrl : base.faviconUrl,
+      topHeaderText:
+        input.topHeaderText !== undefined
+          ? input.topHeaderText
+          : base.topHeaderText,
+      bannerUrls:
+        input.bannerUrls !== undefined ? input.bannerUrls : base.bannerUrls,
       phone: input.phone !== undefined ? input.phone : base.phone,
-      instagram: input.instagram !== undefined ? input.instagram : base.instagram,
+      instagram:
+        input.instagram !== undefined ? input.instagram : base.instagram,
       cep: input.cep !== undefined ? input.cep : base.cep,
       street: input.street !== undefined ? input.street : base.street,
       number: input.number !== undefined ? input.number : base.number,
-      neighborhood: input.neighborhood !== undefined ? input.neighborhood : base.neighborhood,
+      neighborhood:
+        input.neighborhood !== undefined
+          ? input.neighborhood
+          : base.neighborhood,
       city: input.city !== undefined ? input.city : base.city,
       state: input.state !== undefined ? input.state : base.state,
-      complement: input.complement !== undefined ? input.complement : base.complement,
-      hideAddress: input.hideAddress !== undefined ? input.hideAddress : base.hideAddress,
-      deliveryOriginCep: input.deliveryOriginCep !== undefined ? input.deliveryOriginCep : base.deliveryOriginCep,
-      deliveryOriginNumber: input.deliveryOriginNumber !== undefined ? input.deliveryOriginNumber : base.deliveryOriginNumber,
-      deliveryRanges: input.deliveryRanges !== undefined ? input.deliveryRanges : base.deliveryRanges,
-      installmentRules: input.installmentRules !== undefined ? input.installmentRules : base.installmentRules,
-      pixEnabled: input.pixEnabled !== undefined ? input.pixEnabled : base.pixEnabled,
-      pixKeyType: input.pixKeyType !== undefined ? input.pixKeyType : base.pixKeyType,
+      complement:
+        input.complement !== undefined ? input.complement : base.complement,
+      hideAddress:
+        input.hideAddress !== undefined ? input.hideAddress : base.hideAddress,
+      deliveryOriginCep:
+        input.deliveryOriginCep !== undefined
+          ? input.deliveryOriginCep
+          : base.deliveryOriginCep,
+      deliveryOriginNumber:
+        input.deliveryOriginNumber !== undefined
+          ? input.deliveryOriginNumber
+          : base.deliveryOriginNumber,
+      deliveryRanges:
+        input.deliveryRanges !== undefined
+          ? input.deliveryRanges
+          : base.deliveryRanges,
+      installmentRules:
+        input.installmentRules !== undefined
+          ? input.installmentRules
+          : base.installmentRules,
+      pixEnabled:
+        input.pixEnabled !== undefined ? input.pixEnabled : base.pixEnabled,
+      pixKeyType:
+        input.pixKeyType !== undefined ? input.pixKeyType : base.pixKeyType,
       pixKey: input.pixKey !== undefined ? input.pixKey : base.pixKey,
-      pixHolder: input.pixHolder !== undefined ? input.pixHolder : base.pixHolder,
-      payOnDeliveryCash: input.payOnDeliveryCash !== undefined ? input.payOnDeliveryCash : base.payOnDeliveryCash,
-      payOnDeliveryCardDebit: input.payOnDeliveryCardDebit !== undefined ? input.payOnDeliveryCardDebit : base.payOnDeliveryCardDebit,
-      payOnDeliveryCardCredit: input.payOnDeliveryCardCredit !== undefined ? input.payOnDeliveryCardCredit : base.payOnDeliveryCardCredit,
-      paymentRules: input.paymentRules !== undefined ? input.paymentRules : base.paymentRules,
+      pixHolder:
+        input.pixHolder !== undefined ? input.pixHolder : base.pixHolder,
+      payOnDeliveryCash:
+        input.payOnDeliveryCash !== undefined
+          ? input.payOnDeliveryCash
+          : base.payOnDeliveryCash,
+      payOnDeliveryCardDebit:
+        input.payOnDeliveryCardDebit !== undefined
+          ? input.payOnDeliveryCardDebit
+          : base.payOnDeliveryCardDebit,
+      payOnDeliveryCardCredit:
+        input.payOnDeliveryCardCredit !== undefined
+          ? input.payOnDeliveryCardCredit
+          : base.payOnDeliveryCardCredit,
+      paymentRules:
+        input.paymentRules !== undefined
+          ? input.paymentRules
+          : base.paymentRules,
     });
   }
 }

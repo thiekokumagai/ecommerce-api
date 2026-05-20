@@ -19,7 +19,9 @@ export abstract class ICategoriesRepository {
     },
   ): Promise<Category>;
   abstract updateOrder(id: string, order: number): Promise<Category>;
-  abstract updateBatchOrder(items: { id: string; order: number }[]): Promise<void>;
+  abstract updateBatchOrder(
+    items: { id: string; order: number }[],
+  ): Promise<void>;
   abstract decrementOrdersAbove(order: number): Promise<void>;
   abstract softDelete(id: string): Promise<Category>;
 }

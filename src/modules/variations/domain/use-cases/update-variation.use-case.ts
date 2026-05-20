@@ -20,22 +20,23 @@ export class UpdateVariationUseCase {
     }
 
     const normalizedOptions = normalizeOptionValues(options);
-    
+
     const existingOptions = variation.options || [];
     const existingMap = new Map(
       existingOptions.map((opt) => [opt.value.toLowerCase(), opt]),
     );
 
-    const nextValueSet = new Set(
-      normalizedOptions.map((v) => v.toLowerCase()),
-    );
+    const nextValueSet = new Set(normalizedOptions.map((v) => v.toLowerCase()));
 
     const optionIdsToDelete = existingOptions
       .filter((opt) => !nextValueSet.has(opt.value.toLowerCase()))
       .map((opt) => opt.id);
 
     if (optionIdsToDelete.length > 0) {
-      const isUsed = await this.variationsRepository.areOptionsUsedInProducts(optionIdsToDelete);
+      const isUsed =
+        await this.variationsRepository.areOptionsUsedInProducts(
+          optionIdsToDelete,
+        );
       if (isUsed) {
         throw new OptionInUseError();
       }

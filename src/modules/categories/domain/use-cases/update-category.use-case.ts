@@ -11,9 +11,7 @@ export interface UpdateCategoryInput {
 
 @Injectable()
 export class UpdateCategoryUseCase {
-  constructor(
-    private readonly categoriesRepository: ICategoriesRepository,
-  ) {}
+  constructor(private readonly categoriesRepository: ICategoriesRepository) {}
 
   async execute(id: string, input: UpdateCategoryInput): Promise<Category> {
     const category = await this.categoriesRepository.findById(id);

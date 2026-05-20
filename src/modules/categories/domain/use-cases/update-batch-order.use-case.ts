@@ -8,9 +8,7 @@ export interface BatchOrderItem {
 
 @Injectable()
 export class UpdateBatchOrderUseCase {
-  constructor(
-    private readonly categoriesRepository: ICategoriesRepository,
-  ) {}
+  constructor(private readonly categoriesRepository: ICategoriesRepository) {}
 
   async execute(items: BatchOrderItem[]): Promise<void> {
     await this.categoriesRepository.updateBatchOrder(items);

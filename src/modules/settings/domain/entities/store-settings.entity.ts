@@ -15,7 +15,7 @@ export interface StoreSettings {
   bannerUrls: string[];
   phone: string;
   instagram: string | null;
-  
+
   // Endereço
   cep: string;
   street: string;
@@ -25,24 +25,24 @@ export interface StoreSettings {
   state: string;
   complement: string | null;
   hideAddress: boolean;
-  
+
   deliveryOriginCep: string | null;
   deliveryOriginNumber: string | null;
   deliveryRanges: any;
   installmentRules: any;
-  
+
   // Pagamentos
   pixEnabled: boolean;
   pixKeyType: string | null;
   pixKey: string | null;
   pixHolder: string | null;
-  
+
   payOnDeliveryCash: boolean;
   payOnDeliveryCardDebit: boolean;
   payOnDeliveryCardCredit: boolean;
-  
+
   paymentRules: any; // Mapeado para Array de PaymentRule ou nulo
-  
+
   createdAt: Date;
   updatedAt: Date;
 }

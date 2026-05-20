@@ -14,7 +14,9 @@ export class CreateProductUseCase {
     promotionalPrice?: any;
     costPrice?: any;
   }) {
-    const categoryExists = await this.productsRepository.checkCategoryExists(dto.categoryId);
+    const categoryExists = await this.productsRepository.checkCategoryExists(
+      dto.categoryId,
+    );
     if (!categoryExists) {
       throw new BadRequestException('Categoria inválida');
     }

@@ -74,9 +74,7 @@ export class SettingsController {
 
     let buffer = file.buffer;
     if (file.mimetype.startsWith('image/')) {
-      buffer = await sharp(file.buffer)
-        .webp({ quality: 90 })
-        .toBuffer();
+      buffer = await sharp(file.buffer).webp({ quality: 90 }).toBuffer();
     }
 
     const upload = await this.minioService.uploadFile(

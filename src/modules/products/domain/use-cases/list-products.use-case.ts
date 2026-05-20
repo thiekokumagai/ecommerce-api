@@ -5,7 +5,12 @@ import { IProductsRepository } from '../repositories/iproducts.repository';
 export class ListProductsUseCase {
   constructor(private readonly productsRepository: IProductsRepository) {}
 
-  async execute(query: { page?: number; limit?: number; search?: string; categoryId?: string }) {
+  async execute(query: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    categoryId?: string;
+  }) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 10;
     const skip = (page - 1) * limit;

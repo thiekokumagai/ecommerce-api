@@ -10,12 +10,12 @@ export class CreateUserUseCase {
 
   async execute(data: Omit<User, 'id' | 'createdAt'>) {
     const existingUser = await this.usersRepository.findByEmail(data.email);
-    
+
     if (existingUser) {
       throw new UserAlreadyExistsError(data.email);
     }
 
-    const hashedPassword = await bcrypt.hash(data.password!, 10);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
 
     return this.usersRepository.create({
       ...data,

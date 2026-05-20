@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../../prisma/prisma.service';
-import { IProductsRepository, ProductWithDetails } from '../../domain/repositories/iproducts.repository';
+import {
+  IProductsRepository,
+  ProductWithDetails,
+} from '../../domain/repositories/iproducts.repository';
 import { Product, ProductImage } from '@prisma/client';
 
 @Injectable()
@@ -84,11 +87,18 @@ export class PrismaProductsRepository implements IProductsRepository {
     });
 
     // To simulate findOne behavior in findAll, we need the heavy include
-    return Promise.all(products.map((product) => this.findById(product.id) as Promise<ProductWithDetails>));
+    return Promise.all(
+      products.map(
+        (product) => this.findById(product.id) as Promise<ProductWithDetails>,
+      ),
+    );
   }
 
   async checkCategoryExists(categoryId: string): Promise<boolean> {
-    const cat = await this.prisma.category.findFirst({ where: { id: categoryId, deletedAt: null }, select: { id: true } });
+    const cat = await this.prisma.category.findFirst({
+      where: { id: categoryId, deletedAt: null },
+      select: { id: true },
+    });
     return !!cat;
   }
 
@@ -170,7 +180,10 @@ export class PrismaProductsRepository implements IProductsRepository {
     });
   }
 
-  async attachVariations(productId: string, variationIds: string[]): Promise<void> {
+  async attachVariations(
+    productId: string,
+    variationIds: string[],
+  ): Promise<void> {
     await this.prisma.productVariation.createMany({
       data: variationIds.map((variationId) => ({
         productId,
@@ -195,7 +208,12 @@ export class PrismaProductsRepository implements IProductsRepository {
   async replaceProductItemsTransaction(
     productId: string,
     variationStructureChanged: boolean,
-    itemsToCreate: { stock: number; sku?: string | null; hash: string; optionIds: string[] }[]
+    itemsToCreate: {
+      stock: number;
+      sku?: string | null;
+      hash: string;
+      optionIds: string[];
+    }[],
   ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
       // Remove item simples antigo, se existir
@@ -236,7 +254,7 @@ export class PrismaProductsRepository implements IProductsRepository {
     productId: string,
     stock: number,
     sku?: string | null,
-    hash?: string
+    hash?: string,
   ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
       await tx.productItem.deleteMany({
@@ -344,7 +362,10 @@ export class PrismaProductsRepository implements IProductsRepository {
     });
   }
 
-  async deleteVariationOptionTransaction(productId: string, optionId: string): Promise<void> {
+  async deleteVariationOptionTransaction(
+    productId: string,
+    optionId: string,
+  ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
       // 1. Remove a opção dos itens do produto
       await tx.productItemOption.deleteMany({

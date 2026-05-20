@@ -10,9 +10,7 @@ export interface CreateCategoryInput {
 
 @Injectable()
 export class CreateCategoryUseCase {
-  constructor(
-    private readonly categoriesRepository: ICategoriesRepository,
-  ) {}
+  constructor(private readonly categoriesRepository: ICategoriesRepository) {}
 
   async execute(input: CreateCategoryInput): Promise<Category> {
     const lastOrder = await this.categoriesRepository.findLastOrder();

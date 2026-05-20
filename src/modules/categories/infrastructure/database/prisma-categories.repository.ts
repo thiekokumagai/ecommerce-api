@@ -70,7 +70,9 @@ export class PrismaCategoriesRepository implements ICategoriesRepository {
     });
   }
 
-  async updateBatchOrder(items: { id: string; order: number }[]): Promise<void> {
+  async updateBatchOrder(
+    items: { id: string; order: number }[],
+  ): Promise<void> {
     await this.prisma.$transaction(
       items.map((item) =>
         this.prisma.category.update({

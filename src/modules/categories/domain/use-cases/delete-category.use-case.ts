@@ -4,9 +4,7 @@ import { CategoryNotFoundError } from '../exceptions/category-not-found.exceptio
 
 @Injectable()
 export class DeleteCategoryUseCase {
-  constructor(
-    private readonly categoriesRepository: ICategoriesRepository,
-  ) {}
+  constructor(private readonly categoriesRepository: ICategoriesRepository) {}
 
   async execute(id: string): Promise<{ id: string }> {
     const category = await this.categoriesRepository.findById(id);

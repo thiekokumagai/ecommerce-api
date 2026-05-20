@@ -12,17 +12,26 @@ export class UpdateSettingsDto {
   @IsOptional()
   logoUrl?: string | null;
 
-  @ApiProperty({ example: 'https://cdn.example.com/favicon.ico', required: false })
+  @ApiProperty({
+    example: 'https://cdn.example.com/favicon.ico',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   faviconUrl?: string | null;
 
-  @ApiProperty({ example: 'Frete grátis em compras acima de R$ 150!', required: false })
+  @ApiProperty({
+    example: 'Frete grátis em compras acima de R$ 150!',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   topHeaderText?: string | null;
 
-  @ApiProperty({ example: ['https://cdn.example.com/banner1.png'], required: false })
+  @ApiProperty({
+    example: ['https://cdn.example.com/banner1.png'],
+    required: false,
+  })
   @IsArray()
   @IsString({ each: true })
   @IsOptional()

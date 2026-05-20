@@ -13,7 +13,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, 
+      isGlobal: true,
     }),
 
     PrismaModule,

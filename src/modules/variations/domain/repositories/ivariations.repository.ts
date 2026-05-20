@@ -13,8 +13,10 @@ export abstract class IVariationsRepository {
     optionIdsToDelete?: string[],
   ): Promise<Variation>;
   abstract softDelete(id: string): Promise<Variation>;
-  
+
   abstract findOptionsByIds(ids: string[]): Promise<VariationOption[]>;
   abstract areOptionsUsedInProducts(optionIds: string[]): Promise<boolean>;
-  abstract updateBatchOrder(items: { id: string; order: number }[]): Promise<void>;
+  abstract updateBatchOrder(
+    items: { id: string; order: number }[],
+  ): Promise<void>;
 }

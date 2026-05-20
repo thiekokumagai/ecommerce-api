@@ -43,12 +43,14 @@ export abstract class IProductsRepository {
   abstract checkCategoryExists(categoryId: string): Promise<boolean>;
 
   abstract addImages(productId: string, urls: string[]): Promise<void>;
-  
+
   abstract findImageById(imageId: string): Promise<ProductImage | null>;
 
   abstract removeImage(imageId: string): Promise<void>;
 
-  abstract findVariationsByIds(variationIds: string[]): Promise<{ id: string }[]>;
+  abstract findVariationsByIds(
+    variationIds: string[],
+  ): Promise<{ id: string }[]>;
 
   abstract findProductVariations(
     productId: string,
@@ -65,14 +67,19 @@ export abstract class IProductsRepository {
   abstract replaceProductItemsTransaction(
     productId: string,
     variationStructureChanged: boolean,
-    itemsToCreate: { stock: number; sku?: string | null; hash: string; optionIds: string[] }[]
+    itemsToCreate: {
+      stock: number;
+      sku?: string | null;
+      hash: string;
+      optionIds: string[];
+    }[],
   ): Promise<void>;
 
   abstract updateSimpleItemTransaction(
     productId: string,
     stock: number,
     sku?: string | null,
-    hash?: string
+    hash?: string,
   ): Promise<void>;
 
   abstract listItems(productId: string): Promise<any[]>;

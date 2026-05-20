@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { IProductsRepository } from '../repositories/iproducts.repository';
 import { createHash } from 'crypto';
 
@@ -6,7 +11,9 @@ import { createHash } from 'crypto';
 export class CreateProductItemsUseCase {
   constructor(private readonly productsRepository: IProductsRepository) {}
 
-  private extractOptionIds(options: (string | { optionId: string })[] = []): string[] {
+  private extractOptionIds(
+    options: (string | { optionId: string })[] = [],
+  ): string[] {
     return options.map((o) => (typeof o === 'string' ? o : o.optionId)).sort();
   }
 
@@ -44,7 +51,7 @@ export class CreateProductItemsUseCase {
       await this.productsRepository.updateSimpleItemTransaction(
         productId,
         item.stock,
-        item.sku
+        item.sku,
       );
 
       return this.productsRepository.listItems(productId);
@@ -66,7 +73,8 @@ export class CreateProductItemsUseCase {
     }
 
     // Busca itens existentes
-    const existingItems = await this.productsRepository.findItemsByProductId(productId);
+    const existingItems =
+      await this.productsRepository.findItemsByProductId(productId);
 
     // Hashes existentes
     const existingHashes = new Set(
@@ -157,7 +165,7 @@ export class CreateProductItemsUseCase {
     await this.productsRepository.replaceProductItemsTransaction(
       productId,
       variationStructureChanged,
-      itemsToCreate
+      itemsToCreate,
     );
 
     return this.productsRepository.listItems(productId);

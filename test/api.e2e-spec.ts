@@ -21,12 +21,16 @@ describe('API (e2e)', () => {
 
   describe('Swagger', () => {
     it('GET /api/docs deve renderizar a UI', async () => {
-      const res = await request(app.getHttpServer()).get('/api/docs').expect(200);
+      const res = await request(app.getHttpServer())
+        .get('/api/docs')
+        .expect(200);
       expect(res.text).toMatch(/swagger/i);
     });
 
     it('GET /api/docs-json deve expor o OpenAPI com rotas dos módulos', async () => {
-      const res = await request(app.getHttpServer()).get('/api/docs-json').expect(200);
+      const res = await request(app.getHttpServer())
+        .get('/api/docs-json')
+        .expect(200);
       const paths = Object.keys(res.body.paths ?? {});
       expect(paths).toEqual(
         expect.arrayContaining([
@@ -78,7 +82,10 @@ describe('API (e2e)', () => {
     });
 
     it('GET /api/users com token', async () => {
-      await request(app.getHttpServer()).get('/api/users').set(auth()).expect(200);
+      await request(app.getHttpServer())
+        .get('/api/users')
+        .set(auth())
+        .expect(200);
     });
 
     it('GET /api/variations com token', async () => {
@@ -88,16 +95,12 @@ describe('API (e2e)', () => {
         .expect(200);
     });
 
-    it(
-      'GET /api/products com token',
-      async () => {
-        await request(app.getHttpServer())
-          .get('/api/products')
-          .query({ page: 1, limit: 5 })
-          .set(auth())
-          .expect(200);
-      },
-      30000,
-    );
+    it('GET /api/products com token', async () => {
+      await request(app.getHttpServer())
+        .get('/api/products')
+        .query({ page: 1, limit: 5 })
+        .set(auth())
+        .expect(200);
+    }, 30000);
   });
 });

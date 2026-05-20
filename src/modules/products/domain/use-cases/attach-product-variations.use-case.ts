@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { IProductsRepository } from '../repositories/iproducts.repository';
 
 @Injectable()
@@ -13,7 +18,8 @@ export class AttachProductVariationsUseCase {
 
     const uniqueVariationIds = [...new Set(dto.variationIds)];
 
-    const variations = await this.productsRepository.findVariationsByIds(uniqueVariationIds);
+    const variations =
+      await this.productsRepository.findVariationsByIds(uniqueVariationIds);
 
     if (variations.length !== uniqueVariationIds.length) {
       throw new BadRequestException('Uma ou mais variações são inválidas');
@@ -30,7 +36,10 @@ export class AttachProductVariationsUseCase {
       );
     }
 
-    await this.productsRepository.attachVariations(productId, uniqueVariationIds);
+    await this.productsRepository.attachVariations(
+      productId,
+      uniqueVariationIds,
+    );
 
     return this.productsRepository.findById(productId);
   }

@@ -212,7 +212,10 @@ export class ProductsController {
     @Param('id') id: string,
     @Param('imageId') imageId: string,
   ) {
-    const image = await this.manageProductImagesUseCase.removeImage(id, imageId);
+    const image = await this.manageProductImagesUseCase.removeImage(
+      id,
+      imageId,
+    );
     if (image.url) {
       await this.minioService.deleteFile(image.url);
 
