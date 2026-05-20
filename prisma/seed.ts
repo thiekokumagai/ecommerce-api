@@ -4,7 +4,6 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  // 1. Limpar dados antigos para permitir sementes limpas
   await prisma.orderItem.deleteMany({});
   await prisma.order.deleteMany({});
   await prisma.productItemOption.deleteMany({});
