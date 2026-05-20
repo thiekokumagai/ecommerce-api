@@ -50,12 +50,4 @@ export class CreateOrderItemDto {
   @IsString()
   @IsOptional()
   variation?: string;
-
-  @ApiPropertyOptional({
-    example: 'products/blvk-spearmint.webp',
-    description: 'URL da imagem do produto',
-  })
-  @IsString()
-  @IsOptional()
-  imageUrl?: string;
 }

@@ -236,7 +236,6 @@ model OrderItem {
   price           Decimal  @db.Decimal(10, 2)
   quantity        Int
   variation       String?  // Armazena a string descritiva da variação escolhida
-  imageUrl        String?
 
   order           Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product         Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)

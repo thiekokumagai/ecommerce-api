@@ -48,7 +48,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
           price: Number(item.price),
           quantity: item.quantity,
           variation: item.variation,
-          imageUrl: item.imageUrl,
+          imageUrl: item.product?.images?.[0]?.url ?? null,
         })) ?? [],
     });
   }
@@ -70,7 +70,15 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     const records = await this.prisma.order.findMany({
       where,
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -84,7 +92,15 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     const record = await this.prisma.order.findUnique({
       where: { id },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -127,7 +143,15 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         where: { id: order.id },
         data: payload,
         include: {
-          items: true,
+          items: {
+            include: {
+              product: {
+                include: {
+                  images: true,
+                },
+              },
+            },
+          },
         },
       });
     } else {
@@ -143,12 +167,19 @@ export class PrismaOrdersRepository implements IOrdersRepository {
                 price: item.price,
                 quantity: item.quantity,
                 variation: item.variation,
-                imageUrl: item.imageUrl,
               })) ?? [],
           },
         },
         include: {
-          items: true,
+          items: {
+            include: {
+              product: {
+                include: {
+                  images: true,
+                },
+              },
+            },
+          },
         },
       });
     }
@@ -235,12 +266,19 @@ export class PrismaOrdersRepository implements IOrdersRepository {
                 price: item.price,
                 quantity: item.quantity,
                 variation: item.variation,
-                imageUrl: item.imageUrl,
               })) ?? [],
           },
         },
         include: {
-          items: true,
+          items: {
+            include: {
+              product: {
+                include: {
+                  images: true,
+                },
+              },
+            },
+          },
         },
       });
 
@@ -290,7 +328,15 @@ export class PrismaOrdersRepository implements IOrdersRepository {
           status: 'CANCELLED',
         },
         include: {
-          items: true,
+          items: {
+            include: {
+              product: {
+                include: {
+                  images: true,
+                },
+              },
+            },
+          },
         },
       });
 
