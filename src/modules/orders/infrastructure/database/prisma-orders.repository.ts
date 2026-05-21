@@ -9,6 +9,7 @@ import {
 import {
   IOrdersRepository,
   OrderFilters,
+  PaginatedOrders,
 } from '../../domain/repositories/iorders.repository';
 
 @Injectable()
@@ -64,18 +65,26 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     });
   }
 
-  async findMany(filters: OrderFilters): Promise<Order[]> {
+  async findMany(filters: OrderFilters): Promise<PaginatedOrders> {
     const where: any = {};
 
     if (filters.search) {
       where.OR = [
-        { id: { contains: filters.search, mode: 'insensitive' } },
         { customerName: { contains: filters.search, mode: 'insensitive' } },
       ];
+      // Check if filters.search looks like an order number
+      const numSearch = Number(filters.search.replace(/\D/g, ''));
+      if (!isNaN(numSearch) && numSearch > 0) {
+        where.OR.push({ orderNumber: numSearch });
+      }
     }
 
     if (filters.status) {
       where.status = filters.status;
+    }
+
+    if (filters.paymentStatus) {
+      where.paymentStatus = filters.paymentStatus;
     }
 
     if (filters.startDate || filters.endDate) {
@@ -87,6 +96,14 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         where.createdAt.lte = new Date(filters.endDate);
       }
     }
+
+
+    // Default pagination params
+    const page = filters.page ? Math.max(1, Number(filters.page)) : 1;
+    const limit = filters.limit ? Math.max(1, Number(filters.limit)) : 10;
+    const skip = (page - 1) * limit;
+
+    const total = await this.prisma.order.count({ where });
 
     const records = await this.prisma.order.findMany({
       where,
@@ -104,10 +121,23 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       orderBy: {
         createdAt: 'desc',
       },
+      skip,
+      take: limit,
     });
 
-    return records.map((record) => this.mapToDomain(record));
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: records.map((record) => this.mapToDomain(record)),
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages,
+      },
+    };
   }
+
 
   async findById(id: string): Promise<Order | null> {
     const record = await this.prisma.order.findUnique({

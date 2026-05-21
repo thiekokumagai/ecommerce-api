@@ -116,10 +116,14 @@ Plans:
 | 5. Verificação e Testes | v1.0 | 1/1 | Complete    | 2026-05-17 |
 | 6. Módulo de Configurações | v1.0 | 2/2 | Completed   | 2026-05-17 |
 | 7. Módulo de Pedidos | v1.0 | 1/1 | Completed   | 2026-05-19 |
+| 8. Integração Pedidos & Estoque | v1.0 | 1/1 | Completed   | 2026-05-19 |
+| 9. Melhorias Checkout & Pedidos | v1.0 | 1/1 | Completed   | 2026-05-20 |
+| 10. Ajustes UI Pedidos | v1.0 | 1/1 | Completed   | 2026-05-21 |
+| 11. Paginação e Fluxo Financeiro | v1.0 | 1/1 | Completed   | 2026-05-21 |
 
 ### Phase 6: Implementação do Módulo de Configurações (StoreSettings)
 
-**Goal:** Implementar o modelo StoreSettings no banco de dados Prisma e a API Restful no NestJS, e conectar os formulários unificados do painel administrativo (incluindo regras de desconto/acréscimo dinâmicas, carrossel de até 7 banners e busca de CEP).
+**Goal:** Implementar o modelo StoreSettings no banco de dados Prisma e a API Restful no NestJS, e conectar os formulários unificados do painel administrativo.
 **Requirements**: REQ-07
 **Depends on:** Phase 5
 **Plans:** 2 planos
@@ -131,7 +135,7 @@ Plans:
 
 ### Phase 7: Módulo e Gestão de Pedidos (Orders)
 
-**Goal:** Implementar o modelo de banco de dados para Pedidos e Itens de Pedido no Prisma, a API REST no NestJS seguindo a Clean Architecture (entidades, casos de uso, controladores, DTOs e repositórios), com suporte a listagem, filtros por busca/data/status, detalhamento completo e fluxo de cancelamento.
+**Goal:** Implementar o modelo de banco de dados para Pedidos e Itens de Pedido no Prisma, a API REST no NestJS seguindo a Clean Architecture.
 **Requirements**: REQ-08
 **Depends on:** Phase 6
 **Plans:** 1 plano
@@ -140,9 +144,9 @@ Plans:
 
 - [x] 07-01: Extensão do Schema, DTO e Repositório da API para Módulo de Pedidos (Backend)
 
-### Phase 8: Integração Dinâmica de Pedidos e Estoque (Dynamic Orders & Stock Integration)
+### Phase 8: Integração Dinâmica de Pedidos e Estoque
 
-**Goal:** Interligar pedidos aos produtos e variações reais do banco de dados (remover mock no use case), decrementando o estoque do produto/variação quando o pedido for confirmado/criado e revertendo a baixa em caso de cancelamento.
+**Goal:** Interligar pedidos aos produtos e variações reais do banco de dados, decrementando o estoque na confirmação e revertendo no cancelamento.
 **Requirements**: REQ-08, REQ-09
 **Depends on:** Phase 7
 **Plans:** 1 plano
@@ -150,3 +154,36 @@ Plans:
 Plans:
 
 - [x] 08-01: Associação de Pedidos a Produtos Reais, Validação e Atualização Dinâmica de Estoque (Backend & Frontend)
+
+### Phase 9: Melhorias no Checkout e Pedidos
+
+**Goal:** Dividir o ciclo de vida do pedido entre entrega e pagamento, criando endpoints específicos para recebimento e reversão.
+**Depends on:** Phase 8
+**Plans:** 1 plano
+
+Plans:
+
+- [x] 09-01: Melhorias no Checkout e Pedidos (Backend)
+
+### Phase 10: Ajustes UI na Listagem e Modal de Pedidos
+
+**Goal:** Incrementar usabilidade e filtros adicionais de frontend integrando os dropdowns logísticos na gaveta de detalhamento.
+**Depends on:** Phase 9
+**Plans:** 1 plano
+
+Plans:
+
+- [x] 10-01: Ajustes UI na Listagem e Modal de Pedidos (Frontend & Backend Alignment)
+
+### Phase 11: Paginação e Refinamentos do Fluxo Financeiro de Pedidos
+
+**Goal:** Adicionar paginação nativa server-side e consolidar as regras visuais de recebimento e cancelamento de pedidos.
+**Depends on:** Phase 10
+**Plans:** 1 plano
+
+Plans:
+
+- [x] 11-01: Paginação e Refinamentos de Fluxo Financeiro (Backend & Frontend)
+
+
+

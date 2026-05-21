@@ -24,7 +24,7 @@ export class ReceiveOrderUseCase {
 
     order.paymentMethod = payload.paymentMethod || order.paymentMethod;
     order.discount = payload.discount || 0;
-    // We do not have surcharge in db, maybe we can ignore it or log it
+    order.surcharge = payload.surcharge || 0;
     order.totalReceived = payload.totalReceived;
     order.paymentStatus = PaymentStatus.PAID;
     

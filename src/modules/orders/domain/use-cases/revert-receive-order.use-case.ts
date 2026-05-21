@@ -14,6 +14,8 @@ export class RevertReceiveOrderUseCase {
 
     order.paymentStatus = PaymentStatus.PENDING;
     order.totalReceived = 0;
+    order.surcharge = 0;
+    order.discount = 0;
     
     return await this.ordersRepository.save(order);
   }

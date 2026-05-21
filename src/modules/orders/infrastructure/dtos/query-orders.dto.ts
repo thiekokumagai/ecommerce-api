@@ -1,6 +1,6 @@
 import { IsString, IsOptional, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { OrderStatus } from '../../domain/entities/order.entity';
+import { OrderStatus, PaymentStatus } from '../../domain/entities/order.entity';
 
 export class QueryOrdersDto {
   @ApiProperty({ example: 'Ana beatriz', required: false })
@@ -13,6 +13,12 @@ export class QueryOrdersDto {
   @IsOptional()
   status?: OrderStatus;
 
+  @ApiProperty({ example: 'PENDING', enum: PaymentStatus, required: false })
+  @IsEnum(PaymentStatus)
+  @IsOptional()
+  paymentStatus?: PaymentStatus;
+
+
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
@@ -22,4 +28,13 @@ export class QueryOrdersDto {
   @IsString()
   @IsOptional()
   endDate?: string;
+
+  @ApiProperty({ required: false, default: 1 })
+  @IsOptional()
+  page?: any;
+
+  @ApiProperty({ required: false, default: 10 })
+  @IsOptional()
+  limit?: any;
 }
+

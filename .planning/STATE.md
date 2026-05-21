@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Refatoração Clean Architecture
 status: milestone_complete
-stopped_at: Milestone complete (Phase 8 was final phase)
-last_updated: "2026-05-19T22:06:00.000Z"
-last_activity: 2026-05-19 -- Phase 8 execution completed
+stopped_at: Milestone complete (Phase 11 was final phase)
+last_updated: "2026-05-21T23:38:00.000Z"
+last_activity: 2026-05-21 -- Phase 11 execution completed
 progress:
-  total_phases: 8
-  completed_phases: 8
-  total_plans: 11
-  completed_plans: 11
+  total_phases: 11
+  completed_phases: 11
+  total_plans: 14
+  completed_plans: 14
   percent: 100
 ---
 
@@ -18,17 +18,17 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-19)
+See: .planning/PROJECT.md (updated 2026-05-21)
 
 **Core value:** Prover uma API de e-commerce robusta, segura, desacoplada e escalável, que garanta consistência no controle de estoque de produtos e performance sob alta demanda.
 **Current focus:** Milestone complete
 
 ## Current Position
 
-Phase: 8
+Phase: 11
 Plan: Complete
 Status: Milestone complete
-Last activity: 2026-05-19
+Last activity: 2026-05-21
 
 Progress: [██████████] 100%
 
@@ -36,9 +36,8 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 7
+- Total plans completed: 14
 - Average duration: 15 min
-- Total execution time: 1.0 hours
 
 **By Phase:**
 
@@ -47,13 +46,14 @@ Progress: [██████████] 100%
 | 1. Diretrizes | 1 | 1 | 15 min |
 | 2. Pioneiro | 1 | 1 | 15 min |
 | 3. Apoio | 2 | 2 | 15 min |
-| 4. Core | 2 | 0 | 0 |
-| 5. Testes | 1 | 0 | 0 |
-
-**Recent Trend:**
-
-- Last 5 plans: N/A
-- Trend: Stable
+| 4. Core | 2 | 2 | 15 min |
+| 5. Testes | 1 | 1 | 15 min |
+| 6. Configurações | 2 | 2 | 15 min |
+| 7. Pedidos | 1 | 1 | 15 min |
+| 8. Integração Estoque | 1 | 1 | 15 min |
+| 9. Melhorias Checkout | 1 | 1 | 15 min |
+| 10. Ajustes UI Pedidos | 1 | 1 | 15 min |
+| 11. Paginação & Fluxo | 1 | 1 | 15 min |
 
 ## Accumulated Context
 
@@ -62,17 +62,17 @@ Progress: [██████████] 100%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- [Phase 11]: Paginação server-side nativa na API de listagem de pedidos baseada no Prisma.
 - [Phase 6]: Adição do módulo de Configurações (StoreSettings) para persistência de dados de identidade, endereço, pagamentos e taxas.
-
 - [Phase 1]: Escolha por Clean Architecture Modular agrupada por recurso/feature.
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
-None yet.
+None.
 
 ## Deferred Items
 
@@ -80,7 +80,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-19
-Stopped at: Session resumed, verified complete implementation of all 8 phases across frontend and backend.
+Last session: 2026-05-21
+Stopped at: Session resumed, verified complete implementation of all 11 phases across frontend and backend.
 Resume file: Ready for the next milestone cycle.
+
 
