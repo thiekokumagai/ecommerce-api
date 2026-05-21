@@ -12,4 +12,14 @@ export class QueryOrdersDto {
   @IsEnum(OrderStatus)
   @IsOptional()
   status?: OrderStatus;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  startDate?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  endDate?: string;
 }

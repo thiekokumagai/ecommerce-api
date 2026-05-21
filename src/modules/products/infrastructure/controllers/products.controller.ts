@@ -80,8 +80,12 @@ export class ProductsController {
     description: 'Lista de produtos',
     type: [ProductResponseDto],
   })
-  findAll(@Query() query: ListProductsDto) {
-    return this.listProductsUseCase.execute(query);
+  async findAll(@Query() query: ListProductsDto) {
+    const products = await this.listProductsUseCase.execute(query);
+    return products.map((p) => ({
+      ...p,
+      imageUrl: p.images?.[0]?.url ?? null,
+    }));
   }
 
   @Get(':id')
@@ -91,8 +95,13 @@ export class ProductsController {
     description: 'Produto com categoria, imagens, variações e itens',
     type: ProductResponseDto,
   })
-  findOne(@Param('id') id: string) {
-    return this.findProductByIdUseCase.execute(id);
+  async findOne(@Param('id') id: string) {
+    const product = await this.findProductByIdUseCase.execute(id);
+    if (!product) return null;
+    return {
+      ...product,
+      imageUrl: product.images?.[0]?.url ?? null,
+    };
   }
 
   @Post()
