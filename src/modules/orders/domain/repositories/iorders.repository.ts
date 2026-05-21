@@ -3,6 +3,8 @@ import { Order, OrderStatus } from '../entities/order.entity';
 export interface OrderFilters {
   search?: string;
   status?: OrderStatus;
+  startDate?: string;
+  endDate?: string;
 }
 
 export abstract class IOrdersRepository {

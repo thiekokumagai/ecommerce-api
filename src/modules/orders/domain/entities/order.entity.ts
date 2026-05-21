@@ -15,7 +15,7 @@ export interface OrderItem {
   price: number;
   quantity: number;
   variation: string | null;
-  imageUrl: string | null;
+  imageUrl?: string;
 }
 
 export class Order {
@@ -27,6 +27,7 @@ export class Order {
   itemsTotal: number;
   freight: number;
   discount: number;
+  surcharge: number;
   totalOrder: number;
   totalReceived: number;
 

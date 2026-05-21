@@ -202,6 +202,7 @@ model Order {
   discount        Decimal     @db.Decimal(10, 2)
   totalOrder      Decimal     @db.Decimal(10, 2)
   totalReceived   Decimal     @db.Decimal(10, 2)
+  surcharge       Decimal     @default(0) @db.Decimal(10, 2)
 
   // Pagamento
   paymentType     String      // Ex: "Online", "Presencial"

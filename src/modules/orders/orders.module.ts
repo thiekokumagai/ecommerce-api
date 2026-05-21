@@ -7,6 +7,8 @@ import { ListOrdersUseCase } from './domain/use-cases/list-orders.use-case';
 import { GetOrderDetailUseCase } from './domain/use-cases/get-order-detail.use-case';
 import { CancelOrderUseCase } from './domain/use-cases/cancel-order.use-case';
 import { CreateOrderUseCase } from './domain/use-cases/create-order.use-case';
+import { ReceiveOrderUseCase } from './domain/use-cases/receive-order.use-case';
+import { RevertReceiveOrderUseCase } from './domain/use-cases/revert-receive-order.use-case';
 
 @Module({
   controllers: [OrdersController],
@@ -15,6 +17,8 @@ import { CreateOrderUseCase } from './domain/use-cases/create-order.use-case';
     GetOrderDetailUseCase,
     CancelOrderUseCase,
     CreateOrderUseCase,
+    ReceiveOrderUseCase,
+    RevertReceiveOrderUseCase,
     {
       provide: IOrdersRepository,
       useClass: PrismaOrdersRepository,

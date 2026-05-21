@@ -81,6 +81,9 @@ export class ProductResponseDto {
   @ApiProperty({ type: [ImageDto] })
   images: ImageDto[];
 
+  @ApiProperty({ required: false, nullable: true })
+  imageUrl?: string | null;
+
   @ApiProperty({ type: [ProductVariationDto] })
   variations: ProductVariationDto[];
 

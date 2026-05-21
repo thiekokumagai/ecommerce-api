@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -23,6 +24,9 @@ import { ListOrdersUseCase } from '../../domain/use-cases/list-orders.use-case';
 import { GetOrderDetailUseCase } from '../../domain/use-cases/get-order-detail.use-case';
 import { CancelOrderUseCase } from '../../domain/use-cases/cancel-order.use-case';
 import { CreateOrderUseCase } from '../../domain/use-cases/create-order.use-case';
+import { ReceiveOrderUseCase } from '../../domain/use-cases/receive-order.use-case';
+import { RevertReceiveOrderUseCase } from '../../domain/use-cases/revert-receive-order.use-case';
+import { ReceiveOrderDto } from '../dtos/receive-order.dto';
 
 @ApiTags('Orders')
 @ApiBearerAuth('access-token')
@@ -34,6 +38,8 @@ export class OrdersController {
     private readonly getOrderDetailUseCase: GetOrderDetailUseCase,
     private readonly cancelOrderUseCase: CancelOrderUseCase,
     private readonly createOrderUseCase: CreateOrderUseCase,
+    private readonly receiveOrderUseCase: ReceiveOrderUseCase,
+    private readonly revertReceiveOrderUseCase: RevertReceiveOrderUseCase,
   ) {}
 
   @Get()
@@ -80,5 +86,23 @@ export class OrdersController {
   @ApiResponse({ status: 404, description: 'Pedido não encontrado' })
   async cancel(@Param('id') id: string) {
     return this.cancelOrderUseCase.execute(id);
+  }
+
+  @Patch(':id/receive')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Receber pagamento e finalizar pedido' })
+  @ApiResponse({ status: 200, description: 'Pedido recebido com sucesso' })
+  @ApiResponse({ status: 404, description: 'Pedido não encontrado' })
+  async receive(@Param('id') id: string, @Body() body: ReceiveOrderDto) {
+    return this.receiveOrderUseCase.execute(id, body);
+  }
+
+  @Post(':id/revert-receive')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reverter o recebimento de um pedido' })
+  @ApiResponse({ status: 200, description: 'Recebimento revertido com sucesso' })
+  @ApiResponse({ status: 404, description: 'Pedido não encontrado' })
+  async revertReceive(@Param('id') id: string) {
+    return this.revertReceiveOrderUseCase.execute(id);
   }
 }

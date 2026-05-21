@@ -23,6 +23,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       itemsTotal: Number(record.itemsTotal),
       freight: Number(record.freight),
       discount: Number(record.discount),
+      surcharge: Number(record.surcharge),
       totalOrder: Number(record.totalOrder),
       totalReceived: Number(record.totalReceived),
       paymentType: record.paymentType,
@@ -39,17 +40,24 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
       items:
-        record.items?.map((item: any) => ({
-          id: item.id,
-          orderId: item.orderId,
-          productId: item.productId,
-          productItemId: item.productItemId,
-          productName: item.productName,
-          price: Number(item.price),
-          quantity: item.quantity,
-          variation: item.variation,
-          imageUrl: item.product?.images?.[0]?.url ?? null,
-        })) ?? [],
+        record.items?.map((item: any) => {
+          let imageUrl = undefined;
+          if (item.product?.images?.length > 0) {
+            const mainImage = item.product.images.find((img: any) => img.isMain) || item.product.images[0];
+            imageUrl = mainImage.url;
+          }
+          return {
+            id: item.id,
+            orderId: item.orderId,
+            productId: item.productId,
+            productItemId: item.productItemId || null,
+            productName: item.productName,
+            price: Number(item.price),
+            quantity: item.quantity,
+            variation: item.variation || null,
+            imageUrl,
+          };
+        }) ?? [],
     });
   }
 
@@ -65,6 +73,16 @@ export class PrismaOrdersRepository implements IOrdersRepository {
 
     if (filters.status) {
       where.status = filters.status;
+    }
+
+    if (filters.startDate || filters.endDate) {
+      where.createdAt = {};
+      if (filters.startDate) {
+        where.createdAt.gte = new Date(filters.startDate);
+      }
+      if (filters.endDate) {
+        where.createdAt.lte = new Date(filters.endDate);
+      }
     }
 
     const records = await this.prisma.order.findMany({
@@ -122,6 +140,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       itemsTotal: order.itemsTotal,
       freight: order.freight,
       discount: order.discount,
+      surcharge: order.surcharge,
       totalOrder: order.totalOrder,
       totalReceived: order.totalReceived,
       paymentType: order.paymentType,
@@ -239,6 +258,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         itemsTotal: order.itemsTotal,
         freight: order.freight,
         discount: order.discount,
+        surcharge: order.surcharge,
         totalOrder: order.totalOrder,
         totalReceived: order.totalReceived,
         paymentType: order.paymentType,
@@ -270,15 +290,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
           },
         },
         include: {
-          items: {
-            include: {
-              product: {
-                include: {
-                  images: true,
-                },
-              },
-            },
-          },
+          items: true,
         },
       });
 
@@ -328,15 +340,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
           status: 'CANCELLED',
         },
         include: {
-          items: {
-            include: {
-              product: {
-                include: {
-                  images: true,
-                },
-              },
-            },
-          },
+          items: true,
         },
       });
 
