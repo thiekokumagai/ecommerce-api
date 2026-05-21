@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Param,
   Query,
   Body,
@@ -23,6 +24,10 @@ import { ListOrdersUseCase } from '../../domain/use-cases/list-orders.use-case';
 import { GetOrderDetailUseCase } from '../../domain/use-cases/get-order-detail.use-case';
 import { CancelOrderUseCase } from '../../domain/use-cases/cancel-order.use-case';
 import { CreateOrderUseCase } from '../../domain/use-cases/create-order.use-case';
+import { UpdateOrderStatusUseCase } from '../../domain/use-cases/update-order-status.use-case';
+import { ReceiveOrderUseCase } from '../../domain/use-cases/receive-order.use-case';
+import { RevertReceiveOrderUseCase } from '../../domain/use-cases/revert-receive-order.use-case';
+import { OrderStatus, PaymentStatus } from '../../domain/entities/order.entity';
 
 @ApiTags('Orders')
 @ApiBearerAuth('access-token')
@@ -34,6 +39,9 @@ export class OrdersController {
     private readonly getOrderDetailUseCase: GetOrderDetailUseCase,
     private readonly cancelOrderUseCase: CancelOrderUseCase,
     private readonly createOrderUseCase: CreateOrderUseCase,
+    private readonly updateOrderStatusUseCase: UpdateOrderStatusUseCase,
+    private readonly receiveOrderUseCase: ReceiveOrderUseCase,
+    private readonly revertReceiveOrderUseCase: RevertReceiveOrderUseCase,
   ) {}
 
   @Get()
@@ -80,5 +88,36 @@ export class OrdersController {
   @ApiResponse({ status: 404, description: 'Pedido não encontrado' })
   async cancel(@Param('id') id: string) {
     return this.cancelOrderUseCase.execute(id);
+  }
+
+  @Patch(':id/status')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Atualizar status do pedido' })
+  @ApiResponse({ status: 200, description: 'Status atualizado com sucesso' })
+  @ApiResponse({ status: 404, description: 'Pedido não encontrado' })
+  async updateStatus(
+    @Param('id') id: string,
+    @Body() body: { status?: OrderStatus; paymentStatus?: PaymentStatus },
+  ) {
+    return this.updateOrderStatusUseCase.execute(id, body);
+  }
+
+  @Patch(':id/receive')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Receber pagamento de um pedido' })
+  @ApiResponse({ status: 200, description: 'Pagamento recebido com sucesso' })
+  async receive(
+    @Param('id') id: string,
+    @Body() body: { paymentMethod?: string; discount?: number; surcharge?: number; totalReceived: number; installments?: number },
+  ) {
+    return this.receiveOrderUseCase.execute(id, body);
+  }
+
+  @Post(':id/revert-receive')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reverter recebimento de pagamento de um pedido' })
+  @ApiResponse({ status: 200, description: 'Recebimento revertido com sucesso' })
+  async revertReceive(@Param('id') id: string) {
+    return this.revertReceiveOrderUseCase.execute(id);
   }
 }

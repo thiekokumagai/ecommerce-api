@@ -3,6 +3,7 @@ import { PrismaService } from '../../../../../prisma/prisma.service';
 import {
   Order,
   OrderStatus,
+  PaymentStatus,
   OrderItem,
 } from '../../domain/entities/order.entity';
 import {
@@ -36,6 +37,8 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       cep: record.cep,
       complement: record.complement,
       status: record.status as OrderStatus,
+      paymentStatus: record.paymentStatus as PaymentStatus,
+      installments: record.installments,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
       items:
@@ -135,6 +138,8 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       cep: order.cep,
       complement: order.complement,
       status: order.status,
+      paymentStatus: order.paymentStatus,
+      installments: order.installments,
     };
 
     let record;
@@ -252,6 +257,8 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         cep: order.cep,
         complement: order.complement,
         status: order.status,
+        paymentStatus: order.paymentStatus,
+        installments: order.installments,
       };
 
       const createdOrder = await tx.order.create({

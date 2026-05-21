@@ -10,7 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { OrderStatus } from '../../domain/entities/order.entity';
+import { OrderStatus, PaymentStatus } from '../../domain/entities/order.entity';
 import { CreateOrderItemDto } from './create-order-item.dto';
 
 export class CreateOrderDto {
@@ -122,6 +122,21 @@ export class CreateOrderDto {
   @IsEnum(OrderStatus)
   @IsOptional()
   status?: OrderStatus;
+
+  @ApiPropertyOptional({
+    example: PaymentStatus.PENDING,
+    enum: PaymentStatus,
+    description: 'Status de pagamento do pedido',
+  })
+  @IsEnum(PaymentStatus)
+  @IsOptional()
+  paymentStatus?: PaymentStatus;
+
+  @ApiPropertyOptional({ example: 1, description: 'Número de parcelas' })
+  @IsNumber()
+  @Min(1)
+  @IsOptional()
+  installments?: number;
 
   @ApiProperty({
     type: [CreateOrderItemDto],

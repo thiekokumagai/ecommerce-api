@@ -6,6 +6,11 @@ export enum OrderStatus {
   CANCELLED = 'CANCELLED',
 }
 
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+}
+
 export interface OrderItem {
   id: string;
   orderId: string;
@@ -43,6 +48,8 @@ export class Order {
   complement: string | null;
 
   status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  installments?: number;
 
   createdAt: Date;
   updatedAt: Date;
