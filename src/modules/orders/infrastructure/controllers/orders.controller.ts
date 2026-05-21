@@ -9,7 +9,6 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
-  Patch,
 } from '@nestjs/common';
 import {
   ApiTags,
