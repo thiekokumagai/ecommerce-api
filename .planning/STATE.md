@@ -3,46 +3,46 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Refatoração Clean Architecture
 status: executing
-stopped_at: Phase 12 context gathered
+stopped_at: Contexto da Fase 12 coletado
 last_updated: "2026-05-23T02:13:39.663Z"
-last_activity: 2026-05-23 -- Phase 12 execution started
+last_activity: 2026-05-23 -- Execução da Fase 12 iniciada
 progress:
-  total_phases: 12
+  total_phases: 13
   completed_phases: 2
   total_plans: 11
   completed_plans: 3
   percent: 17
 ---
 
-# Project State
+# Estado do Projeto
 
-## Project Reference
+## Referência do Projeto
 
-See: .planning/PROJECT.md (updated 2026-05-21)
+Veja: `.planning/PROJECT.md` (atualizado em 21/05/2026)
 
-**Core value:** Prover uma API de e-commerce robusta, segura, desacoplada e escalável, que garanta consistência no controle de estoque de produtos e performance sob alta demanda.
-**Current focus:** Phase 12 — pedidos-pagos-irem-para-o-caixa-admin-e-api
+**Valor Central:** Prover uma API de e-commerce robusta, segura, desacoplada e escalável, que garanta consistência no controle de estoque de produtos e performance sob alta demanda.
+**Foco Atual:** Fase 13 — parcelamento-cartao-de-credito-no-pedido-e-no-caixa
 
-## Current Position
+## Posição Atual
 
-Phase: 12 (pedidos-pagos-irem-para-o-caixa-admin-e-api) — EXECUTING
-Plan: 1 of 1
-Status: Executing Phase 12
-Last activity: 2026-05-23 -- Phase 12 execution started
+- **Fase**: 13 (parcelamento-cartao-de-credito-no-pedido-e-no-caixa) — COMPLETO
+- **Plano**: 1 de 1
+- **Status**: Fase 13 Concluída com Sucesso
+- **Última Atividade**: 23/05/2026 -- Fase 13 Concluída com Sucesso
 
-Progress: [██████████] 100%
+Progresso: [██████████] 100%
 
-## Performance Metrics
+## Métricas de Performance
 
-**Velocity:**
+**Velocidade (Velocity):**
 
-- Total plans completed: 14
-- Average duration: 15 min
+- Total de planos concluídos: 14
+- Duração média: 15 min
 
-**By Phase:**
+**Por Fase:**
 
-| Phase | Plans | Completed | Avg/Plan |
-|-------|-----------|-----------|----------|
+| Fase | Planos | Concluídos | Média/Plano |
+|------|--------|------------|-------------|
 | 1. Diretrizes | 1 | 1 | 15 min |
 | 2. Pioneiro | 1 | 1 | 15 min |
 | 3. Apoio | 2 | 2 | 15 min |
@@ -55,35 +55,37 @@ Progress: [██████████] 100%
 | 10. Ajustes UI Pedidos | 1 | 1 | 15 min |
 | 11. Paginação & Fluxo | 1 | 1 | 15 min |
 
-## Accumulated Context
+---
 
-### Roadmap Evolution
+## Contexto Acumulado
 
-- Phase 12 added: Pedidos pagos irem para o caixa admin e api
+### Evolução do Cronograma (Roadmap)
 
-### Decisions
+- Fase 12 adicionada: Pedidos pagos irem para o caixa admin e api
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+### Decisões
 
-- [Phase 11]: Paginação server-side nativa na API de listagem de pedidos baseada no Prisma.
-- [Phase 6]: Adição do módulo de Configurações (StoreSettings) para persistência de dados de identidade, endereço, pagamentos e taxas.
-- [Phase 1]: Escolha por Clean Architecture Modular agrupada por recurso/feature.
+As decisões estão registradas na tabela de Decisões Principais do `PROJECT.md`.
+Decisões recentes que afetam o trabalho atual:
 
-### Pending Todos
+- **[Fase 11]**: Paginação server-side nativa na API de listagem de pedidos baseada no Prisma.
+- **[Fase 6]**: Adição do módulo de Configurações (StoreSettings) para persistência de dados de identidade, endereço, pagamentos e taxas.
+- **[Fase 1]**: Escolha por Clean Architecture Modular agrupada por recurso/feature.
 
-None.
+### Tarefas Pendentes (Todos)
 
-### Blockers/Concerns
+Nenhuma.
 
-None.
+### Impedimentos / Preocupações (Blockers/Concerns)
 
-## Deferred Items
+Nenhum.
 
-*(none)*
+## Itens Adiados (Deferred Items)
 
-## Session Continuity
+*(nenhum)*
 
-Last session: 2026-05-23T02:08:33.321Z
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-pedidos-pagos-irem-para-o-caixa-admin-e-api/12-CONTEXT.md
+## Continuidade da Sessão (Session Continuity)
+
+- **Última sessão**: 23/05/2026
+- **Ponto de parada**: Contexto da Fase 13 coletado
+- **Arquivo de resumo**: `.planning/phases/13-parcelamento-cartao-de-credito-no-pedido-e-no-caixa/13-CONTEXT.md`

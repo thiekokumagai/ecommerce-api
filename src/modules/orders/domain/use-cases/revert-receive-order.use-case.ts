@@ -17,6 +17,7 @@ export class RevertReceiveOrderUseCase {
     order.totalReceived = 0;
     order.surcharge = 0;
     order.discount = 0;
+    order.cardFee = 0;
     
     return await this.ordersRepository.save(order);
   }

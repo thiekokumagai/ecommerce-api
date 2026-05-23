@@ -28,6 +28,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       surcharge: Number(record.surcharge),
       totalOrder: Number(record.totalOrder),
       totalReceived: Number(record.totalReceived),
+      cardFee: Number(record.cardFee || 0),
       paymentType: record.paymentType,
       paymentMethod: record.paymentMethod,
       pixKey: record.pixKey,
@@ -210,6 +211,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       paymentStatus: order.paymentStatus,
       installments: order.installments,
       paymentDate: order.paymentDate,
+      cardFee: order.cardFee,
     };
 
     let record;
@@ -331,6 +333,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         paymentStatus: order.paymentStatus,
         installments: order.installments,
         paymentDate: order.paymentDate,
+        cardFee: order.cardFee,
       };
 
       const createdOrder = await tx.order.create({

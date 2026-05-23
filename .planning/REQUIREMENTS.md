@@ -1,17 +1,17 @@
-# Requirements: ecommerce-core-api
+# Requisitos: ecommerce-core-api
 
-## Overview
+## Visão Geral
 
 Este documento rastreia e detalha os requisitos da refatoração de arquitetura limpa modular no `ecommerce-core-api`.
 
-## User Stories
+## Histórias de Usuário (User Stories)
 
-- **Como Desenvolvedor da PodeMais**, quero que a lógica de negócios esteja separada do banco de dados (Prisma) e do framework (NestJS), para que eu possa escrever testes unitários velozes sem mockar clientes de infraestrutura complexos.
-- **Como Arquiteto do Projeto**, quero que os módulos sejam altamente coesos e desacoplados, para garantir que mudanças de banco ou libs externas de upload de arquivos/geração de imagens não afetem o domínio central.
+- **Como Desenvolvedor da PodeMais**, quero que a lógica de negócios esteja separada do banco de dados (Prisma) e do framework (NestJS), para que eu possa escrever testes unitários velozes sem precisar criar mocks complexos de clientes de infraestrutura.
+- **Como Arquiteto do Projeto**, quero que os módulos sejam altamente coesos e desacoplados, para garantir que mudanças de banco ou bibliotecas externas de upload de arquivos/geração de imagens não afetem o domínio central da aplicação.
 
-## Detailed Requirements
+## Requisitos Detalhados
 
-### REQ-01: Estabelecer Diretrizes Arquiteturais (Clean Architecture Modular)
+### REQ-01: Estabelecer Diretrizes Arquiteturais (Arquitetura Limpa Modular)
 - **Critérios de Aceitação**:
   - Criação do manual `ARCHITECTURE.md` contendo:
     - Definição clara da responsabilidade de cada camada (`domain`, `infrastructure`).
@@ -28,14 +28,14 @@ Este documento rastreia e detalha os requisitos da refatoração de arquitetura 
 ### REQ-03: Refatoração dos Módulos de Apoio (`users` e `variations`)
 - **Critérios de Aceitação**:
   - Seguir o padrão pioneiro de categorias para desacoplar as entidades de usuários e opções de variações.
-  - Garantir que testes E2E passem sem quebras.
+  - Garantir que todos os testes E2E passem sem quebras.
 
 ### REQ-04: Refatoração do Módulo Principal (`products`)
 - **Critérios de Aceitação**:
   - Preservar o fluxo complexo de tratamento de estoque:
     - Produtos sem variação (`simple`) criam 1 item de estoque.
-    - Produtos com variação criam múltiplos itens vinculados a opções.
-    - Transição de tipo limpa o existente em cascata e reinsere a nova estrutura.
+    - Produtos com variação criam múltiplos itens vinculados a opções de variação.
+    - Transição de tipo limpa a estrutura existente em cascata e reinsere a nova estrutura.
   - Desacoplar use cases complexos (`CreateProductUseCase`, `UpdateProductStockUseCase`, etc.).
   - Mover o repositório Prisma de produto para a camada de infraestrutura.
 
@@ -47,7 +47,7 @@ Este documento rastreia e detalha os requisitos da refatoração de arquitetura 
 ### REQ-06: Cobertura de Testes e Validação Swagger
 - **Critérios de Aceitação**:
   - Manter testes unitários e E2E rodando e passando 100% via Jest.
-  - As DTOs com class-validator e Swagger decorators continuam funcionando e gerando a documentação Swagger na rota configurada.
+  - Os DTOs com class-validator e decoradores do Swagger continuam funcionando e gerando a documentação Swagger na rota configurada.
 
 ### REQ-07: Dados de Inicialização (Seed) e Mock Data
 - **Critérios de Aceitação**:

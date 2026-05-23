@@ -21,18 +21,28 @@ export class GetCashRegisterSummaryUseCase {
     );
 
     let totalReceived = 0;
+    let totalCardFees = 0;
     const totalsByMethod: Record<string, number> = {};
 
     for (const order of orders) {
       totalReceived += order.totalReceived;
+      totalCardFees += order.cardFee || 0;
       const method = order.paymentMethod || 'Outros';
       totalsByMethod[method] = (totalsByMethod[method] || 0) + order.totalReceived;
     }
 
+    // Arredonda para evitar problemas matemáticos de ponto flutuante
+    totalReceived = Math.round(totalReceived * 100) / 100;
+    totalCardFees = Math.round(totalCardFees * 100) / 100;
+    const totalNet = Math.round((totalReceived - totalCardFees) * 100) / 100;
+
     return {
       cashRegister: register,
       summary: {
-        totalReceived,
+        totalReceived, // Mantido para retrocompatibilidade
+        totalGross: totalReceived,
+        totalCardFees,
+        totalNet,
         totalsByMethod,
         orderCount: orders.length,
       },

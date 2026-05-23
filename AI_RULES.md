@@ -75,3 +75,9 @@
 - Avoid duplicate utility layers when NestJS already provides the feature.
 - Keep API contracts typed and validated.
 - Update Swagger metadata when changing public endpoints.
+
+## Regras de Idioma e Planejamento (.planning)
+
+1. **Idioma Obrigatório**: Todos os documentos de planejamento na pasta `.planning/` (incluindo `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, planos de fase, históricos e arquivos de contexto) devem ser escritos exclusivamente em **Português Brasileiro (pt-BR)**.
+2. **Criação e Atualizações**: Qualquer novo arquivo de planejamento ou alteração em arquivos existentes criada por assistentes de IA deve seguir essa diretriz de idioma estritamente.
+3. **Comentários de Código**: Prefira escrever novos comentários de código explicativos e mensagens de commit em Português Brasileiro (pt-BR), mantendo coerência com a documentação do projeto.

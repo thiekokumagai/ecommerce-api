@@ -10,8 +10,10 @@ import { CreateOrderUseCase } from './domain/use-cases/create-order.use-case';
 import { UpdateOrderStatusUseCase } from './domain/use-cases/update-order-status.use-case';
 import { ReceiveOrderUseCase } from './domain/use-cases/receive-order.use-case';
 import { RevertReceiveOrderUseCase } from './domain/use-cases/revert-receive-order.use-case';
+import { SettingsModule } from '../settings/settings.module';
 
 @Module({
+  imports: [SettingsModule],
   controllers: [OrdersController],
   providers: [
     ListOrdersUseCase,

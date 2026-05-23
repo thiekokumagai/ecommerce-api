@@ -23,4 +23,14 @@ export class ReceiveOrderDto {
   @IsNumber()
   @Min(0)
   totalReceived: number;
+
+  @ApiProperty({ example: 1, required: false })
+  @IsNumber()
+  @IsOptional()
+  installments?: number;
+
+  @ApiProperty({ example: 4.5, required: false })
+  @IsNumber()
+  @IsOptional()
+  cardFee?: number;
 }
