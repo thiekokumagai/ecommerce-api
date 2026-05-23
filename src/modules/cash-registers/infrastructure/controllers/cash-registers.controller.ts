@@ -1,0 +1,66 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
+import { CreateCashRegisterUseCase } from '../../domain/use-cases/create-cash-register.use-case';
+import { UpdateCashRegisterUseCase } from '../../domain/use-cases/update-cash-register.use-case';
+import { DeleteCashRegisterUseCase } from '../../domain/use-cases/delete-cash-register.use-case';
+import { ListCashRegistersUseCase } from '../../domain/use-cases/list-cash-registers.use-case';
+import { GetCashRegisterSummaryUseCase } from '../../domain/use-cases/get-cash-register-summary.use-case';
+import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
+
+@Controller('cash-registers')
+@UseGuards(JwtAuthGuard)
+export class CashRegistersController {
+  constructor(
+    private readonly createUseCase: CreateCashRegisterUseCase,
+    private readonly updateUseCase: UpdateCashRegisterUseCase,
+    private readonly deleteUseCase: DeleteCashRegisterUseCase,
+    private readonly listUseCase: ListCashRegistersUseCase,
+    private readonly getSummaryUseCase: GetCashRegisterSummaryUseCase,
+  ) {}
+
+  @Post()
+  async create(
+    @Body() data: { title: string; startDate: string; endDate: string },
+  ) {
+    return this.createUseCase.execute({
+      title: data.title,
+      startDate: new Date(data.startDate),
+      endDate: new Date(data.endDate),
+    });
+  }
+
+  @Get()
+  async findAll() {
+    return this.listUseCase.execute();
+  }
+
+  @Get(':id/summary')
+  async getSummary(@Param('id') id: string) {
+    return this.getSummaryUseCase.execute(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() data: { title?: string; startDate?: string; endDate?: string },
+  ) {
+    return this.updateUseCase.execute(id, {
+      ...data,
+      startDate: data.startDate ? new Date(data.startDate) : undefined,
+      endDate: data.endDate ? new Date(data.endDate) : undefined,
+    });
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return this.deleteUseCase.execute(id);
+  }
+}
