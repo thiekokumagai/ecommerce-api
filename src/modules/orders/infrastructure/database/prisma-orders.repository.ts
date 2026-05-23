@@ -139,6 +139,25 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     };
   }
 
+  async findPaidOrdersByPaymentDateRange(startDate: Date, endDate: Date): Promise<Order[]> {
+    const records = await this.prisma.order.findMany({
+      where: {
+        paymentStatus: 'PAID',
+        paymentDate: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      include: {
+        items: true,
+      },
+      orderBy: {
+        paymentDate: 'desc',
+      },
+    });
+    return records.map((record) => this.mapToDomain(record));
+  }
+
 
   async findById(id: string): Promise<Order | null> {
     const record = await this.prisma.order.findUnique({
