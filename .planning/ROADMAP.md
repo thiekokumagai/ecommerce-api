@@ -187,3 +187,13 @@ Plans:
 
 
 
+
+### Phase 12: Pedidos pagos irem para o caixa admin e api
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 11
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 12 to break down)
