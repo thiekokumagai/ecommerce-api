@@ -51,6 +51,7 @@ export class Order {
   status: OrderStatus;
   paymentStatus: PaymentStatus;
   installments?: number;
+  paymentDate?: Date | null;
 
   createdAt: Date;
   updatedAt: Date;

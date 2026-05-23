@@ -41,6 +41,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       status: record.status as OrderStatus,
       paymentStatus: record.paymentStatus as PaymentStatus,
       installments: record.installments,
+      paymentDate: record.paymentDate,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
       items:
@@ -189,6 +190,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       status: order.status,
       paymentStatus: order.paymentStatus,
       installments: order.installments,
+      paymentDate: order.paymentDate,
     };
 
     let record;
@@ -309,6 +311,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         status: order.status,
         paymentStatus: order.paymentStatus,
         installments: order.installments,
+        paymentDate: order.paymentDate,
       };
 
       const createdOrder = await tx.order.create({

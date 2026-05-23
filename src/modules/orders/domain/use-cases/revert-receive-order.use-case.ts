@@ -13,6 +13,7 @@ export class RevertReceiveOrderUseCase {
     }
 
     order.paymentStatus = PaymentStatus.PENDING;
+    order.paymentDate = null;
     order.totalReceived = 0;
     order.surcharge = 0;
     order.discount = 0;

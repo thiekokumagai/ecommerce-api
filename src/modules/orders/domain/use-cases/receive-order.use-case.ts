@@ -27,6 +27,7 @@ export class ReceiveOrderUseCase {
     order.surcharge = payload.surcharge || 0;
     order.totalReceived = payload.totalReceived;
     order.paymentStatus = PaymentStatus.PAID;
+    order.paymentDate = new Date();
     
     if (payload.installments) {
       order.installments = payload.installments;
