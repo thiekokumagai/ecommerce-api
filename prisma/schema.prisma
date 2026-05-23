@@ -226,6 +226,7 @@ model Order {
   status          OrderStatus @default(PENDING)
   paymentStatus   PaymentStatus @default(PENDING)
   installments    Int?          @default(1)
+  paymentDate     DateTime?
   
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -250,4 +251,15 @@ model OrderItem {
   productItem     ProductItem? @relation(fields: [productItemId], references: [id], onDelete: SetNull)
 
   @@map("order_items")
+}
+
+model CashRegister {
+  id        String   @id @default(uuid())
+  title     String
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cash_registers")
 }
