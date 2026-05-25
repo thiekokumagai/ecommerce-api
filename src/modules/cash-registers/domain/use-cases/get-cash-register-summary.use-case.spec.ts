@@ -9,6 +9,7 @@ describe('GetCashRegisterSummaryUseCase', () => {
   let useCase: GetCashRegisterSummaryUseCase;
   let mockCashRepo: jest.Mocked<ICashRegistersRepository>;
   let mockOrdersRepo: jest.Mocked<IOrdersRepository>;
+  let mockPrisma: any;
 
   const mockRegister = {
     id: 'register-1',
@@ -47,7 +48,13 @@ describe('GetCashRegisterSummaryUseCase', () => {
       findPaidOrdersByPaymentDateRange: jest.fn(),
     } as unknown as jest.Mocked<IOrdersRepository>;
 
-    useCase = new GetCashRegisterSummaryUseCase(mockCashRepo, mockOrdersRepo);
+    mockPrisma = {
+      cashTransaction: {
+        findMany: jest.fn().mockResolvedValue([]),
+      },
+    };
+
+    useCase = new GetCashRegisterSummaryUseCase(mockCashRepo, mockOrdersRepo, mockPrisma as any);
   });
 
   it('should throw NotFoundException if cash register does not exist', async () => {
@@ -67,6 +74,8 @@ describe('GetCashRegisterSummaryUseCase', () => {
       totalReceived: 150,
       totalGross: 150,
       totalCardFees: 5,
+      totalEntries: 0,
+      totalOutflows: 0,
       totalNet: 145,
       orderCount: 2,
       totalsByMethod: {

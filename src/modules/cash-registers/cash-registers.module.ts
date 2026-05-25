@@ -8,6 +8,7 @@ import { UpdateCashRegisterUseCase } from './domain/use-cases/update-cash-regist
 import { DeleteCashRegisterUseCase } from './domain/use-cases/delete-cash-register.use-case';
 import { ListCashRegistersUseCase } from './domain/use-cases/list-cash-registers.use-case';
 import { GetCashRegisterSummaryUseCase } from './domain/use-cases/get-cash-register-summary.use-case';
+import { CreateCashTransactionUseCase } from './domain/use-cases/create-cash-transaction.use-case';
 import { CashRegistersController } from './infrastructure/controllers/cash-registers.controller';
 
 @Module({
@@ -23,6 +24,7 @@ import { CashRegistersController } from './infrastructure/controllers/cash-regis
     DeleteCashRegisterUseCase,
     ListCashRegistersUseCase,
     GetCashRegisterSummaryUseCase,
+    CreateCashTransactionUseCase,
   ],
 })
 export class CashRegistersModule {}

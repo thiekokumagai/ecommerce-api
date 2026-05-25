@@ -24,12 +24,14 @@ Este cronograma detalha as fases necessárias para refatorar o backend `ecommerc
 **Depende de**: Nada
 **Requisitos**: REQ-01
 **Critérios de Sucesso**:
+
   1. O arquivo `.planning/codebase/ARCHITECTURE.md` existe detalhando as responsabilidades de cada camada.
   2. O manual de desenvolvimento em PT-BR está disponível.
 
 **Planos**: 1 plano
 
 Planos:
+
 - [x] 01-01: Criar manual arquitetural e diretrizes de design
 
 ---
@@ -40,6 +42,7 @@ Planos:
 **Depende de**: Fase 1
 **Requisitos**: REQ-02
 **Critérios de Sucesso**:
+
   1. A pasta `src/modules/categories/domain` contém a entidade pura, port do repositório e os use cases.
   2. A pasta `src/modules/categories/infrastructure` contém os controllers, DTOs e repositório Prisma.
   3. O arquivo `categories.service.ts` foi deletado com sucesso.
@@ -48,6 +51,7 @@ Planos:
 **Planos**: 1 plano
 
 Planos:
+
 - [x] 02-01: Refatorar o módulo de categorias para Clean Architecture
 
 ---
@@ -58,6 +62,7 @@ Planos:
 **Depende de**: Fase 2
 **Requisitos**: REQ-03
 **Critérios de Sucesso**:
+
   1. Módulo `users` refatorado com injeção de use cases e repositório Prisma desacoplado.
   2. Módulo `variations` refatorado de forma análoga.
   3. Serviços antigos deletados.
@@ -65,6 +70,7 @@ Planos:
 **Planos**: 2 planos
 
 Planos:
+
 - [x] 03-01: Refatorar módulo de usuários (users)
 - [x] 03-02: Refatorar módulo de variações (variations)
 
@@ -76,6 +82,7 @@ Planos:
 **Depende de**: Fase 3
 **Requisitos**: REQ-04, REQ-05
 **Critérios de Sucesso**:
+
   1. Módulo `products` estruturado em camadas de domínio e infraestrutura.
   2. A lógica complexa de estoque de produtos simples/com variação e transição de tipos é isolada em use cases específicos do domínio.
   3. O módulo `auth` está devidamente isolado com use cases de login, validação e refresh de token.
@@ -83,6 +90,7 @@ Planos:
 **Planos**: 2 planos
 
 Planos:
+
 - [x] 04-01: Refatorar módulo de produtos (products)
 - [x] 04-02: Refatorar módulo de autenticação (auth)
 
@@ -94,6 +102,7 @@ Planos:
 **Depende de**: Fase 4
 **Requisitos**: REQ-06
 **Critérios de Sucesso**:
+
   1. Execução de todos os testes unitários com 100% de sucesso.
   2. Execução de testes E2E do Supertest confirmando integridade de todos os endpoints HTTP.
   3. A documentação Swagger (/api/docs) renderiza perfeitamente com todas as tags de contratos das DTOs de infraestrutura.
@@ -101,6 +110,7 @@ Planos:
 **Planos**: 1 plano
 
 Planos:
+
 - [x] 05-01: Execução geral de testes unitários, E2E e validação Swagger
 
 ---
@@ -133,6 +143,7 @@ Planos:
 **Planos:** 2 planos
 
 Planos:
+
 - [x] 06-01: Banco de Dados e Módulo API de Configurações (Backend)
 - [x] 06-02: Formulários e Integração no Painel Administrativo (Frontend)
 
@@ -146,6 +157,7 @@ Planos:
 **Planos:** 1 plano
 
 Planos:
+
 - [x] 07-01: Extensão do Schema, DTO e Repositório da API para Módulo de Pedidos (Backend)
 
 ---
@@ -158,6 +170,7 @@ Planos:
 **Planos:** 1 plano
 
 Planos:
+
 - [x] 08-01: Associação de Pedidos a Produtos Reais, Validação e Atualização Dinâmica de Estoque (Backend & Frontend)
 
 ---
@@ -169,6 +182,7 @@ Planos:
 **Planos:** 1 plano
 
 Planos:
+
 - [x] 09-01: Melhorias no Checkout e Pedidos (Backend)
 
 ---
@@ -180,6 +194,7 @@ Planos:
 **Planos:** 1 plano
 
 Planos:
+
 - [x] 10-01: Ajustes UI na Listagem e Modal de Pedidos (Alinhamento Frontend & Backend)
 
 ---
@@ -191,6 +206,7 @@ Planos:
 **Planos:** 1 plano
 
 Planos:
+
 - [x] 11-01: Paginação e Refinamentos de Fluxo Financeiro (Backend & Frontend)
 
 ---
@@ -203,6 +219,7 @@ Planos:
 **Planos:** 0 planos
 
 Planos:
+
 - [ ] TBD (execute o comando `/gsd-plan-phase 12` para detalhar)
 
 ### Phase 14: Configurar taxas de debito/credito com repasse opcional ao cliente
@@ -213,6 +230,7 @@ Planos:
 **Plans:** 0 plans
 
 Plans:
+
 - [ ] TBD (run /gsd-plan-phase 14 to break down)
 
 ---
@@ -224,7 +242,19 @@ Plans:
 **Planos:** 1 plano
 
 Planos:
+
 - [ ] 13-01: Implementação de Parcelamento, Taxas de Cartão e Consolidação Financeira (Backend & Frontend)
+
+### Phase 16: Contas fixas
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 15
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 16 to break down)
 
 ---
 
@@ -236,5 +266,5 @@ Planos:
 **Planos:** 1 plano
 
 Planos:
-- [x] 15-01: Módulo de Cupom no Backend e Frontend
 
+- [x] 15-01: Módulo de Cupom no Backend e Frontend

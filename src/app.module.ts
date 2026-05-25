@@ -11,6 +11,7 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CashRegistersModule } from './modules/cash-registers/cash-registers.module';
 import { CouponsModule } from './modules/coupons/coupons.module';
+import { FixedCostsModule } from './modules/fixed-costs/fixed-costs.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CouponsModule } from './modules/coupons/coupons.module';
     OrdersModule,
     CashRegistersModule,
     CouponsModule,
+    FixedCostsModule,
   ],
 })
 export class AppModule {}

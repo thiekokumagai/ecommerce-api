@@ -62,6 +62,8 @@ Progresso: [██████████] 100%
 ### Evolução do Cronograma (Roadmap)
 
 - Fase 12 adicionada: Pedidos pagos irem para o caixa admin e api
+- Fase 16 adicionada: Contas fixas
+
 
 ### Decisões
 

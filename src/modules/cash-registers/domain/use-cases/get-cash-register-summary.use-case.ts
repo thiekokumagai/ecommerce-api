@@ -1,12 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ICashRegistersRepository } from '../repositories/icash-registers.repository';
 import { IOrdersRepository } from '../../../orders/domain/repositories/iorders.repository';
+import { PrismaService } from '../../../../../prisma/prisma.service';
 
 @Injectable()
 export class GetCashRegisterSummaryUseCase {
   constructor(
     private readonly cashRegistersRepo: ICashRegistersRepository,
     private readonly ordersRepo: IOrdersRepository,
+    private readonly prisma: PrismaService,
   ) {}
 
   async execute(id: string): Promise<any> {
@@ -20,6 +22,11 @@ export class GetCashRegisterSummaryUseCase {
       register.endDate,
     );
 
+    const transactions = await this.prisma.cashTransaction.findMany({
+      where: { cashRegisterId: id },
+      orderBy: { date: 'desc' },
+    });
+
     let totalReceived = 0;
     let totalCardFees = 0;
     const totalsByMethod: Record<string, number> = {};
@@ -31,22 +38,44 @@ export class GetCashRegisterSummaryUseCase {
       totalsByMethod[method] = (totalsByMethod[method] || 0) + order.totalReceived;
     }
 
+    let totalEntries = 0;
+    let totalOutflows = 0;
+
+    for (const tx of transactions) {
+      if (tx.type === 'ENTRY') {
+        totalEntries += Number(tx.amount);
+      } else if (tx.type === 'OUTFLOW') {
+        totalOutflows += Number(tx.amount);
+      }
+    }
+
+    // Faturamento bruto comercial das vendas + entradas manuais
+    let totalGross = totalReceived + totalEntries;
+
     // Arredonda para evitar problemas matemáticos de ponto flutuante
     totalReceived = Math.round(totalReceived * 100) / 100;
     totalCardFees = Math.round(totalCardFees * 100) / 100;
-    const totalNet = Math.round((totalReceived - totalCardFees) * 100) / 100;
+    totalEntries = Math.round(totalEntries * 100) / 100;
+    totalOutflows = Math.round(totalOutflows * 100) / 100;
+    totalGross = Math.round(totalGross * 100) / 100;
+
+    // Saldo Líquido de Caixa = Faturamento Comercial Bruto + Entradas Manuais - Taxas Cartão - Saídas/Custos Fixos
+    const totalNet = Math.round((totalGross - totalCardFees - totalOutflows) * 100) / 100;
 
     return {
       cashRegister: register,
       summary: {
         totalReceived, // Mantido para retrocompatibilidade
-        totalGross: totalReceived,
+        totalGross,
         totalCardFees,
+        totalEntries,
+        totalOutflows,
         totalNet,
         totalsByMethod,
         orderCount: orders.length,
       },
       orders,
+      transactions,
     };
   }
 }

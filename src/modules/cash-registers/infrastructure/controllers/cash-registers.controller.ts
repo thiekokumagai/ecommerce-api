@@ -13,6 +13,7 @@ import { UpdateCashRegisterUseCase } from '../../domain/use-cases/update-cash-re
 import { DeleteCashRegisterUseCase } from '../../domain/use-cases/delete-cash-register.use-case';
 import { ListCashRegistersUseCase } from '../../domain/use-cases/list-cash-registers.use-case';
 import { GetCashRegisterSummaryUseCase } from '../../domain/use-cases/get-cash-register-summary.use-case';
+import { CreateCashTransactionUseCase } from '../../domain/use-cases/create-cash-transaction.use-case';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 
 @Controller('cash-registers')
@@ -24,6 +25,7 @@ export class CashRegistersController {
     private readonly deleteUseCase: DeleteCashRegisterUseCase,
     private readonly listUseCase: ListCashRegistersUseCase,
     private readonly getSummaryUseCase: GetCashRegisterSummaryUseCase,
+    private readonly createTransactionUseCase: CreateCashTransactionUseCase,
   ) {}
 
   @Post()
@@ -45,6 +47,19 @@ export class CashRegistersController {
   @Get(':id/summary')
   async getSummary(@Param('id') id: string) {
     return this.getSummaryUseCase.execute(id);
+  }
+
+  @Post(':id/transactions')
+  async createTransaction(
+    @Param('id') id: string,
+    @Body() data: { type: 'ENTRY' | 'OUTFLOW'; amount: number; description: string },
+  ) {
+    return this.createTransactionUseCase.execute({
+      cashRegisterId: id,
+      type: data.type,
+      amount: data.amount,
+      description: data.description,
+    });
   }
 
   @Put(':id')

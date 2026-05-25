@@ -288,12 +288,43 @@ model OrderItem {
 }
 
 model CashRegister {
-  id        String   @id @default(uuid())
-  title     String
-  startDate DateTime
-  endDate   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String            @id @default(uuid())
+  title        String
+  startDate    DateTime
+  endDate      DateTime
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  transactions CashTransaction[]
 
   @@map("cash_registers")
+}
+
+model FixedCost {
+  id                String            @id @default(uuid())
+  name              String
+  value             Decimal           @db.Decimal(10, 2)
+  repeats           Boolean           @default(true)
+  type              String            @default("ALWAYS") // "ALWAYS", "INSTALLMENTS"
+  installmentsCount Int?              @default(1)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  transactions      CashTransaction[]
+
+  @@map("fixed_costs")
+}
+
+model CashTransaction {
+  id             String        @id @default(uuid())
+  cashRegisterId String?
+  type           String        // "ENTRY", "OUTFLOW"
+  amount         Decimal       @db.Decimal(10, 2)
+  description    String
+  date           DateTime      @default(now())
+  fixedCostId    String?
+  createdAt      DateTime      @default(now())
+
+  cashRegister   CashRegister? @relation(fields: [cashRegisterId], references: [id], onDelete: SetNull)
+  fixedCost      FixedCost?    @relation(fields: [fixedCostId], references: [id], onDelete: SetNull)
+
+  @@map("cash_transactions")
 }
