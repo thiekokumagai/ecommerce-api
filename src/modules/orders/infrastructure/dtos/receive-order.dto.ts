@@ -13,11 +13,28 @@ export class ReceiveOrderDto {
   @IsOptional()
   discount?: number;
 
+  @ApiProperty({ example: 'Online', required: false })
+  @IsString()
+  @IsOptional()
+  paymentType?: string;
+
+  @ApiProperty({ example: 5.0, required: false })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  pixDiscount?: number;
+
   @ApiProperty({ example: 5.0, required: false })
   @IsNumber()
   @Min(0)
   @IsOptional()
   surcharge?: number;
+
+  @ApiProperty({ example: 3.5, required: false })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  cardSurcharge?: number;
 
   @ApiProperty({ example: 150.0, required: true })
   @IsNumber()

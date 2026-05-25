@@ -205,6 +205,16 @@ Planos:
 Planos:
 - [ ] TBD (execute o comando `/gsd-plan-phase 12` para detalhar)
 
+### Phase 14: Configurar taxas de debito/credito com repasse opcional ao cliente
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 13
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 14 to break down)
+
 ---
 
 ### Fase 13: Parcelamento e Taxas de Cartão de Crédito no Caixa e Pedidos

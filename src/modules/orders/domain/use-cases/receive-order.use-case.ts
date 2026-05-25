@@ -12,8 +12,11 @@ export class ReceiveOrderUseCase {
 
   async execute(id: string, payload: {
     paymentMethod?: string;
+    paymentType?: string;
     discount?: number;
+    pixDiscount?: number;
     surcharge?: number;
+    cardSurcharge?: number;
     totalReceived: number;
     installments?: number;
   }): Promise<Order> {
@@ -27,10 +30,15 @@ export class ReceiveOrderUseCase {
     }
 
     order.paymentMethod = payload.paymentMethod || order.paymentMethod;
+    if (payload.paymentType) {
+      order.paymentType = payload.paymentType;
+    }
     order.discount = payload.discount || 0;
+    order.pixDiscount = payload.pixDiscount || 0;
     order.surcharge = payload.surcharge || 0;
+    order.cardSurcharge = payload.cardSurcharge || 0;
     order.totalReceived = payload.totalReceived;
-    order.totalOrder = Math.round((order.itemsTotal + order.freight + order.surcharge - order.discount) * 100) / 100;
+    order.totalOrder = Math.round((order.itemsTotal + order.freight + order.surcharge + order.cardSurcharge - order.discount - order.pixDiscount) * 100) / 100;
     order.paymentStatus = PaymentStatus.PAID;
     order.paymentDate = new Date();
     
