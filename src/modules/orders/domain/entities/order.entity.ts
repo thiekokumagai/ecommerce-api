@@ -59,6 +59,12 @@ export class Order {
   createdAt: Date;
   updatedAt: Date;
 
+  couponId?: string | null;
+  coupon?: {
+    title: string;
+    type: string;
+  } | null;
+
   items?: OrderItem[];
 
   constructor(data: Partial<Order>) {

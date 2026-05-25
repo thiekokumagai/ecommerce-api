@@ -146,4 +146,9 @@ export class CreateOrderDto {
   @ValidateNested({ each: true })
   @Type(() => CreateOrderItemDto)
   items: CreateOrderItemDto[];
+
+  @ApiPropertyOptional({ example: 'PROMO10', description: 'Título do cupom aplicado' })
+  @IsString()
+  @IsOptional()
+  couponTitle?: string;
 }

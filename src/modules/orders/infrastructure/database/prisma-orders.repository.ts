@@ -37,10 +37,14 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       street: record.street,
       number: record.number,
       neighborhood: record.neighborhood,
-      city: record.city,
       state: record.state,
       cep: record.cep,
       complement: record.complement,
+      couponId: record.couponId,
+      coupon: record.coupon ? {
+        title: record.coupon.title,
+        type: record.coupon.type,
+      } : null,
       status: record.status as OrderStatus,
       paymentStatus: record.paymentStatus as PaymentStatus,
       installments: record.installments,
@@ -112,6 +116,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     const records = await this.prisma.order.findMany({
       where,
       include: {
+        coupon: true,
         items: {
           include: {
             product: {
@@ -166,6 +171,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     const record = await this.prisma.order.findUnique({
       where: { id },
       include: {
+        coupon: true,
         items: {
           include: {
             product: {
@@ -216,6 +222,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       installments: order.installments,
       paymentDate: order.paymentDate,
       cardFee: order.cardFee,
+      couponId: order.couponId,
     };
 
     let record;
@@ -340,6 +347,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         installments: order.installments,
         paymentDate: order.paymentDate,
         cardFee: order.cardFee,
+        couponId: order.couponId,
       };
 
       const createdOrder = await tx.order.create({

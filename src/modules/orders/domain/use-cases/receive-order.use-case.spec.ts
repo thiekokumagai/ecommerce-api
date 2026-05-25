@@ -60,7 +60,10 @@ describe('ReceiveOrderUseCase', () => {
       get: jest.fn(),
     } as unknown as jest.Mocked<ISettingsRepository>;
 
-    receiveOrderUseCase = new ReceiveOrderUseCase(mockOrdersRepository, mockSettingsRepository);
+    receiveOrderUseCase = new ReceiveOrderUseCase(
+      mockOrdersRepository,
+      mockSettingsRepository
+    );
   });
 
   it('should throw NotFoundException if order does not exist', async () => {

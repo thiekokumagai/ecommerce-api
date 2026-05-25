@@ -12,6 +12,7 @@ describe('GetCashRegisterSummaryUseCase', () => {
 
   const mockRegister = {
     id: 'register-1',
+    title: 'Caixa de Teste',
     operatorId: 'operator-1',
     status: 'CLOSED' as any,
     openingBalance: 100,

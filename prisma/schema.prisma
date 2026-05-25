@@ -183,6 +183,33 @@ model StoreSettings {
   @@map("store_settings")
 }
 
+enum DiscountType {
+  VALUE
+  PERCENTAGE
+  FREE_SHIPPING
+}
+
+model Coupon {
+  id                      String       @id @default(uuid())
+  title                   String       @unique
+  status                  Boolean      @default(true)
+  type                    DiscountType
+  value                   Decimal?     @db.Decimal(10, 2)
+  validUntilDate          DateTime?
+  startTime               DateTime?
+  endTime                 DateTime?
+  maxUses                 Int?
+  currentUses             Int          @default(0)
+  minOrderValue           Decimal?     @db.Decimal(10, 2)
+  applyToPromotionalItems Boolean      @default(false)
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+
+  orders Order[]
+
+  @@map("coupons")
+}
+
 enum OrderStatus {
   PENDING
   CONFIRMED
@@ -234,6 +261,9 @@ model Order {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  couponId String?
+  coupon   Coupon? @relation(fields: [couponId], references: [id], onDelete: SetNull)
 
   items OrderItem[]
 

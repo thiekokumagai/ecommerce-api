@@ -11,9 +11,10 @@ import { UpdateOrderStatusUseCase } from './domain/use-cases/update-order-status
 import { ReceiveOrderUseCase } from './domain/use-cases/receive-order.use-case';
 import { RevertReceiveOrderUseCase } from './domain/use-cases/revert-receive-order.use-case';
 import { SettingsModule } from '../settings/settings.module';
+import { CouponsModule } from '../coupons/coupons.module';
 
 @Module({
-  imports: [SettingsModule],
+  imports: [SettingsModule, CouponsModule],
   controllers: [OrdersController],
   providers: [
     ListOrdersUseCase,

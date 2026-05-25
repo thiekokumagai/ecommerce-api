@@ -225,3 +225,16 @@ Plans:
 
 Planos:
 - [ ] 13-01: Implementação de Parcelamento, Taxas de Cartão e Consolidação Financeira (Backend & Frontend)
+
+---
+
+### [CONCLUÍDO] Fase 15: Módulo de Cupom
+
+**Objetivo:** Criar módulo de cupons de desconto (valor fixo, porcentagem ou frete grátis), com regras de limite de uso e datas de validade, integrado ao checkout de pedidos.
+**Requisitos**: TBD
+**Depende de:** Fase 14
+**Planos:** 1 plano
+
+Planos:
+- [x] 15-01: Módulo de Cupom no Backend e Frontend
+

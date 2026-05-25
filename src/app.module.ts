@@ -10,6 +10,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CashRegistersModule } from './modules/cash-registers/cash-registers.module';
+import { CouponsModule } from './modules/coupons/coupons.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CashRegistersModule } from './modules/cash-registers/cash-registers.mod
     SettingsModule,
     OrdersModule,
     CashRegistersModule,
+    CouponsModule,
   ],
 })
 export class AppModule {}
