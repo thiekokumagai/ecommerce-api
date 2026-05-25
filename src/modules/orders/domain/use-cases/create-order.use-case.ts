@@ -26,6 +26,9 @@ export class CreateOrderUseCase {
 
         couponId = coupon.id;
         finalDiscount = discountAmount;
+        if (coupon.type === 'FREE_SHIPPING') {
+          finalDiscount = Number(data.freight) || 0;
+        }
       }
 
       const order = new Order({

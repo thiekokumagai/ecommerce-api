@@ -75,13 +75,12 @@ export class ValidateCouponUseCase {
 
     let discountAmount = 0;
     if (coupon.type === DiscountType.VALUE) {
-      discountAmount = coupon.value || 0;
+      discountAmount = Math.min(Number(coupon.value) || 0, input.orderTotal);
     } else if (coupon.type === DiscountType.PERCENTAGE) {
-      discountAmount = (input.orderTotal * (coupon.value || 0)) / 100;
+      discountAmount = Math.min((input.orderTotal * (Number(coupon.value) || 0)) / 100, input.orderTotal);
     } else if (coupon.type === DiscountType.FREE_SHIPPING) {
-      // FRETE GRÁTIS: O desconto é gerido pelo frontend/backend no cálculo do frete,
-      // aqui retornamos 0 de desconto no produto, ou tratamos no checkout.
-      // Retornaremos discountAmount = 0, a lógica extra se aplica no create-order
+      // FRETE GRÁTIS: O desconto é o próprio valor do frete.
+      // Retornaremos discountAmount = 0, e a lógica será aplicada no create-order
       discountAmount = 0;
     }
 
