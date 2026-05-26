@@ -81,3 +81,15 @@
 1. **Idioma Obrigatório**: Todos os documentos de planejamento na pasta `.planning/` (incluindo `PROJECT.md`, `ROADMAP.md`, `REQUIREMENTS.md`, `STATE.md`, planos de fase, históricos e arquivos de contexto) devem ser escritos exclusivamente em **Português Brasileiro (pt-BR)**.
 2. **Criação e Atualizações**: Qualquer novo arquivo de planejamento ou alteração em arquivos existentes criada por assistentes de IA deve seguir essa diretriz de idioma estritamente.
 3. **Comentários de Código**: Prefira escrever novos comentários de código explicativos e mensagens de commit em Português Brasileiro (pt-BR), mantendo coerência com a documentação do projeto.
+4. **Commits (Conventional Commits)**: Toda vez que finalizar uma phase (no frontend ou backend), deve ser feito um commit seguindo estritamente as regras de *Conventional Commits*:
+   - `feat`: Nova funcionalidade
+   - `fix`: Correção de bug
+   - `refactor`: Refatoração sem alterar comportamento
+   - `style`: Formatação, lint, espaços
+   - `docs`: Documentação
+   - `test`: Testes
+   - `chore`: Tarefa técnica/manutenção
+   - `perf`: Melhoria de performance
+   - `build`: Build/dependências
+   - `ci`: Pipeline/CI/CD
+   - `revert`: Reverter commit
