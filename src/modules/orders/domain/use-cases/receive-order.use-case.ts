@@ -13,10 +13,7 @@ export class ReceiveOrderUseCase {
   async execute(id: string, payload: {
     paymentMethod?: string;
     paymentType?: string;
-    discount?: number;
-    pixDiscount?: number;
-    surcharge?: number;
-    cardSurcharge?: number;
+
     paymentDiscount?: number;
     installmentSurcharge?: number;
     couponDiscount?: number;
@@ -40,11 +37,6 @@ export class ReceiveOrderUseCase {
       order.paymentType = payload.paymentType;
     }
     
-    // Assign legacy fields
-    order.discount = payload.discount || 0;
-    order.pixDiscount = payload.pixDiscount || 0;
-    order.surcharge = payload.surcharge || 0;
-    order.cardSurcharge = payload.cardSurcharge || 0;
 
     // Assign new fields
     if (payload.paymentDiscount !== undefined) order.paymentDiscount = payload.paymentDiscount;
@@ -65,14 +57,9 @@ export class ReceiveOrderUseCase {
     const iSurcharge = Number(order.installmentSurcharge) || 0;
     const rSurcharge = Number(order.receiptSurcharge) || 0;
     
-    const legacySurcharge = Number(order.surcharge) || 0;
-    const legacyCardSurcharge = Number(order.cardSurcharge) || 0;
-    const legacyPixDiscount = Number(order.pixDiscount) || 0;
-    const legacyDiscount = Number(order.discount) || 0;
-
     order.totalOrder = Math.round((
-      itemsTotal + freight + iSurcharge + rSurcharge + legacySurcharge + legacyCardSurcharge 
-      - pDiscount - rDiscount - cDiscount - cFDiscount - legacyPixDiscount - legacyDiscount
+      itemsTotal + freight + iSurcharge + rSurcharge 
+      - pDiscount - rDiscount - cDiscount - cFDiscount
     ) * 100) / 100;
     
     order.paymentStatus = PaymentStatus.PAID;

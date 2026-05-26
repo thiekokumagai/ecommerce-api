@@ -28,6 +28,7 @@ import { UpdateOrderStatusUseCase } from '../../domain/use-cases/update-order-st
 import { ReceiveOrderUseCase } from '../../domain/use-cases/receive-order.use-case';
 import { RevertReceiveOrderUseCase } from '../../domain/use-cases/revert-receive-order.use-case';
 import { OrderStatus, PaymentStatus } from '../../domain/entities/order.entity';
+import { ReceiveOrderDto } from '../dtos/receive-order.dto';
 
 @ApiTags('Orders')
 @ApiBearerAuth('access-token')
@@ -108,7 +109,7 @@ export class OrdersController {
   @ApiResponse({ status: 200, description: 'Pagamento recebido com sucesso' })
   async receive(
     @Param('id') id: string,
-    @Body() body: any, // using any here to forward all fields, or explicit type
+    @Body() body: ReceiveOrderDto, 
   ) {
     return this.receiveOrderUseCase.execute(id, body);
   }

@@ -15,7 +15,7 @@ export class CreateOrderUseCase {
 
   async execute(data: Partial<Order> & { couponTitle?: string }): Promise<Order> {
     try {
-      let finalDiscount = Number(data.discount) || 0;
+
       let couponId: string | undefined = undefined;
       let couponDiscountValue = Number(data.couponDiscount) || 0;
       let couponFreightDiscountValue = Number(data.couponFreightDiscount) || 0;
@@ -36,7 +36,6 @@ export class CreateOrderUseCase {
 
       const order = new Order({
         ...data,
-        discount: finalDiscount,
         couponDiscount: couponDiscountValue,
         couponFreightDiscount: couponFreightDiscountValue,
         couponId: couponId,
@@ -54,14 +53,9 @@ export class CreateOrderUseCase {
       const cFDiscount = Number(order.couponFreightDiscount) || 0;
 
       // Mantemos suporte aos campos legados se ainda chegarem
-      const legacyCardSurcharge = Number(order.cardSurcharge) || 0;
-      const legacySurcharge = Number(order.surcharge) || 0;
-      const legacyPixDiscount = Number(order.pixDiscount) || 0;
-      const legacyDiscount = Number(order.discount) || 0;
-
       order.totalOrder = Math.round(
-        (itemsTotal + freight + installmentSurcharge + receiptSurcharge + legacyCardSurcharge + legacySurcharge
-          - paymentDiscount - receiptDiscount - cDiscount - cFDiscount - legacyPixDiscount - legacyDiscount) * 100
+        (itemsTotal + freight + installmentSurcharge + receiptSurcharge
+          - paymentDiscount - receiptDiscount - cDiscount - cFDiscount) * 100
       ) / 100;
       const savedOrder = await this.ordersRepository.saveWithStockDecrement(order);
 

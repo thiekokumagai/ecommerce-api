@@ -39,8 +39,6 @@ describe('ReceiveOrderUseCase', () => {
     customerPhone: '11999999999',
     itemsTotal: 100,
     freight: 10,
-    discount: 0,
-    surcharge: 0,
     totalOrder: 110,
     totalReceived: 0,
     cardFee: 0,
@@ -90,13 +88,12 @@ describe('ReceiveOrderUseCase', () => {
 
     const result = await receiveOrderUseCase.execute('order-1', {
       paymentMethod: 'PIX',
-      discount: 11, // 10% of 110
-      surcharge: 0,
+      paymentDiscount: 11, // 10% of 110
       totalReceived: 99,
     });
 
     expect(result.paymentStatus).toBe(PaymentStatus.PAID);
-    expect(result.discount).toBe(11);
+    expect(result.paymentDiscount).toBe(11);
     expect(result.totalReceived).toBe(99);
     expect(result.totalOrder).toBe(99); // 100 + 10 - 11
     expect(mockOrdersRepository.save).toHaveBeenCalledTimes(1);
@@ -110,13 +107,12 @@ describe('ReceiveOrderUseCase', () => {
     const result = await receiveOrderUseCase.execute('order-1', {
       paymentMethod: 'Cartão de Crédito',
       installments: 3,
-      discount: 0,
-      surcharge: 5.5, // 5% of 110
+      installmentSurcharge: 5.5, // 5% of 110
       totalReceived: 115.5,
     });
 
     expect(result.paymentStatus).toBe(PaymentStatus.PAID);
-    expect(result.surcharge).toBe(5.5);
+    expect(result.installmentSurcharge).toBe(5.5);
     expect(result.totalReceived).toBe(115.5);
     expect(result.totalOrder).toBe(115.5); // 100 + 10 + 5.5
     expect(result.cardFee).toBe(5.78); // 5% of 115.5 is 5.775, rounded to 5.78

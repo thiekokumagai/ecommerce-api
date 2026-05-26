@@ -31,12 +31,8 @@ export class Order {
 
   itemsTotal: number;
   freight: number;
-  discount: number;
-  pixDiscount: number;
   totalOrder: number;
   totalReceived: number;
-  surcharge: number;
-  cardSurcharge: number;
   cardFee: number;
 
   paymentDiscount: number;

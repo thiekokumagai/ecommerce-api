@@ -1,52 +1,64 @@
 import { IsString, IsNumber, IsOptional, Min } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ReceiveOrderDto {
-  @ApiProperty({ example: 'PIX', required: false })
+  @ApiPropertyOptional({ example: 'PIX' })
   @IsString()
   @IsOptional()
   paymentMethod?: string;
 
-  @ApiProperty({ example: 10.5, required: false })
-  @IsNumber()
-  @Min(0)
-  @IsOptional()
-  discount?: number;
-
-  @ApiProperty({ example: 'Online', required: false })
+  @ApiPropertyOptional({ example: 'Online' })
   @IsString()
   @IsOptional()
   paymentType?: string;
 
-  @ApiProperty({ example: 5.0, required: false })
+  @ApiPropertyOptional({ example: 5.0 })
   @IsNumber()
   @Min(0)
   @IsOptional()
-  pixDiscount?: number;
+  paymentDiscount?: number;
 
-  @ApiProperty({ example: 5.0, required: false })
+  @ApiPropertyOptional({ example: 2.0 })
   @IsNumber()
   @Min(0)
   @IsOptional()
-  surcharge?: number;
+  installmentSurcharge?: number;
 
-  @ApiProperty({ example: 3.5, required: false })
+  @ApiPropertyOptional({ example: 10.0 })
   @IsNumber()
   @Min(0)
   @IsOptional()
-  cardSurcharge?: number;
+  couponDiscount?: number;
+
+  @ApiPropertyOptional({ example: 15.0 })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  couponFreightDiscount?: number;
+
+  @ApiPropertyOptional({ example: 0.0 })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  receiptDiscount?: number;
+
+  @ApiPropertyOptional({ example: 0.0 })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  receiptSurcharge?: number;
 
   @ApiProperty({ example: 150.0, required: true })
   @IsNumber()
   @Min(0)
   totalReceived: number;
 
-  @ApiProperty({ example: 1, required: false })
+  @ApiPropertyOptional({ example: 1 })
   @IsNumber()
   @IsOptional()
   installments?: number;
 
-  @ApiProperty({ example: 4.5, required: false })
+  @ApiPropertyOptional({ example: 4.5 })
   @IsNumber()
   @IsOptional()
   cardFee?: number;

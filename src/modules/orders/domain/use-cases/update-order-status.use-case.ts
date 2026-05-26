@@ -30,17 +30,17 @@ export class UpdateOrderStatusUseCase {
           order.paymentDate = new Date();
           
           if (!order.totalReceived || order.totalReceived === 0) {
-            let initialDiscount = order.discount || 0;
+            let initialDiscount = (order.couponDiscount || 0) + (order.couponFreightDiscount || 0);
             // Fix for FREE_SHIPPING coupons that might have 0 discount saved
             if (order.coupon && order.coupon.type === 'FREE_SHIPPING' && initialDiscount === 0) {
               initialDiscount = order.freight || 0;
-              order.discount = initialDiscount;
+              order.couponFreightDiscount = initialDiscount;
             }
 
             const baseTotal = (order.itemsTotal || 0) + (order.freight || 0);
             const totalDiscount = initialDiscount;
             const amountForFee = baseTotal - totalDiscount;
-            const productDiscount = (order.coupon?.type === 'FREE_SHIPPING') ? 0 : totalDiscount;
+            const productDiscount = order.couponDiscount || 0;
             const baseForPix = Math.max(0, (order.itemsTotal || 0) - productDiscount);
 
             let pixDiscount = 0;
@@ -86,10 +86,10 @@ export class UpdateOrderStatusUseCase {
                 }
 
                 // Calculate Totals
-                const calculatedTotal = Math.round((baseTotal + cardSurcharge + (order.surcharge || 0) - pixDiscount - totalDiscount) * 100) / 100;
+                const calculatedTotal = Math.round((baseTotal + cardSurcharge + (order.receiptSurcharge || 0) - pixDiscount - totalDiscount) * 100) / 100;
                 order.totalReceived = calculatedTotal;
-                order.pixDiscount = pixDiscount;
-                order.cardSurcharge = cardSurcharge;
+                order.paymentDiscount = pixDiscount;
+                order.installmentSurcharge = cardSurcharge;
                 order.totalOrder = calculatedTotal;
 
                 // Card Fee (Kept by Shop)
@@ -108,11 +108,11 @@ export class UpdateOrderStatusUseCase {
                   cardFee = Math.round(rawFee * 100) / 100;
                 }
               } else {
-                order.totalReceived = Math.round((baseTotal + (order.surcharge || 0) - totalDiscount) * 100) / 100;
+                order.totalReceived = Math.round((baseTotal + (order.receiptSurcharge || 0) - totalDiscount) * 100) / 100;
                 order.totalOrder = order.totalReceived;
               }
             } else {
-              order.totalReceived = Math.round((baseTotal + (order.surcharge || 0) - totalDiscount) * 100) / 100;
+              order.totalReceived = Math.round((baseTotal + (order.receiptSurcharge || 0) - totalDiscount) * 100) / 100;
               order.totalOrder = order.totalReceived;
             }
             

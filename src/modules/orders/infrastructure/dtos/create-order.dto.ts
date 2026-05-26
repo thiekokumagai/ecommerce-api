@@ -37,11 +37,6 @@ export class CreateOrderDto {
   @Min(0)
   freight: number;
 
-  @ApiProperty({ example: 10.0, description: 'Valor do desconto' })
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(0)
-  @IsOptional()
-  discount: number;
 
   @ApiPropertyOptional({ example: 5.0, description: 'Desconto de forma de pagamento' })
   @IsNumber({ maxDecimalPlaces: 2 })
