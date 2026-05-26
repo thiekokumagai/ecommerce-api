@@ -17,4 +17,7 @@ export class CreateCashTransactionDto {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @IsString()
+  category?: string;
 }

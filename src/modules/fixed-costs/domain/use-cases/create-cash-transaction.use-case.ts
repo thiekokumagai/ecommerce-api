@@ -6,6 +6,7 @@ interface Input {
   type: string;
   amount: number;
   description: string;
+  category?: string;
 }
 
 @Injectable()
@@ -33,6 +34,7 @@ export class CreateCashTransactionUseCase {
       amount: input.amount,
       description: input.description,
       fixedCostId: null,
-    });
+      category: input.category || 'GENERAL',
+    } as any);
   }
 }
