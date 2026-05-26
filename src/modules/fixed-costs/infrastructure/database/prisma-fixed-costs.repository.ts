@@ -119,6 +119,20 @@ export class PrismaFixedCostsRepository implements IFixedCostsRepository {
     return this.mapTransaction(record);
   }
 
+  async findTransactionById(id: string): Promise<CashTransaction | null> {
+    const record = await this.prisma.cashTransaction.findUnique({
+      where: { id },
+    });
+    return record ? this.mapTransaction(record) : null;
+  }
+
+  async deleteTransaction(id: string): Promise<CashTransaction> {
+    const record = await this.prisma.cashTransaction.delete({
+      where: { id },
+    });
+    return this.mapTransaction(record);
+  }
+
   async findActiveCashRegister(): Promise<{ id: string } | null> {
     const today = new Date();
     return this.prisma.cashRegister.findFirst({

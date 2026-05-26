@@ -4,9 +4,12 @@ import { ListFixedCostsUseCase } from '../../domain/use-cases/list-fixed-costs.u
 import { UpdateFixedCostUseCase } from '../../domain/use-cases/update-fixed-cost.use-case';
 import { DeleteFixedCostUseCase } from '../../domain/use-cases/delete-fixed-cost.use-case';
 import { PayFixedCostUseCase } from '../../domain/use-cases/pay-fixed-cost.use-case';
+import { CreateCashTransactionUseCase } from '../../domain/use-cases/create-cash-transaction.use-case';
+import { DeleteCashTransactionUseCase } from '../../domain/use-cases/delete-cash-transaction.use-case';
 import { CreateFixedCostDto } from '../dto/create-fixed-cost.dto';
 import { UpdateFixedCostDto } from '../dto/update-fixed-cost.dto';
 import { PayFixedCostDto } from '../dto/pay-fixed-cost.dto';
+import { CreateCashTransactionDto } from '../dto/create-cash-transaction.dto';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 
 @Controller('fixed-costs')
@@ -18,6 +21,8 @@ export class FixedCostsController {
     private readonly updateUseCase: UpdateFixedCostUseCase,
     private readonly deleteUseCase: DeleteFixedCostUseCase,
     private readonly payUseCase: PayFixedCostUseCase,
+    private readonly createCashTransactionUseCase: CreateCashTransactionUseCase,
+    private readonly deleteCashTransactionUseCase: DeleteCashTransactionUseCase,
   ) {}
 
   @Post()
@@ -48,5 +53,15 @@ export class FixedCostsController {
       cashRegisterId: dto.cashRegisterId,
       description: dto.description,
     });
+  }
+
+  @Post('transactions')
+  async createTransaction(@Body() dto: CreateCashTransactionDto) {
+    return this.createCashTransactionUseCase.execute(dto);
+  }
+
+  @Delete('transactions/:id')
+  async deleteTransaction(@Param('id') id: string) {
+    return this.deleteCashTransactionUseCase.execute(id);
   }
 }

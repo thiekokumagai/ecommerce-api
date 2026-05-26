@@ -8,6 +8,8 @@ import { ListFixedCostsUseCase } from './domain/use-cases/list-fixed-costs.use-c
 import { UpdateFixedCostUseCase } from './domain/use-cases/update-fixed-cost.use-case';
 import { DeleteFixedCostUseCase } from './domain/use-cases/delete-fixed-cost.use-case';
 import { PayFixedCostUseCase } from './domain/use-cases/pay-fixed-cost.use-case';
+import { CreateCashTransactionUseCase } from './domain/use-cases/create-cash-transaction.use-case';
+import { DeleteCashTransactionUseCase } from './domain/use-cases/delete-cash-transaction.use-case';
 
 @Module({
   controllers: [FixedCostsController],
@@ -17,6 +19,8 @@ import { PayFixedCostUseCase } from './domain/use-cases/pay-fixed-cost.use-case'
     UpdateFixedCostUseCase,
     DeleteFixedCostUseCase,
     PayFixedCostUseCase,
+    CreateCashTransactionUseCase,
+    DeleteCashTransactionUseCase,
     {
       provide: IFixedCostsRepository,
       useClass: PrismaFixedCostsRepository,
@@ -29,6 +33,8 @@ import { PayFixedCostUseCase } from './domain/use-cases/pay-fixed-cost.use-case'
     UpdateFixedCostUseCase,
     DeleteFixedCostUseCase,
     PayFixedCostUseCase,
+    CreateCashTransactionUseCase,
+    DeleteCashTransactionUseCase,
   ],
 })
 export class FixedCostsModule {}
