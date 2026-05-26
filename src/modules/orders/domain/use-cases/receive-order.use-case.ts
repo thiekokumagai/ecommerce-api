@@ -17,6 +17,12 @@ export class ReceiveOrderUseCase {
     pixDiscount?: number;
     surcharge?: number;
     cardSurcharge?: number;
+    paymentDiscount?: number;
+    installmentSurcharge?: number;
+    couponDiscount?: number;
+    couponFreightDiscount?: number;
+    receiptDiscount?: number;
+    receiptSurcharge?: number;
     totalReceived: number;
     installments?: number;
   }): Promise<Order> {
@@ -33,12 +39,42 @@ export class ReceiveOrderUseCase {
     if (payload.paymentType) {
       order.paymentType = payload.paymentType;
     }
+    
+    // Assign legacy fields
     order.discount = payload.discount || 0;
     order.pixDiscount = payload.pixDiscount || 0;
     order.surcharge = payload.surcharge || 0;
     order.cardSurcharge = payload.cardSurcharge || 0;
+
+    // Assign new fields
+    if (payload.paymentDiscount !== undefined) order.paymentDiscount = payload.paymentDiscount;
+    if (payload.installmentSurcharge !== undefined) order.installmentSurcharge = payload.installmentSurcharge;
+    if (payload.couponDiscount !== undefined) order.couponDiscount = payload.couponDiscount;
+    if (payload.couponFreightDiscount !== undefined) order.couponFreightDiscount = payload.couponFreightDiscount;
+    if (payload.receiptDiscount !== undefined) order.receiptDiscount = payload.receiptDiscount;
+    if (payload.receiptSurcharge !== undefined) order.receiptSurcharge = payload.receiptSurcharge;
+
     order.totalReceived = payload.totalReceived;
-    order.totalOrder = Math.round((order.itemsTotal + order.freight + order.surcharge + order.cardSurcharge - order.discount - order.pixDiscount) * 100) / 100;
+    
+    const itemsTotal = Number(order.itemsTotal) || 0;
+    const freight = Number(order.freight) || 0;
+    const pDiscount = Number(order.paymentDiscount) || 0;
+    const rDiscount = Number(order.receiptDiscount) || 0;
+    const cDiscount = Number(order.couponDiscount) || 0;
+    const cFDiscount = Number(order.couponFreightDiscount) || 0;
+    const iSurcharge = Number(order.installmentSurcharge) || 0;
+    const rSurcharge = Number(order.receiptSurcharge) || 0;
+    
+    const legacySurcharge = Number(order.surcharge) || 0;
+    const legacyCardSurcharge = Number(order.cardSurcharge) || 0;
+    const legacyPixDiscount = Number(order.pixDiscount) || 0;
+    const legacyDiscount = Number(order.discount) || 0;
+
+    order.totalOrder = Math.round((
+      itemsTotal + freight + iSurcharge + rSurcharge + legacySurcharge + legacyCardSurcharge 
+      - pDiscount - rDiscount - cDiscount - cFDiscount - legacyPixDiscount - legacyDiscount
+    ) * 100) / 100;
+    
     order.paymentStatus = PaymentStatus.PAID;
     order.paymentDate = new Date();
     

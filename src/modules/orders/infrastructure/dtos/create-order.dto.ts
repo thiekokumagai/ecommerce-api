@@ -40,7 +40,52 @@ export class CreateOrderDto {
   @ApiProperty({ example: 10.0, description: 'Valor do desconto' })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
+  @IsOptional()
   discount: number;
+
+  @ApiPropertyOptional({ example: 5.0, description: 'Desconto de forma de pagamento' })
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @IsOptional()
+  paymentDiscount?: number;
+
+  @ApiPropertyOptional({ example: 2.0, description: 'Acréscimo de parcelamento' })
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @IsOptional()
+  installmentSurcharge?: number;
+
+  @ApiPropertyOptional({ example: 10.0, description: 'Desconto do cupom' })
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @IsOptional()
+  couponDiscount?: number;
+
+  @ApiPropertyOptional({ example: 15.0, description: 'Desconto de frete pelo cupom' })
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @IsOptional()
+  couponFreightDiscount?: number;
+
+  @ApiPropertyOptional({ example: 0.0, description: 'Desconto no recebimento' })
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @IsOptional()
+  receiptDiscount?: number;
+
+  @ApiPropertyOptional({ example: 0.0, description: 'Acréscimo no recebimento' })
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @IsOptional()
+  receiptSurcharge?: number;
+
+  @ApiPropertyOptional({ description: 'Regra de taxa aplicada' })
+  @IsOptional()
+  appliedTaxRule?: Record<string, any>;
+
+  @ApiPropertyOptional({ description: 'Regra de cupom aplicada' })
+  @IsOptional()
+  appliedCouponRule?: Record<string, any>;
 
   @ApiProperty({
     example: 155.0,

@@ -39,6 +39,16 @@ export class Order {
   cardSurcharge: number;
   cardFee: number;
 
+  paymentDiscount: number;
+  installmentSurcharge: number;
+  couponDiscount: number;
+  couponFreightDiscount: number;
+  receiptDiscount: number;
+  receiptSurcharge: number;
+
+  appliedTaxRule?: Record<string, any> | null;
+  appliedCouponRule?: Record<string, any> | null;
+
   paymentType: string;
   paymentMethod: string;
   pixKey: string | null;

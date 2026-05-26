@@ -108,7 +108,7 @@ export class OrdersController {
   @ApiResponse({ status: 200, description: 'Pagamento recebido com sucesso' })
   async receive(
     @Param('id') id: string,
-    @Body() body: { paymentMethod?: string; discount?: number; surcharge?: number; totalReceived: number; installments?: number },
+    @Body() body: any, // using any here to forward all fields, or explicit type
   ) {
     return this.receiveOrderUseCase.execute(id, body);
   }

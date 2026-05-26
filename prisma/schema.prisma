@@ -240,6 +240,18 @@ model Order {
   cardSurcharge Decimal @default(0) @db.Decimal(10, 2)
   cardFee       Decimal @default(0) @db.Decimal(10, 2)
 
+  // Novos campos segregados
+  paymentDiscount       Decimal @default(0) @db.Decimal(10, 2)
+  installmentSurcharge  Decimal @default(0) @db.Decimal(10, 2)
+  couponDiscount        Decimal @default(0) @db.Decimal(10, 2)
+  couponFreightDiscount Decimal @default(0) @db.Decimal(10, 2)
+  receiptDiscount       Decimal @default(0) @db.Decimal(10, 2)
+  receiptSurcharge      Decimal @default(0) @db.Decimal(10, 2)
+
+  // Regras aplicadas (JSON)
+  appliedTaxRule    Json?
+  appliedCouponRule Json?
+
   // Pagamento
   paymentType   String // Ex: "Online", "Presencial"
   paymentMethod String // Ex: "PIX", "Cartão de Crédito", "Cartão de Débito", "Dinheiro"
