@@ -29,6 +29,7 @@ export abstract class IFixedCostsRepository {
     amount: number;
     description: string;
     fixedCostId?: string | null;
+    category?: string | null;
   }): Promise<CashTransaction>;
   
   abstract findTransactionById(id: string): Promise<CashTransaction | null>;

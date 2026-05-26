@@ -1,10 +1,11 @@
-import { Controller, Post, Get, Body, UseGuards } from "@nestjs/common";
+import { Controller, Post, Get, Delete, Body, Param, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../../../auth/infrastructure/guards/jwt-auth.guard";
 import { AddInvestmentUseCase } from "../../domain/use-cases/add-investment.use-case";
 import { RegisterPurchaseUseCase } from "../../domain/use-cases/register-purchase.use-case";
 import { GetInvestmentSummaryUseCase } from "../../domain/use-cases/get-investment-summary.use-case";
 import { ListInvestmentTransactionsUseCase } from "../../domain/use-cases/list-investment-transactions.use-case";
+import { DeleteInvestmentUseCase } from "../../domain/use-cases/delete-investment.use-case";
 import { AddInvestmentDto } from "./dtos/add-investment.dto";
 import { RegisterPurchaseDto } from "./dtos/register-purchase.dto";
 
@@ -17,11 +18,12 @@ export class InvestmentsController {
     private readonly addInvestmentUseCase: AddInvestmentUseCase,
     private readonly registerPurchaseUseCase: RegisterPurchaseUseCase,
     private readonly getInvestmentSummaryUseCase: GetInvestmentSummaryUseCase,
-    private readonly listInvestmentTransactionsUseCase: ListInvestmentTransactionsUseCase
+    private readonly listInvestmentTransactionsUseCase: ListInvestmentTransactionsUseCase,
+    private readonly deleteInvestmentUseCase: DeleteInvestmentUseCase
   ) {}
 
   @Post("add")
-  @ApiOperation({ summary: "Adiciona dinheiro ao módulo de investimento a partir do caixa atual" })
+  @ApiOperation({ summary: "Adiciona dinheiro ao módulo de investimento de forma independente" })
   async addInvestment(@Body() dto: AddInvestmentDto) {
     return await this.addInvestmentUseCase.execute(dto);
   }
@@ -42,5 +44,11 @@ export class InvestmentsController {
   @ApiOperation({ summary: "Lista todo o histórico de transações de investimento" })
   async listTransactions() {
     return await this.listInvestmentTransactionsUseCase.execute();
+  }
+
+  @Delete(":id")
+  @ApiOperation({ summary: "Exclui uma transação de investimento pelo ID" })
+  async deleteTransaction(@Param("id") id: string) {
+    return await this.deleteInvestmentUseCase.execute(id);
   }
 }

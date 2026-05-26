@@ -59,4 +59,10 @@ export class PrismaInvestmentsRepository implements IInvestmentsRepository {
       totalOutflows,
     };
   }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.investmentTransaction.delete({
+      where: { id },
+    });
+  }
 }

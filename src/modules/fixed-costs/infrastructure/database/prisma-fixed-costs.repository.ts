@@ -30,6 +30,7 @@ export class PrismaFixedCostsRepository implements IFixedCostsRepository {
       description: record.description,
       date: record.date,
       fixedCostId: record.fixedCostId,
+      category: record.category,
       createdAt: record.createdAt,
     };
   }
@@ -106,6 +107,7 @@ export class PrismaFixedCostsRepository implements IFixedCostsRepository {
     amount: number;
     description: string;
     fixedCostId?: string | null;
+    category?: string | null;
   }): Promise<CashTransaction> {
     const record = await this.prisma.cashTransaction.create({
       data: {
@@ -114,6 +116,7 @@ export class PrismaFixedCostsRepository implements IFixedCostsRepository {
         amount: data.amount,
         description: data.description,
         fixedCostId: data.fixedCostId ?? null,
+        category: data.category ?? 'GENERAL',
       },
     });
     return this.mapTransaction(record);

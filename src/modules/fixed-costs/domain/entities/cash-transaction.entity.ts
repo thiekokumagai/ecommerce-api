@@ -6,5 +6,6 @@ export interface CashTransaction {
   description: string;
   date: Date;
   fixedCostId: string | null;
+  category?: string | null;
   createdAt: Date;
 }
