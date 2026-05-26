@@ -247,7 +247,7 @@ Planos:
 
 ### Phase 16: Contas fixas
 
-**Goal:** [To be planned]
+**Goal:** [To be planned] - Poder excluir lançamento das contas fixas no caixa
 **Requirements**: TBD
 **Depends on:** Phase 15
 **Plans:** 0 plans
