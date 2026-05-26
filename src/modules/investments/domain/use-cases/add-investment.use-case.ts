@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
 import { IInvestmentsRepository } from "../repositories/iinvestments.repository";
-import { ICashRegistersRepository } from "../../cash-registers/domain/repositories/icash-registers.repository";
+import { ICashRegistersRepository } from "../../../cash-registers/domain/repositories/icash-registers.repository";
 import { InvestmentTransaction } from "../entities/investment-transaction.entity";
 
 interface ExecuteInput {

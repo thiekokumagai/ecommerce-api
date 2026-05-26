@@ -18,6 +18,7 @@ export class PrismaInvestmentsRepository implements IInvestmentsRepository {
 
     return new InvestmentTransaction({
       ...raw,
+      description: raw.description ?? undefined,
       type: raw.type as "ENTRY" | "OUTFLOW",
       amount: Number(raw.amount),
     });
@@ -32,6 +33,7 @@ export class PrismaInvestmentsRepository implements IInvestmentsRepository {
       (r) =>
         new InvestmentTransaction({
           ...r,
+          description: r.description ?? undefined,
           type: r.type as "ENTRY" | "OUTFLOW",
           amount: Number(r.amount),
         })
