@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../../auth/infrastructure/guards/jwt-auth.guard";
+import { JwtAuthGuard } from "../../../auth/infrastructure/guards/jwt-auth.guard";
 import { AddInvestmentUseCase } from "../../domain/use-cases/add-investment.use-case";
 import { RegisterPurchaseUseCase } from "../../domain/use-cases/register-purchase.use-case";
 import { GetInvestmentSummaryUseCase } from "../../domain/use-cases/get-investment-summary.use-case";
