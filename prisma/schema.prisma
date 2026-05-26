@@ -317,6 +317,7 @@ model CashTransaction {
   id             String        @id @default(uuid())
   cashRegisterId String?
   type           String        // "ENTRY", "OUTFLOW"
+  category       String?       @default("GENERAL")
   amount         Decimal       @db.Decimal(10, 2)
   description    String
   date           DateTime      @default(now())

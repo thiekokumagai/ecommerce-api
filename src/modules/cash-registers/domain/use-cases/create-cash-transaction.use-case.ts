@@ -7,6 +7,7 @@ export interface CreateCashTransactionInput {
   type: 'ENTRY' | 'OUTFLOW';
   amount: number;
   description: string;
+  category?: string;
 }
 
 @Injectable()
@@ -28,6 +29,7 @@ export class CreateCashTransactionUseCase {
         type: input.type,
         amount: input.amount,
         description: input.description,
+        category: input.category || "GENERAL",
       },
     });
 

@@ -40,12 +40,16 @@ export class GetCashRegisterSummaryUseCase {
 
     let totalEntries = 0;
     let totalOutflows = 0;
+    let motoboyOutflows = 0;
 
     for (const tx of transactions) {
       if (tx.type === 'ENTRY') {
         totalEntries += Number(tx.amount);
       } else if (tx.type === 'OUTFLOW') {
         totalOutflows += Number(tx.amount);
+        if (tx.category === 'MOTOBOY') {
+          motoboyOutflows += Number(tx.amount);
+        }
       }
     }
 
@@ -57,6 +61,7 @@ export class GetCashRegisterSummaryUseCase {
     totalCardFees = Math.round(totalCardFees * 100) / 100;
     totalEntries = Math.round(totalEntries * 100) / 100;
     totalOutflows = Math.round(totalOutflows * 100) / 100;
+    motoboyOutflows = Math.round(motoboyOutflows * 100) / 100;
     totalGross = Math.round(totalGross * 100) / 100;
 
     // Saldo Líquido de Caixa = Faturamento Comercial Bruto + Entradas Manuais - Taxas Cartão - Saídas/Custos Fixos
@@ -70,6 +75,7 @@ export class GetCashRegisterSummaryUseCase {
         totalCardFees,
         totalEntries,
         totalOutflows,
+        motoboyOutflows,
         totalNet,
         totalsByMethod,
         orderCount: orders.length,
