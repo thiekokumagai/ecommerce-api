@@ -13,6 +13,7 @@ import { CashRegistersModule } from './modules/cash-registers/cash-registers.mod
 import { CouponsModule } from './modules/coupons/coupons.module';
 import { FixedCostsModule } from './modules/fixed-costs/fixed-costs.module';
 import { InvestmentsModule } from './modules/investments/investments.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { InvestmentsModule } from './modules/investments/investments.module';
     CouponsModule,
     FixedCostsModule,
     InvestmentsModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}
