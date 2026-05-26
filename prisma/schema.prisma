@@ -328,3 +328,14 @@ model CashTransaction {
 
   @@map("cash_transactions")
 }
+
+model InvestmentTransaction {
+  id          String   @id @default(uuid())
+  type        String   // "ENTRY", "OUTFLOW"
+  amount      Decimal  @db.Decimal(10, 2)
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("investment_transactions")
+}
