@@ -383,6 +383,55 @@ async function main() {
   });
   console.log('Pedido 6 (PIX Com Cupom): #', order6.orderNumber);
 
+  // 12. Pedido 7: Crédito 1x com juros retidos do vendedor (sem repasse ao cliente)
+  // Itens: 70.00, Frete: 15.00
+  // Sem Cupom
+  // Base = 70.00 + 15.00 = 85.00
+  // Sem Juros repassado ao cliente (installmentSurcharge = 0)
+  // Total final/recebido = 85.00
+  // Taxa de cartão retida do vendedor (3.0% de R$ 85.00) = R$ 2.55
+  const order7 = await prisma.order.create({
+    data: {
+      customerName: 'Cliente Simulação Crédito 1x Sem Repasse',
+      customerPhone: '11999999997',
+      itemsTotal: 70.00,
+      freight: 15.00,
+      paymentDiscount: 0,
+      installmentSurcharge: 0,
+      couponDiscount: 0,
+      couponFreightDiscount: 0,
+      receiptDiscount: 0,
+      receiptSurcharge: 0,
+      totalOrder: 85.00,
+      totalReceived: 85.00,
+      cardFee: 2.55,
+      paymentType: 'Na Entrega',
+      paymentMethod: 'Cartão de Crédito',
+      installments: 1,
+      paymentStatus: PaymentStatus.PAID,
+      status: OrderStatus.CONFIRMED,
+      street: 'Rua da Consolação',
+      number: '1500',
+      neighborhood: 'Consolação',
+      city: 'São Paulo',
+      state: 'SP',
+      cep: '01301-100',
+      items: {
+        create: [
+          {
+            productId: productId,
+            productItemId: productItemId,
+            productName: 'Nasty Passion Fruit Lemonade 35mg',
+            price: 70.00,
+            quantity: 1,
+            variation: '35mg',
+          },
+        ],
+      },
+    },
+  });
+  console.log('Pedido 7 (Crédito 1x Sem Repasse ao Cliente): #', order7.orderNumber);
+
   console.log('Todos os dados foram inseridos com sucesso!');
 }
 
