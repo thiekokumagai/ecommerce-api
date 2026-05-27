@@ -268,3 +268,18 @@ Plans:
 Planos:
 
 - [x] 15-01: Módulo de Cupom no Backend e Frontend
+
+---
+
+### Fase 22: Módulo de Clientes
+
+**Objetivo:** Criar e gerenciar a base de clientes. O sistema deve capturar o cliente automaticamente (buscar por telefone ou criar um novo junto com seu endereço) no momento da geração do pedido, vinculando-o ao `Order`.
+**Requisitos**: TBD
+**Depende de:** Fase 21
+**Planos:** 3 planos
+
+Planos:
+
+- [x] 22-01: Atualização do Prisma Schema
+- [x] 22-02: Lógica de Vinculação Automática no Repositório de Pedidos
+- [x] 22-03: Módulo de Clientes (Clean Architecture)

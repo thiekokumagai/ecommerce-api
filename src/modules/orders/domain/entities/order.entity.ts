@@ -28,6 +28,7 @@ export class Order {
   orderNumber: number;
   customerName: string;
   customerPhone: string;
+  customerId?: string | null;
 
   itemsTotal: number;
   freight: number;

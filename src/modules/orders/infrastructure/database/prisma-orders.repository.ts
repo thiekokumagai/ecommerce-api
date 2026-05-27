@@ -20,6 +20,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     return new Order({
       id: record.id,
       orderNumber: record.orderNumber,
+      customerId: record.customerId,
       customerName: record.customerName,
       customerPhone: record.customerPhone,
       itemsTotal: Number(record.itemsTotal),
@@ -200,6 +201,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
 
   async save(order: Order): Promise<Order> {
     const payload = {
+      customerId: order.customerId,
       customerName: order.customerName,
       customerPhone: order.customerPhone,
       itemsTotal: order.itemsTotal,
@@ -327,7 +329,38 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         }
       }
 
+      let customerIdToLink = order.customerId;
+      
+      if (!customerIdToLink && order.customerPhone) {
+        let customer = await tx.customer.findUnique({
+          where: { phone: order.customerPhone }
+        });
+
+        if (!customer) {
+          customer = await tx.customer.create({
+            data: {
+              name: order.customerName,
+              phone: order.customerPhone,
+              addresses: {
+                create: {
+                  street: order.street,
+                  number: order.number,
+                  neighborhood: order.neighborhood,
+                  city: order.city || '',
+                  state: order.state || '',
+                  cep: order.cep || '',
+                  complement: order.complement || '',
+                  isDefault: true,
+                }
+              }
+            }
+          });
+        }
+        customerIdToLink = customer.id;
+      }
+
       const payload = {
+        customerId: customerIdToLink,
         customerName: order.customerName,
         customerPhone: order.customerPhone,
         itemsTotal: order.itemsTotal,

@@ -210,6 +210,38 @@ model Coupon {
   @@map("coupons")
 }
 
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  addresses CustomerAddress[]
+  orders    Order[]
+
+  @@map("customers")
+}
+
+model CustomerAddress {
+  id           String   @id @default(uuid())
+  customerId   String
+  street       String
+  number       String
+  neighborhood String
+  city         String
+  state        String
+  cep          String
+  complement   String?
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("customer_addresses")
+}
+
 enum OrderStatus {
   PENDING
   CONFIRMED
@@ -224,8 +256,12 @@ enum PaymentStatus {
 }
 
 model Order {
-  id            String @id @default(uuid())
-  orderNumber   Int    @unique @default(autoincrement())
+  id          String @id @default(uuid())
+  orderNumber Int    @unique @default(autoincrement())
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
   customerName  String
   customerPhone String
 
@@ -322,25 +358,25 @@ model FixedCost {
 }
 
 model CashTransaction {
-  id             String        @id @default(uuid())
+  id             String   @id @default(uuid())
   cashRegisterId String?
-  type           String        // "ENTRY", "OUTFLOW"
-  category       String?       @default("GENERAL")
-  amount         Decimal       @db.Decimal(10, 2)
+  type           String // "ENTRY", "OUTFLOW"
+  category       String?  @default("GENERAL")
+  amount         Decimal  @db.Decimal(10, 2)
   description    String
-  date           DateTime      @default(now())
+  date           DateTime @default(now())
   fixedCostId    String?
-  createdAt      DateTime      @default(now())
+  createdAt      DateTime @default(now())
 
-  cashRegister   CashRegister? @relation(fields: [cashRegisterId], references: [id], onDelete: SetNull)
-  fixedCost      FixedCost?    @relation(fields: [fixedCostId], references: [id], onDelete: SetNull)
+  cashRegister CashRegister? @relation(fields: [cashRegisterId], references: [id], onDelete: SetNull)
+  fixedCost    FixedCost?    @relation(fields: [fixedCostId], references: [id], onDelete: SetNull)
 
   @@map("cash_transactions")
 }
 
 model InvestmentTransaction {
   id          String   @id @default(uuid())
-  type        String   // "ENTRY", "OUTFLOW"
+  type        String // "ENTRY", "OUTFLOW"
   amount      Decimal  @db.Decimal(10, 2)
   description String?
   createdAt   DateTime @default(now())

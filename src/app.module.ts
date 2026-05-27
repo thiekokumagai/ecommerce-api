@@ -14,6 +14,7 @@ import { CouponsModule } from './modules/coupons/coupons.module';
 import { FixedCostsModule } from './modules/fixed-costs/fixed-costs.module';
 import { InvestmentsModule } from './modules/investments/investments.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { CustomersModule } from './modules/customers/customers.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     FixedCostsModule,
     InvestmentsModule,
     DashboardModule,
+    CustomersModule,
   ],
 })
 export class AppModule {}
