@@ -228,7 +228,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       installments: order.installments,
       paymentDate: order.paymentDate,
       cardFee: order.cardFee,
-      couponId: order.couponId,
+      couponId: order.couponId || undefined,
     };
 
     let record;
@@ -263,7 +263,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
                 variation: item.variation,
               })) ?? [],
           },
-        },
+        } as any,
         include: {
           items: {
             include: {
@@ -356,7 +356,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         installments: order.installments,
         paymentDate: order.paymentDate,
         cardFee: order.cardFee,
-        couponId: order.couponId,
+        couponId: order.couponId || undefined,
       };
 
       const createdOrder = await tx.order.create({
@@ -373,7 +373,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
                 variation: item.variation,
               })) ?? [],
           },
-        },
+        } as any,
         include: {
           items: true,
         },
