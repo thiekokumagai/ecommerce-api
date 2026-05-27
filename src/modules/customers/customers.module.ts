@@ -4,6 +4,7 @@ import { PrismaCustomersRepository } from './infrastructure/database/prisma-cust
 import { ListCustomersUseCase } from './domain/use-cases/list-customers.use-case';
 import { GetCustomerUseCase } from './domain/use-cases/get-customer.use-case';
 import { UpdateCustomerUseCase } from './domain/use-cases/update-customer.use-case';
+import { AddCustomerAddressUseCase } from './domain/use-cases/add-customer-address.use-case';
 
 @Module({
   controllers: [CustomersController],
@@ -11,6 +12,7 @@ import { UpdateCustomerUseCase } from './domain/use-cases/update-customer.use-ca
     ListCustomersUseCase,
     GetCustomerUseCase,
     UpdateCustomerUseCase,
+    AddCustomerAddressUseCase,
     {
       provide: 'ICustomersRepository',
       useClass: PrismaCustomersRepository,

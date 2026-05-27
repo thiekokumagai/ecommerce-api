@@ -24,6 +24,7 @@ export class Customer {
   createdAt: Date;
   updatedAt: Date;
   addresses?: CustomerAddress[];
+  orders?: any[];
 
   constructor(data: Partial<Customer>) {
     Object.assign(this, data);

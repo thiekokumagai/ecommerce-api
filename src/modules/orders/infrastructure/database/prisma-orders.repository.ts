@@ -341,22 +341,54 @@ export class PrismaOrdersRepository implements IOrdersRepository {
             data: {
               name: order.customerName,
               phone: order.customerPhone,
-              addresses: {
-                create: {
-                  street: order.street,
-                  number: order.number,
-                  neighborhood: order.neighborhood,
-                  city: order.city || '',
-                  state: order.state || '',
-                  cep: order.cep || '',
-                  complement: order.complement || '',
-                  isDefault: true,
-                }
-              }
             }
           });
         }
         customerIdToLink = customer.id;
+      }
+
+      // Validação para cadastrar endereço novo por CEP e número
+      if (customerIdToLink && order.cep) {
+        const existingAddress = await tx.customerAddress.findFirst({
+          where: {
+            customerId: customerIdToLink,
+            cep: order.cep,
+            number: order.number,
+          }
+        });
+
+        if (!existingAddress) {
+          // Remove isDefault dos outros
+          await tx.customerAddress.updateMany({
+            where: { customerId: customerIdToLink },
+            data: { isDefault: false }
+          });
+
+          // Cria o novo
+          await tx.customerAddress.create({
+            data: {
+              customerId: customerIdToLink,
+              street: order.street,
+              number: order.number,
+              neighborhood: order.neighborhood,
+              city: order.city || '',
+              state: order.state || '',
+              cep: order.cep || '',
+              complement: order.complement || '',
+              isDefault: true,
+            }
+          });
+        } else if (!existingAddress.isDefault) {
+          // Atualiza para ser o padrão
+          await tx.customerAddress.updateMany({
+            where: { customerId: customerIdToLink },
+            data: { isDefault: false }
+          });
+          await tx.customerAddress.update({
+            where: { id: existingAddress.id },
+            data: { isDefault: true }
+          });
+        }
       }
 
       const payload = {

@@ -15,6 +15,7 @@ export class PrismaCustomersRepository implements ICustomersRepository {
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
       addresses: record.addresses?.map((addr: any) => new CustomerAddress(addr)) || [],
+      orders: record.orders || [],
     });
   }
 
@@ -53,7 +54,12 @@ export class PrismaCustomersRepository implements ICustomersRepository {
   async findById(id: string): Promise<Customer | null> {
     const record = await this.prisma.customer.findUnique({
       where: { id },
-      include: { addresses: true },
+      include: { 
+        addresses: true,
+        orders: {
+          orderBy: { createdAt: 'desc' }
+        }
+      },
     });
     if (!record) return null;
     return this.mapToDomain(record);
@@ -68,6 +74,57 @@ export class PrismaCustomersRepository implements ICustomersRepository {
       },
       include: { addresses: true },
     });
+    return this.mapToDomain(record);
+  }
+
+  async addAddress(id: string, address: any): Promise<Customer> {
+    // Verifica se já existe um endereço com o mesmo CEP e número para não duplicar
+    const existingAddress = await this.prisma.customerAddress.findFirst({
+      where: {
+        customerId: id,
+        cep: address.cep,
+        number: address.number,
+      },
+    });
+
+    // Sempre remove o default dos outros endereços
+    await this.prisma.customerAddress.updateMany({
+      where: { customerId: id },
+      data: { isDefault: false },
+    });
+
+    if (existingAddress) {
+      // Se existir, apenas atualiza para ser o padrão
+      await this.prisma.customerAddress.update({
+        where: { id: existingAddress.id },
+        data: { isDefault: true },
+      });
+    } else {
+      // Se não existir, cria o novo como padrão
+      await this.prisma.customerAddress.create({
+        data: {
+          customerId: id,
+          street: address.street,
+          number: address.number,
+          neighborhood: address.neighborhood,
+          city: address.city,
+          state: address.state,
+          cep: address.cep,
+          complement: address.complement,
+          isDefault: true, // Sempre o novo cadastrado será o padrão
+        },
+      });
+    }
+
+    const record = await this.prisma.customer.findUnique({
+      where: { id },
+      include: { 
+        addresses: true,
+        orders: { orderBy: { createdAt: 'desc' } }
+      },
+    });
+
+    if (!record) throw new Error('Customer not found');
     return this.mapToDomain(record);
   }
 }
