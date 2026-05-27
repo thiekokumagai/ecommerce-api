@@ -1,3 +1,4 @@
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Controller, Get, Put, Param, Body, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { ListCustomersUseCase } from '../../domain/use-cases/list-customers.use-case';
@@ -6,6 +7,7 @@ import { UpdateCustomerUseCase } from '../../domain/use-cases/update-customer.us
 import { UpdateCustomerDto } from '../dtos/update-customer.dto';
 
 @Controller('customers')
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 export class CustomersController {
   constructor(

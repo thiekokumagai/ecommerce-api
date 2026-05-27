@@ -10,7 +10,7 @@ import { AddInvestmentDto } from "./dtos/add-investment.dto";
 import { RegisterPurchaseDto } from "./dtos/register-purchase.dto";
 
 @ApiTags("investments")
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @Controller("investments")
 export class InvestmentsController {

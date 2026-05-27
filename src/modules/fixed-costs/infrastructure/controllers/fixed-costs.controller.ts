@@ -1,3 +1,4 @@
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { CreateFixedCostUseCase } from '../../domain/use-cases/create-fixed-cost.use-case';
 import { ListFixedCostsUseCase } from '../../domain/use-cases/list-fixed-costs.use-case';
@@ -13,6 +14,7 @@ import { CreateCashTransactionDto } from '../dto/create-cash-transaction.dto';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 
 @Controller('fixed-costs')
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 export class FixedCostsController {
   constructor(

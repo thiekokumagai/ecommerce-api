@@ -1,3 +1,4 @@
+import { ApiBearerAuth } from '@nestjs/swagger';
 import {
   Controller,
   Get,
@@ -17,6 +18,7 @@ import { CreateCashTransactionUseCase } from '../../domain/use-cases/create-cash
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 
 @Controller('cash-registers')
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 export class CashRegistersController {
   constructor(
