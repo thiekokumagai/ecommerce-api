@@ -8,7 +8,7 @@ export class VendizapService {
 
   constructor() {
     this.client = axios.create({
-      baseURL: process.env.VENDIZAP_API_URL || 'https://v3.vendizap.com/api',
+      baseURL: process.env.VENDIZAP_API_URL || 'https://app.vendizap.com/api',
       headers: {
         'X-Auth-Id': process.env.VENDIZAP_AUTH_ID || '906795',
         'X-Auth-Secret': process.env.VENDIZAP_AUTH_SECRET || 'GHMla7Nebr#uITLn0jA9tCy?FJx%UBh1'
@@ -18,7 +18,7 @@ export class VendizapService {
 
   async getCategories() {
     try {
-      const response = await this.client.get('/categories');
+      const response = await this.client.get('/categorias');
       return response.data;
     } catch (error) {
       this.logger.error('Error fetching categories from Vendizap', error.message);
@@ -28,7 +28,7 @@ export class VendizapService {
 
   async getProducts() {
     try {
-      const response = await this.client.get('/products');
+      const response = await this.client.get('/produtos');
       return response.data;
     } catch (error) {
       this.logger.error('Error fetching products from Vendizap', error.message);
@@ -38,7 +38,7 @@ export class VendizapService {
 
   async getOrders() {
     try {
-      const response = await this.client.get('/orders');
+      const response = await this.client.get('/pedidos');
       return response.data;
     } catch (error) {
       this.logger.error('Error fetching orders from Vendizap', error.message);

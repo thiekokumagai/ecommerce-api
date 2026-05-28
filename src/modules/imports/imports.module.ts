@@ -6,6 +6,7 @@ import { ImageMigrationService } from './infrastructure/services/image-migration
 import { ImportCategoriesUseCase } from './domain/use-cases/import-categories.use-case';
 import { ImportProductsUseCase } from './domain/use-cases/import-products.use-case';
 import { ImportOrdersUseCase } from './domain/use-cases/import-orders.use-case';
+import { ClearDatabaseUseCase } from './domain/use-cases/clear-database.use-case';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 @Module({
@@ -18,6 +19,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
     ImportCategoriesUseCase,
     ImportProductsUseCase,
     ImportOrdersUseCase,
+    ClearDatabaseUseCase,
   ],
 })
 export class ImportsModule {}

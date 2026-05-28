@@ -1,10 +1,11 @@
-import { Controller, Post, Res, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Post, Delete, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { ImportCategoriesUseCase } from '../../domain/use-cases/import-categories.use-case';
 import { ImportProductsUseCase } from '../../domain/use-cases/import-products.use-case';
 import { ImportOrdersUseCase } from '../../domain/use-cases/import-orders.use-case';
+import { ClearDatabaseUseCase } from '../../domain/use-cases/clear-database.use-case';
 
 @ApiTags('Imports')
 @ApiBearerAuth('access-token')
@@ -15,6 +16,7 @@ export class VendizapImportsController {
     private readonly importCategoriesUseCase: ImportCategoriesUseCase,
     private readonly importProductsUseCase: ImportProductsUseCase,
     private readonly importOrdersUseCase: ImportOrdersUseCase,
+    private readonly clearDatabaseUseCase: ClearDatabaseUseCase,
   ) {}
 
   @Post('categories')
@@ -42,6 +44,16 @@ export class VendizapImportsController {
     try {
       await this.importOrdersUseCase.execute();
       return res.status(HttpStatus.OK).json({ message: 'Pedidos importados com sucesso' });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
+    }
+  }
+
+  @Delete('clear')
+  async clearDatabase(@Res() res: Response) {
+    try {
+      await this.clearDatabaseUseCase.execute();
+      return res.status(HttpStatus.OK).json({ message: 'Banco de dados limpo com sucesso' });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
