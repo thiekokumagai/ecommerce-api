@@ -269,6 +269,16 @@ Planos:
 
 - [x] 15-01: Módulo de Cupom no Backend e Frontend
 
+### Phase 23: Módulo importação vendizap
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 22
+**Plans:** 1/1 plans complete
+
+Plans:
+- [x] TBD (run /gsd-plan-phase 23 to break down) (completed 2026-05-28)
+
 ---
 
 ### Fase 22: Módulo de Clientes

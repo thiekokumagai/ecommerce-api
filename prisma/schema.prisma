@@ -66,6 +66,7 @@ model VariationOption {
 
 model Product {
   id         String    @id @default(uuid())
+  externalId String?   @unique
   title      String
   categoryId String
   deletedAt  DateTime?
@@ -258,6 +259,7 @@ enum PaymentStatus {
 
 model Order {
   id          String @id @default(uuid())
+  externalId  String? @unique
   orderNumber Int    @unique @default(autoincrement())
 
   customerId String?

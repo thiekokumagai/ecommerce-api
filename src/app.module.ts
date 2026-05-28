@@ -15,6 +15,7 @@ import { FixedCostsModule } from './modules/fixed-costs/fixed-costs.module';
 import { InvestmentsModule } from './modules/investments/investments.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { CustomersModule } from './modules/customers/customers.module';
+import { ImportsModule } from './modules/imports/imports.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { CustomersModule } from './modules/customers/customers.module';
     InvestmentsModule,
     DashboardModule,
     CustomersModule,
+    ImportsModule,
   ],
 })
 export class AppModule {}
