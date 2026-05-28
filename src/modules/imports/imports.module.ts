@@ -5,6 +5,7 @@ import { VendizapService } from './infrastructure/services/vendizap.service';
 import { ImageMigrationService } from './infrastructure/services/image-migration.service';
 import { ImportCategoriesUseCase } from './domain/use-cases/import-categories.use-case';
 import { ImportProductsUseCase } from './domain/use-cases/import-products.use-case';
+import { ImportProductImagesUseCase } from './domain/use-cases/import-product-images.use-case';
 import { ImportOrdersUseCase } from './domain/use-cases/import-orders.use-case';
 import { ClearDatabaseUseCase } from './domain/use-cases/clear-database.use-case';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -18,6 +19,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
     ImageMigrationService,
     ImportCategoriesUseCase,
     ImportProductsUseCase,
+    ImportProductImagesUseCase,
     ImportOrdersUseCase,
     ClearDatabaseUseCase,
   ],

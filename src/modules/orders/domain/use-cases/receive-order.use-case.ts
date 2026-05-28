@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { IOrdersRepository } from '../repositories/iorders.repository';
 import { Order, OrderStatus, PaymentStatus } from '../entities/order.entity';
 import { ISettingsRepository } from '../../../settings/domain/repositories/isettings.repository';
@@ -10,19 +14,22 @@ export class ReceiveOrderUseCase {
     private readonly settingsRepository: ISettingsRepository,
   ) {}
 
-  async execute(id: string, payload: {
-    paymentMethod?: string;
-    paymentType?: string;
+  async execute(
+    id: string,
+    payload: {
+      paymentMethod?: string;
+      paymentType?: string;
 
-    paymentDiscount?: number;
-    installmentSurcharge?: number;
-    couponDiscount?: number;
-    couponFreightDiscount?: number;
-    receiptDiscount?: number;
-    receiptSurcharge?: number;
-    totalReceived: number;
-    installments?: number;
-  }): Promise<Order> {
+      paymentDiscount?: number;
+      installmentSurcharge?: number;
+      couponDiscount?: number;
+      couponFreightDiscount?: number;
+      receiptDiscount?: number;
+      receiptSurcharge?: number;
+      totalReceived: number;
+      installments?: number;
+    },
+  ): Promise<Order> {
     const order = await this.ordersRepository.findById(id);
     if (!order) {
       throw new NotFoundException(`Order with ID ${id} not found`);
@@ -36,18 +43,23 @@ export class ReceiveOrderUseCase {
     if (payload.paymentType) {
       order.paymentType = payload.paymentType;
     }
-    
 
     // Assign new fields
-    if (payload.paymentDiscount !== undefined) order.paymentDiscount = payload.paymentDiscount;
-    if (payload.installmentSurcharge !== undefined) order.installmentSurcharge = payload.installmentSurcharge;
-    if (payload.couponDiscount !== undefined) order.couponDiscount = payload.couponDiscount;
-    if (payload.couponFreightDiscount !== undefined) order.couponFreightDiscount = payload.couponFreightDiscount;
-    if (payload.receiptDiscount !== undefined) order.receiptDiscount = payload.receiptDiscount;
-    if (payload.receiptSurcharge !== undefined) order.receiptSurcharge = payload.receiptSurcharge;
+    if (payload.paymentDiscount !== undefined)
+      order.paymentDiscount = payload.paymentDiscount;
+    if (payload.installmentSurcharge !== undefined)
+      order.installmentSurcharge = payload.installmentSurcharge;
+    if (payload.couponDiscount !== undefined)
+      order.couponDiscount = payload.couponDiscount;
+    if (payload.couponFreightDiscount !== undefined)
+      order.couponFreightDiscount = payload.couponFreightDiscount;
+    if (payload.receiptDiscount !== undefined)
+      order.receiptDiscount = payload.receiptDiscount;
+    if (payload.receiptSurcharge !== undefined)
+      order.receiptSurcharge = payload.receiptSurcharge;
 
     order.totalReceived = payload.totalReceived;
-    
+
     const itemsTotal = Number(order.itemsTotal) || 0;
     const freight = Number(order.freight) || 0;
     const pDiscount = Number(order.paymentDiscount) || 0;
@@ -56,15 +68,23 @@ export class ReceiveOrderUseCase {
     const cFDiscount = Number(order.couponFreightDiscount) || 0;
     const iSurcharge = Number(order.installmentSurcharge) || 0;
     const rSurcharge = Number(order.receiptSurcharge) || 0;
-    
-    order.totalOrder = Math.round((
-      itemsTotal + freight + iSurcharge + rSurcharge 
-      - pDiscount - rDiscount - cDiscount - cFDiscount
-    ) * 100) / 100;
-    
+
+    order.totalOrder =
+      Math.round(
+        (itemsTotal +
+          freight +
+          iSurcharge +
+          rSurcharge -
+          pDiscount -
+          rDiscount -
+          cDiscount -
+          cFDiscount) *
+          100,
+      ) / 100;
+
     order.paymentStatus = PaymentStatus.PAID;
     order.paymentDate = new Date();
-    
+
     if (payload.installments) {
       order.installments = payload.installments;
     } else {
@@ -76,16 +96,16 @@ export class ReceiveOrderUseCase {
     const methodMap: Record<string, string> = {
       'Cartão de Crédito': 'credit',
       'Cartão de Débito': 'debit',
-      'PIX': 'pix',
-      'Dinheiro': 'cash',
+      PIX: 'pix',
+      Dinheiro: 'cash',
     };
 
     const normalizedMethod = methodMap[order.paymentMethod];
     if (normalizedMethod) {
       const settings = await this.settingsRepository.get();
       if (settings && Array.isArray(settings.paymentRules)) {
-        const rules = settings.paymentRules as any[];
-        
+        const rules = settings.paymentRules;
+
         let matchingRule: any = null;
         if (normalizedMethod === 'credit') {
           // Para crédito, busca por parcelaMin e parcelaMax

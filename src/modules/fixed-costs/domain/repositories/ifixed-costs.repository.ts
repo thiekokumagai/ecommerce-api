@@ -22,7 +22,7 @@ export abstract class IFixedCostsRepository {
     },
   ): Promise<FixedCost>;
   abstract delete(id: string): Promise<FixedCost>;
-  
+
   abstract createTransaction(data: {
     cashRegisterId: string | null;
     type: string;
@@ -31,9 +31,9 @@ export abstract class IFixedCostsRepository {
     fixedCostId?: string | null;
     category?: string | null;
   }): Promise<CashTransaction>;
-  
+
   abstract findTransactionById(id: string): Promise<CashTransaction | null>;
   abstract deleteTransaction(id: string): Promise<CashTransaction>;
-  
+
   abstract findActiveCashRegister(): Promise<{ id: string } | null>;
 }

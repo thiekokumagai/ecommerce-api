@@ -13,4 +13,3 @@ export class ListOrdersUseCase {
     return this.ordersRepository.findMany(filters);
   }
 }
-

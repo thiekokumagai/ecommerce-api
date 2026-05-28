@@ -18,9 +18,13 @@ export class CreateCashTransactionUseCase {
   ) {}
 
   async execute(input: CreateCashTransactionInput): Promise<any> {
-    const register = await this.cashRegistersRepo.findById(input.cashRegisterId);
+    const register = await this.cashRegistersRepo.findById(
+      input.cashRegisterId,
+    );
     if (!register) {
-      throw new NotFoundException(`CashRegister with ID ${input.cashRegisterId} not found`);
+      throw new NotFoundException(
+        `CashRegister with ID ${input.cashRegisterId} not found`,
+      );
     }
 
     const tx = await this.prisma.cashTransaction.create({
@@ -29,7 +33,7 @@ export class CreateCashTransactionUseCase {
         type: input.type,
         amount: input.amount,
         description: input.description,
-        category: input.category || "GENERAL",
+        category: input.category || 'GENERAL',
       },
     });
 

@@ -10,7 +10,6 @@ export interface OrderFilters {
   limit?: number;
 }
 
-
 export interface PaginatedOrders {
   data: Order[];
   meta: {
@@ -24,10 +23,12 @@ export interface PaginatedOrders {
 export abstract class IOrdersRepository {
   abstract findMany(filters: OrderFilters): Promise<PaginatedOrders>;
   abstract findById(id: string): Promise<Order | null>;
-  abstract findPaidOrdersByPaymentDateRange(startDate: Date, endDate: Date): Promise<Order[]>;
+  abstract findPaidOrdersByPaymentDateRange(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<Order[]>;
   abstract updateStatus(id: string, status: OrderStatus): Promise<void>;
   abstract save(order: Order): Promise<Order>;
   abstract saveWithStockDecrement(order: Order): Promise<Order>;
   abstract cancelAndRestoreStock(id: string): Promise<Order>;
 }
-

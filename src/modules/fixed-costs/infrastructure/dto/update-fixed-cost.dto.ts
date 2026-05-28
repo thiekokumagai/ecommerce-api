@@ -1,4 +1,12 @@
-import { IsString, IsNumber, IsOptional, IsBoolean, IsInt, Min, MinLength } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsBoolean,
+  IsInt,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class UpdateFixedCostDto {
   @IsString()

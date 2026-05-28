@@ -6,7 +6,10 @@ import { CashRegister } from '../entities/cash-register.entity';
 export class UpdateCashRegisterUseCase {
   constructor(private readonly repo: ICashRegistersRepository) {}
 
-  async execute(id: string, data: Partial<CashRegister>): Promise<CashRegister> {
+  async execute(
+    id: string,
+    data: Partial<CashRegister>,
+  ): Promise<CashRegister> {
     const existing = await this.repo.findById(id);
     if (!existing) {
       throw new NotFoundException(`CashRegister with ID ${id} not found`);

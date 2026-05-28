@@ -60,7 +60,7 @@ describe('ReceiveOrderUseCase', () => {
 
     receiveOrderUseCase = new ReceiveOrderUseCase(
       mockOrdersRepository,
-      mockSettingsRepository
+      mockSettingsRepository,
     );
   });
 
@@ -68,16 +68,19 @@ describe('ReceiveOrderUseCase', () => {
     mockOrdersRepository.findById.mockResolvedValue(null);
 
     await expect(
-      receiveOrderUseCase.execute('invalid-id', { totalReceived: 110 })
+      receiveOrderUseCase.execute('invalid-id', { totalReceived: 110 }),
     ).rejects.toThrow(NotFoundException);
   });
 
   it('should throw BadRequestException if order is cancelled', async () => {
-    const cancelledOrder = new Order({ ...mockOrder, status: OrderStatus.CANCELLED });
+    const cancelledOrder = new Order({
+      ...mockOrder,
+      status: OrderStatus.CANCELLED,
+    });
     mockOrdersRepository.findById.mockResolvedValue(cancelledOrder);
 
     await expect(
-      receiveOrderUseCase.execute('order-1', { totalReceived: 110 })
+      receiveOrderUseCase.execute('order-1', { totalReceived: 110 }),
     ).rejects.toThrow(BadRequestException);
   });
 

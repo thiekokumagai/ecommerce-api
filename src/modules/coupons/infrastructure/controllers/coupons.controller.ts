@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Put, Patch, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { CreateCouponUseCase } from '../../domain/use-cases/create-coupon.use-case';
 import { UpdateCouponUseCase } from '../../domain/use-cases/update-coupon.use-case';
 import { ListCouponsUseCase } from '../../domain/use-cases/list-coupons.use-case';
@@ -45,7 +54,10 @@ export class CouponsController {
 
   @Post('validate')
   @ApiOperation({ summary: 'Validate a coupon' })
-  async validate(@Body('title') title: string, @Body('orderTotal') orderTotal: number) {
+  async validate(
+    @Body('title') title: string,
+    @Body('orderTotal') orderTotal: number,
+  ) {
     return this.validateCouponUseCase.execute({ title, orderTotal });
   }
 }

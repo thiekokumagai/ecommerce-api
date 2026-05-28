@@ -45,10 +45,12 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       cep: record.cep,
       complement: record.complement,
       couponId: record.couponId,
-      coupon: record.coupon ? {
-        title: record.coupon.title,
-        type: record.coupon.type,
-      } : null,
+      coupon: record.coupon
+        ? {
+            title: record.coupon.title,
+            type: record.coupon.type,
+          }
+        : null,
       status: record.status as OrderStatus,
       paymentStatus: record.paymentStatus as PaymentStatus,
       installments: record.installments,
@@ -59,7 +61,9 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         record.items?.map((item: any) => {
           let imageUrl = undefined;
           if (item.product?.images?.length > 0) {
-            const mainImage = item.product.images.find((img: any) => img.isMain) || item.product.images[0];
+            const mainImage =
+              item.product.images.find((img: any) => img.isMain) ||
+              item.product.images[0];
             imageUrl = mainImage.url;
           }
           return {
@@ -109,7 +113,6 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       }
     }
 
-
     // Default pagination params
     const page = filters.page ? Math.max(1, Number(filters.page)) : 1;
     const limit = filters.limit ? Math.max(1, Number(filters.limit)) : 10;
@@ -151,7 +154,10 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     };
   }
 
-  async findPaidOrdersByPaymentDateRange(startDate: Date, endDate: Date): Promise<Order[]> {
+  async findPaidOrdersByPaymentDateRange(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<Order[]> {
     const records = await this.prisma.order.findMany({
       where: {
         paymentStatus: 'PAID',
@@ -169,7 +175,6 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     });
     return records.map((record) => this.mapToDomain(record));
   }
-
 
   async findById(id: string): Promise<Order | null> {
     const record = await this.prisma.order.findUnique({
@@ -330,10 +335,10 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       }
 
       let customerIdToLink = order.customerId;
-      
+
       if (!customerIdToLink && order.customerPhone) {
         let customer = await tx.customer.findUnique({
-          where: { phone: order.customerPhone }
+          where: { phone: order.customerPhone },
         });
 
         if (!customer) {
@@ -341,7 +346,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
             data: {
               name: order.customerName,
               phone: order.customerPhone,
-            }
+            },
           });
         }
         customerIdToLink = customer.id;
@@ -354,14 +359,14 @@ export class PrismaOrdersRepository implements IOrdersRepository {
             customerId: customerIdToLink,
             cep: order.cep,
             number: order.number,
-          }
+          },
         });
 
         if (!existingAddress) {
           // Remove isDefault dos outros
           await tx.customerAddress.updateMany({
             where: { customerId: customerIdToLink },
-            data: { isDefault: false }
+            data: { isDefault: false },
           });
 
           // Cria o novo
@@ -376,17 +381,17 @@ export class PrismaOrdersRepository implements IOrdersRepository {
               cep: order.cep || '',
               complement: order.complement || '',
               isDefault: true,
-            }
+            },
           });
         } else if (!existingAddress.isDefault) {
           // Atualiza para ser o padrão
           await tx.customerAddress.updateMany({
             where: { customerId: customerIdToLink },
-            data: { isDefault: false }
+            data: { isDefault: false },
           });
           await tx.customerAddress.update({
             where: { id: existingAddress.id },
-            data: { isDefault: true }
+            data: { isDefault: true },
           });
         }
       }

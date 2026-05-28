@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { IFixedCostsRepository } from '../repositories/ifixed-costs.repository';
 
 @Injectable()
@@ -13,8 +17,13 @@ export class DeleteCashTransactionUseCase {
 
     if (transaction.cashRegisterId) {
       const activeCashRegister = await this.repository.findActiveCashRegister();
-      if (!activeCashRegister || activeCashRegister.id !== transaction.cashRegisterId) {
-        throw new BadRequestException('Cannot delete transaction of a closed cash register');
+      if (
+        !activeCashRegister ||
+        activeCashRegister.id !== transaction.cashRegisterId
+      ) {
+        throw new BadRequestException(
+          'Cannot delete transaction of a closed cash register',
+        );
       }
     }
 

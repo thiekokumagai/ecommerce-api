@@ -1,9 +1,18 @@
-import { Controller, Post, Delete, Res, HttpStatus, UseGuards } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
+import {
+  Controller,
+  Post,
+  Delete,
+  Res,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { ImportCategoriesUseCase } from '../../domain/use-cases/import-categories.use-case';
 import { ImportProductsUseCase } from '../../domain/use-cases/import-products.use-case';
+import { ImportProductImagesUseCase } from '../../domain/use-cases/import-product-images.use-case';
 import { ImportOrdersUseCase } from '../../domain/use-cases/import-orders.use-case';
 import { ClearDatabaseUseCase } from '../../domain/use-cases/clear-database.use-case';
 
@@ -15,6 +24,7 @@ export class VendizapImportsController {
   constructor(
     private readonly importCategoriesUseCase: ImportCategoriesUseCase,
     private readonly importProductsUseCase: ImportProductsUseCase,
+    private readonly importProductImagesUseCase: ImportProductImagesUseCase,
     private readonly importOrdersUseCase: ImportOrdersUseCase,
     private readonly clearDatabaseUseCase: ClearDatabaseUseCase,
   ) {}
@@ -23,9 +33,13 @@ export class VendizapImportsController {
   async importCategories(@Res() res: Response) {
     try {
       await this.importCategoriesUseCase.execute();
-      return res.status(HttpStatus.OK).json({ message: 'Categorias importadas com sucesso' });
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'Categorias importadas com sucesso' });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     }
   }
 
@@ -33,9 +47,27 @@ export class VendizapImportsController {
   async importProducts(@Res() res: Response) {
     try {
       await this.importProductsUseCase.execute();
-      return res.status(HttpStatus.OK).json({ message: 'Produtos importados com sucesso' });
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'Produtos importados com sucesso' });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
+    }
+  }
+
+  @Post('products/images')
+  async importProductImages(@Res() res: Response) {
+    try {
+      await this.importProductImagesUseCase.execute();
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'Imagens de produtos importadas com sucesso' });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     }
   }
 
@@ -43,9 +75,13 @@ export class VendizapImportsController {
   async importOrders(@Res() res: Response) {
     try {
       await this.importOrdersUseCase.execute();
-      return res.status(HttpStatus.OK).json({ message: 'Pedidos importados com sucesso' });
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'Pedidos importados com sucesso' });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     }
   }
 
@@ -53,9 +89,13 @@ export class VendizapImportsController {
   async clearDatabase(@Res() res: Response) {
     try {
       await this.clearDatabaseUseCase.execute();
-      return res.status(HttpStatus.OK).json({ message: 'Banco de dados limpo com sucesso' });
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'Banco de dados limpo com sucesso' });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     }
   }
 }

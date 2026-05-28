@@ -23,13 +23,17 @@ export class CreateCouponUseCase {
   ) {}
 
   async execute(input: CreateCouponInput): Promise<Coupon> {
-    const existingCoupon = await this.couponsRepository.findByTitle(input.title);
+    const existingCoupon = await this.couponsRepository.findByTitle(
+      input.title,
+    );
     if (existingCoupon) {
       throw new BadRequestException('Já existe um cupom com este título.');
     }
 
     if (input.type !== DiscountType.FREE_SHIPPING && !input.value) {
-      throw new BadRequestException('Cupons de valor ou porcentagem precisam ter um valor definido.');
+      throw new BadRequestException(
+        'Cupons de valor ou porcentagem precisam ter um valor definido.',
+      );
     }
 
     const coupon = new Coupon({
@@ -37,7 +41,9 @@ export class CreateCouponUseCase {
       status: input.status ?? true,
       type: input.type,
       value: input.value,
-      validUntilDate: input.validUntilDate ? new Date(input.validUntilDate) : undefined,
+      validUntilDate: input.validUntilDate
+        ? new Date(input.validUntilDate)
+        : undefined,
       startTime: input.startTime ? new Date(input.startTime) : undefined,
       endTime: input.endTime ? new Date(input.endTime) : undefined,
       maxUses: input.maxUses,

@@ -31,10 +31,15 @@ export class MinioService implements OnModuleInit {
   }
 
   private async ensureBucket() {
-    const exists = await this.client.bucketExists(this.bucket);
+    try {
+      const exists = await this.client.bucketExists(this.bucket);
 
-    if (!exists) {
-      await this.client.makeBucket(this.bucket, 'us-east-1');
+      if (!exists) {
+        await this.client.makeBucket(this.bucket, 'us-east-1');
+      }
+    } catch (error) {
+      console.error(`[MinioService] Error checking/creating bucket: ${error.message}`);
+      // Don't crash the application if MinIO is temporarily unavailable (e.g. waking up on Railway)
     }
   }
 

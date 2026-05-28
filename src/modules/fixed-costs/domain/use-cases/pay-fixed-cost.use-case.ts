@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { CashTransaction } from '../entities/cash-transaction.entity';
 import { IFixedCostsRepository } from '../repositories/ifixed-costs.repository';
 
@@ -16,14 +20,18 @@ export class PayFixedCostUseCase {
   async execute(input: PayFixedCostInput): Promise<CashTransaction> {
     const fixedCost = await this.repository.findById(input.fixedCostId);
     if (!fixedCost) {
-      throw new NotFoundException(`FixedCost with ID ${input.fixedCostId} not found`);
+      throw new NotFoundException(
+        `FixedCost with ID ${input.fixedCostId} not found`,
+      );
     }
 
     let registerId = input.cashRegisterId;
     if (!registerId) {
       const activeRegister = await this.repository.findActiveCashRegister();
       if (!activeRegister) {
-        throw new BadRequestException('Nenhum caixa ativo encontrado para este pagamento');
+        throw new BadRequestException(
+          'Nenhum caixa ativo encontrado para este pagamento',
+        );
       }
       registerId = activeRegister.id;
     }

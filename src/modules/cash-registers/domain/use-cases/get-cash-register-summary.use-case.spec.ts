@@ -54,18 +54,26 @@ describe('GetCashRegisterSummaryUseCase', () => {
       },
     };
 
-    useCase = new GetCashRegisterSummaryUseCase(mockCashRepo, mockOrdersRepo, mockPrisma as any);
+    useCase = new GetCashRegisterSummaryUseCase(
+      mockCashRepo,
+      mockOrdersRepo,
+      mockPrisma,
+    );
   });
 
   it('should throw NotFoundException if cash register does not exist', async () => {
     mockCashRepo.findById.mockResolvedValue(null);
 
-    await expect(useCase.execute('invalid-id')).rejects.toThrow(NotFoundException);
+    await expect(useCase.execute('invalid-id')).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('should calculate gross, card fees, net, and totals by method', async () => {
     mockCashRepo.findById.mockResolvedValue(mockRegister);
-    mockOrdersRepo.findPaidOrdersByPaymentDateRange.mockResolvedValue(mockOrders);
+    mockOrdersRepo.findPaidOrdersByPaymentDateRange.mockResolvedValue(
+      mockOrders,
+    );
 
     const result = await useCase.execute('register-1');
 
@@ -80,13 +88,12 @@ describe('GetCashRegisterSummaryUseCase', () => {
       orderCount: 2,
       totalsByMethod: {
         'Cartão de Crédito': 100,
-        'PIX': 50,
+        PIX: 50,
       },
     });
 
-    expect(mockOrdersRepo.findPaidOrdersByPaymentDateRange).toHaveBeenCalledWith(
-      mockRegister.startDate,
-      mockRegister.endDate
-    );
+    expect(
+      mockOrdersRepo.findPaidOrdersByPaymentDateRange,
+    ).toHaveBeenCalledWith(mockRegister.startDate, mockRegister.endDate);
   });
 });

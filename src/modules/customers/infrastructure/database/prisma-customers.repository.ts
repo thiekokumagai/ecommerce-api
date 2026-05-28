@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../../prisma/prisma.service';
-import { Customer, CustomerAddress } from '../../domain/entities/customer.entity';
-import { ICustomersRepository, CustomerFilters, PaginatedCustomers } from '../../domain/repositories/icustomers.repository';
+import {
+  Customer,
+  CustomerAddress,
+} from '../../domain/entities/customer.entity';
+import {
+  ICustomersRepository,
+  CustomerFilters,
+  PaginatedCustomers,
+} from '../../domain/repositories/icustomers.repository';
 
 @Injectable()
 export class PrismaCustomersRepository implements ICustomersRepository {
@@ -14,7 +21,8 @@ export class PrismaCustomersRepository implements ICustomersRepository {
       phone: record.phone,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
-      addresses: record.addresses?.map((addr: any) => new CustomerAddress(addr)) || [],
+      addresses:
+        record.addresses?.map((addr: any) => new CustomerAddress(addr)) || [],
       orders: record.orders || [],
     });
   }
@@ -54,11 +62,11 @@ export class PrismaCustomersRepository implements ICustomersRepository {
   async findById(id: string): Promise<Customer | null> {
     const record = await this.prisma.customer.findUnique({
       where: { id },
-      include: { 
+      include: {
         addresses: true,
         orders: {
-          orderBy: { createdAt: 'desc' }
-        }
+          orderBy: { createdAt: 'desc' },
+        },
       },
     });
     if (!record) return null;
@@ -118,9 +126,9 @@ export class PrismaCustomersRepository implements ICustomersRepository {
 
     const record = await this.prisma.customer.findUnique({
       where: { id },
-      include: { 
+      include: {
         addresses: true,
-        orders: { orderBy: { createdAt: 'desc' } }
+        orders: { orderBy: { createdAt: 'desc' } },
       },
     });
 

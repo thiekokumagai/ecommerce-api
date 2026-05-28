@@ -1,5 +1,14 @@
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateFixedCostUseCase } from '../../domain/use-cases/create-fixed-cost.use-case';
 import { ListFixedCostsUseCase } from '../../domain/use-cases/list-fixed-costs.use-case';
 import { UpdateFixedCostUseCase } from '../../domain/use-cases/update-fixed-cost.use-case';

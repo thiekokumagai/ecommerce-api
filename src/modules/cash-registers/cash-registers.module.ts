@@ -26,9 +26,6 @@ import { CashRegistersController } from './infrastructure/controllers/cash-regis
     GetCashRegisterSummaryUseCase,
     CreateCashTransactionUseCase,
   ],
-  exports: [
-    ICashRegistersRepository,
-    CreateCashTransactionUseCase,
-  ],
+  exports: [ICashRegistersRepository, CreateCashTransactionUseCase],
 })
 export class CashRegistersModule {}

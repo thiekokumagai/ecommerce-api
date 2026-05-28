@@ -81,7 +81,9 @@ export class PrismaCouponsRepository implements ICouponsRepository {
       endTime: data.endTime,
       maxUses: data.maxUses,
       currentUses: data.currentUses,
-      minOrderValue: data.minOrderValue ? Number(data.minOrderValue) : undefined,
+      minOrderValue: data.minOrderValue
+        ? Number(data.minOrderValue)
+        : undefined,
       applyToPromotionalItems: data.applyToPromotionalItems,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,

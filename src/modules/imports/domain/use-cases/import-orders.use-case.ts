@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 import { Injectable, Logger } from '@nestjs/common';
 import { VendizapService } from '../../infrastructure/services/vendizap.service';
 import { PrismaService } from '../../../../../prisma/prisma.service';
@@ -14,8 +15,8 @@ export class ImportOrdersUseCase {
   async execute() {
     this.logger.log('Starting orders import from Vendizap');
     const data = await this.vendizapService.getOrders();
-    
-    for (const item of (data.data || [])) {
+
+    for (const item of data.data || []) {
       try {
         // Customer upsert logic by phone
         const customerPhone = item.customer_phone || `NO-PHONE-${item.id}`;
@@ -24,8 +25,8 @@ export class ImportOrdersUseCase {
           update: { name: item.customer_name || 'Imported Customer' },
           create: {
             phone: customerPhone,
-            name: item.customer_name || 'Imported Customer'
-          }
+            name: item.customer_name || 'Imported Customer',
+          },
         });
 
         // Upsert order
@@ -53,13 +54,13 @@ export class ImportOrdersUseCase {
             cep: item.cep || '',
             status: 'COMPLETED',
             paymentStatus: 'PAID',
-          }
+          },
         });
       } catch (error) {
         this.logger.error(`Failed to import order ${item.id}`, error);
       }
     }
-    
+
     this.logger.log('Finished orders import');
   }
 }

@@ -1,6 +1,6 @@
 export class InvestmentTransaction {
   id: string;
-  type: "ENTRY" | "OUTFLOW";
+  type: 'ENTRY' | 'OUTFLOW';
   amount: number;
   description?: string;
   createdAt: Date;

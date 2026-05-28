@@ -1,5 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { IInvestmentsRepository, InvestmentSummary } from "../repositories/iinvestments.repository";
+import { Injectable } from '@nestjs/common';
+import {
+  IInvestmentsRepository,
+  InvestmentSummary,
+} from '../repositories/iinvestments.repository';
 
 @Injectable()
 export class GetInvestmentSummaryUseCase {

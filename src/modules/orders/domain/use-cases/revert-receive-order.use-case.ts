@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { IOrdersRepository } from '../repositories/iorders.repository';
 import { Order, PaymentStatus } from '../entities/order.entity';
 
@@ -20,7 +24,7 @@ export class RevertReceiveOrderUseCase {
     order.paymentDiscount = 0;
     order.installmentSurcharge = 0;
     order.cardFee = 0;
-    
+
     return await this.ordersRepository.save(order);
   }
 }

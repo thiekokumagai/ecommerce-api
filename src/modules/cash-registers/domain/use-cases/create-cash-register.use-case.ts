@@ -6,7 +6,11 @@ import { CashRegister } from '../entities/cash-register.entity';
 export class CreateCashRegisterUseCase {
   constructor(private readonly repo: ICashRegistersRepository) {}
 
-  async execute(data: { title: string; startDate: Date; endDate: Date }): Promise<CashRegister> {
+  async execute(data: {
+    title: string;
+    startDate: Date;
+    endDate: Date;
+  }): Promise<CashRegister> {
     return await this.repo.create(data);
   }
 }

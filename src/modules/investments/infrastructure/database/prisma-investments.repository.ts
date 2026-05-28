@@ -1,13 +1,20 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../../../../../prisma/prisma.service";
-import { IInvestmentsRepository, InvestmentSummary } from "../../domain/repositories/iinvestments.repository";
-import { InvestmentTransaction } from "../../domain/entities/investment-transaction.entity";
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../../../../prisma/prisma.service';
+import {
+  IInvestmentsRepository,
+  InvestmentSummary,
+} from '../../domain/repositories/iinvestments.repository';
+import { InvestmentTransaction } from '../../domain/entities/investment-transaction.entity';
 
 @Injectable()
 export class PrismaInvestmentsRepository implements IInvestmentsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: { type: "ENTRY" | "OUTFLOW"; amount: number; description?: string }): Promise<InvestmentTransaction> {
+  async create(data: {
+    type: 'ENTRY' | 'OUTFLOW';
+    amount: number;
+    description?: string;
+  }): Promise<InvestmentTransaction> {
     const raw = await this.prisma.investmentTransaction.create({
       data: {
         type: data.type,
@@ -19,14 +26,14 @@ export class PrismaInvestmentsRepository implements IInvestmentsRepository {
     return new InvestmentTransaction({
       ...raw,
       description: raw.description ?? undefined,
-      type: raw.type as "ENTRY" | "OUTFLOW",
+      type: raw.type as 'ENTRY' | 'OUTFLOW',
       amount: Number(raw.amount),
     });
   }
 
   async findAll(): Promise<InvestmentTransaction[]> {
     const raw = await this.prisma.investmentTransaction.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     });
 
     return raw.map(
@@ -34,9 +41,9 @@ export class PrismaInvestmentsRepository implements IInvestmentsRepository {
         new InvestmentTransaction({
           ...r,
           description: r.description ?? undefined,
-          type: r.type as "ENTRY" | "OUTFLOW",
+          type: r.type as 'ENTRY' | 'OUTFLOW',
           amount: Number(r.amount),
-        })
+        }),
     );
   }
 
@@ -44,11 +51,11 @@ export class PrismaInvestmentsRepository implements IInvestmentsRepository {
     const transactions = await this.prisma.investmentTransaction.findMany();
 
     const totalEntries = transactions
-      .filter((t) => t.type === "ENTRY")
+      .filter((t) => t.type === 'ENTRY')
       .reduce((sum, t) => sum + Number(t.amount), 0);
 
     const totalOutflows = transactions
-      .filter((t) => t.type === "OUTFLOW")
+      .filter((t) => t.type === 'OUTFLOW')
       .reduce((sum, t) => sum + Number(t.amount), 0);
 
     const totalBalance = totalEntries - totalOutflows;

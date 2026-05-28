@@ -1,5 +1,10 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { GetDashboardStatsUseCase } from '../../domain/use-cases/get-dashboard-stats.use-case';
 
@@ -8,10 +13,14 @@ import { GetDashboardStatsUseCase } from '../../domain/use-cases/get-dashboard-s
 @UseGuards(JwtAuthGuard)
 @Controller('dashboard')
 export class DashboardController {
-  constructor(private readonly getDashboardStatsUseCase: GetDashboardStatsUseCase) {}
+  constructor(
+    private readonly getDashboardStatsUseCase: GetDashboardStatsUseCase,
+  ) {}
 
   @Get('stats')
-  @ApiOperation({ summary: 'Obter estatísticas consolidadas e detalhadas para o dashboard' })
+  @ApiOperation({
+    summary: 'Obter estatísticas consolidadas e detalhadas para o dashboard',
+  })
   @ApiResponse({
     status: 200,
     description: 'Estatísticas obtidas com sucesso',

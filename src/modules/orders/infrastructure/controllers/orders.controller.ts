@@ -107,17 +107,17 @@ export class OrdersController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Receber pagamento de um pedido' })
   @ApiResponse({ status: 200, description: 'Pagamento recebido com sucesso' })
-  async receive(
-    @Param('id') id: string,
-    @Body() body: ReceiveOrderDto, 
-  ) {
+  async receive(@Param('id') id: string, @Body() body: ReceiveOrderDto) {
     return this.receiveOrderUseCase.execute(id, body);
   }
 
   @Post(':id/revert-receive')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reverter recebimento de pagamento de um pedido' })
-  @ApiResponse({ status: 200, description: 'Recebimento revertido com sucesso' })
+  @ApiResponse({
+    status: 200,
+    description: 'Recebimento revertido com sucesso',
+  })
   async revertReceive(@Param('id') id: string) {
     return this.revertReceiveOrderUseCase.execute(id);
   }

@@ -13,18 +13,20 @@ export class CreateOrderUseCase {
     private readonly couponsRepository: ICouponsRepository,
   ) {}
 
-  async execute(data: Partial<Order> & { couponTitle?: string }): Promise<Order> {
+  async execute(
+    data: Partial<Order> & { couponTitle?: string },
+  ): Promise<Order> {
     try {
-
       let couponId: string | undefined = undefined;
       let couponDiscountValue = Number(data.couponDiscount) || 0;
       let couponFreightDiscountValue = Number(data.couponFreightDiscount) || 0;
 
       if (data.couponTitle) {
-        const { coupon, discountAmount } = await this.validateCouponUseCase.execute({
-          title: data.couponTitle,
-          orderTotal: Number(data.itemsTotal) || 0,
-        });
+        const { coupon, discountAmount } =
+          await this.validateCouponUseCase.execute({
+            title: data.couponTitle,
+            orderTotal: Number(data.itemsTotal) || 0,
+          });
 
         couponId = coupon.id;
         if (coupon.type === 'FREE_SHIPPING') {
@@ -53,16 +55,27 @@ export class CreateOrderUseCase {
       const cFDiscount = Number(order.couponFreightDiscount) || 0;
 
       // Mantemos suporte aos campos legados se ainda chegarem
-      order.totalOrder = Math.round(
-        (itemsTotal + freight + installmentSurcharge + receiptSurcharge
-          - paymentDiscount - receiptDiscount - cDiscount - cFDiscount) * 100
-      ) / 100;
-      const savedOrder = await this.ordersRepository.saveWithStockDecrement(order);
+      order.totalOrder =
+        Math.round(
+          (itemsTotal +
+            freight +
+            installmentSurcharge +
+            receiptSurcharge -
+            paymentDiscount -
+            receiptDiscount -
+            cDiscount -
+            cFDiscount) *
+            100,
+        ) / 100;
+      const savedOrder =
+        await this.ordersRepository.saveWithStockDecrement(order);
 
       if (couponId) {
         const coupon = await this.couponsRepository.findById(couponId);
         if (coupon) {
-          await this.couponsRepository.update(couponId, { currentUses: coupon.currentUses + 1 });
+          await this.couponsRepository.update(couponId, {
+            currentUses: coupon.currentUses + 1,
+          });
         }
       }
 

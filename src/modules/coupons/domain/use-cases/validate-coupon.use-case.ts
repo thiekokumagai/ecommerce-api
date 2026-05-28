@@ -20,8 +20,10 @@ export class ValidateCouponUseCase {
   ) {}
 
   async execute(input: ValidateCouponInput): Promise<ValidateCouponOutput> {
-    const coupon = await this.couponsRepository.findByTitle(input.title.toUpperCase());
-    
+    const coupon = await this.couponsRepository.findByTitle(
+      input.title.toUpperCase(),
+    );
+
     if (!coupon) {
       throw new BadRequestException('Cupom inválido ou não encontrado.');
     }
@@ -35,11 +37,13 @@ export class ValidateCouponUseCase {
     }
 
     if (coupon.minOrderValue && input.orderTotal < coupon.minOrderValue) {
-      throw new BadRequestException(`O valor mínimo para usar este cupom é R$ ${coupon.minOrderValue.toFixed(2)}.`);
+      throw new BadRequestException(
+        `O valor mínimo para usar este cupom é R$ ${coupon.minOrderValue.toFixed(2)}.`,
+      );
     }
 
     const now = new Date();
-    
+
     if (coupon.validUntilDate) {
       const validUntil = new Date(coupon.validUntilDate);
       validUntil.setHours(23, 59, 59, 999); // Final do dia
@@ -59,16 +63,20 @@ export class ValidateCouponUseCase {
         // Vamos usar a hora local da máquina/servidor para simplificar
         const sH = coupon.startTime.getHours();
         const sM = coupon.startTime.getMinutes();
-        if (currentTotalMinutes < (sH * 60 + sM)) {
-          throw new BadRequestException('Este cupom ainda não é válido neste horário.');
+        if (currentTotalMinutes < sH * 60 + sM) {
+          throw new BadRequestException(
+            'Este cupom ainda não é válido neste horário.',
+          );
         }
       }
 
       if (coupon.endTime) {
         const eH = coupon.endTime.getHours();
         const eM = coupon.endTime.getMinutes();
-        if (currentTotalMinutes > (eH * 60 + eM)) {
-          throw new BadRequestException('Este cupom não é mais válido neste horário.');
+        if (currentTotalMinutes > eH * 60 + eM) {
+          throw new BadRequestException(
+            'Este cupom não é mais válido neste horário.',
+          );
         }
       }
     }
@@ -77,7 +85,10 @@ export class ValidateCouponUseCase {
     if (coupon.type === DiscountType.VALUE) {
       discountAmount = Math.min(Number(coupon.value) || 0, input.orderTotal);
     } else if (coupon.type === DiscountType.PERCENTAGE) {
-      discountAmount = Math.min((input.orderTotal * (Number(coupon.value) || 0)) / 100, input.orderTotal);
+      discountAmount = Math.min(
+        (input.orderTotal * (Number(coupon.value) || 0)) / 100,
+        input.orderTotal,
+      );
     } else if (coupon.type === DiscountType.FREE_SHIPPING) {
       // FRETE GRÁTIS: O desconto é o próprio valor do frete.
       // Retornaremos discountAmount = 0, e a lógica será aplicada no create-order

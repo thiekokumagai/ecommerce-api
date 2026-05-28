@@ -1,4 +1,12 @@
-import { IsString, IsBoolean, IsEnum, IsNumber, IsOptional, IsDateString, IsPositive } from 'class-validator';
+import {
+  IsString,
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsDateString,
+  IsPositive,
+} from 'class-validator';
 import { DiscountType } from '../../domain/entities/coupon.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 

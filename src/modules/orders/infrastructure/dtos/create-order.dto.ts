@@ -37,14 +37,19 @@ export class CreateOrderDto {
   @Min(0)
   freight: number;
 
-
-  @ApiPropertyOptional({ example: 5.0, description: 'Desconto de forma de pagamento' })
+  @ApiPropertyOptional({
+    example: 5.0,
+    description: 'Desconto de forma de pagamento',
+  })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   @IsOptional()
   paymentDiscount?: number;
 
-  @ApiPropertyOptional({ example: 2.0, description: 'Acréscimo de parcelamento' })
+  @ApiPropertyOptional({
+    example: 2.0,
+    description: 'Acréscimo de parcelamento',
+  })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   @IsOptional()
@@ -56,7 +61,10 @@ export class CreateOrderDto {
   @IsOptional()
   couponDiscount?: number;
 
-  @ApiPropertyOptional({ example: 15.0, description: 'Desconto de frete pelo cupom' })
+  @ApiPropertyOptional({
+    example: 15.0,
+    description: 'Desconto de frete pelo cupom',
+  })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   @IsOptional()
@@ -68,7 +76,10 @@ export class CreateOrderDto {
   @IsOptional()
   receiptDiscount?: number;
 
-  @ApiPropertyOptional({ example: 0.0, description: 'Acréscimo no recebimento' })
+  @ApiPropertyOptional({
+    example: 0.0,
+    description: 'Acréscimo no recebimento',
+  })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   @IsOptional()
@@ -187,7 +198,10 @@ export class CreateOrderDto {
   @Type(() => CreateOrderItemDto)
   items: CreateOrderItemDto[];
 
-  @ApiPropertyOptional({ example: 'PROMO10', description: 'Título do cupom aplicado' })
+  @ApiPropertyOptional({
+    example: 'PROMO10',
+    description: 'Título do cupom aplicado',
+  })
   @IsString()
   @IsOptional()
   couponTitle?: string;

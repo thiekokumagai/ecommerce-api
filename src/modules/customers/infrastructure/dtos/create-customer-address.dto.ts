@@ -32,12 +32,20 @@ export class CreateCustomerAddressDto {
   @IsNotEmpty({ message: 'O estado é obrigatório' })
   state: string;
 
-  @ApiProperty({ example: 'Lado ímpar', description: 'Complemento do endereço', required: false })
+  @ApiProperty({
+    example: 'Lado ímpar',
+    description: 'Complemento do endereço',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   complement?: string;
 
-  @ApiProperty({ example: true, description: 'Define se este será o endereço principal do cliente', required: false })
+  @ApiProperty({
+    example: true,
+    description: 'Define se este será o endereço principal do cliente',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isDefault?: boolean;

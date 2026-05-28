@@ -15,7 +15,9 @@ export class CreateCashTransactionUseCase {
 
   async execute(input: Input) {
     if (input.type !== 'ENTRY' && input.type !== 'OUTFLOW') {
-      throw new BadRequestException('Transaction type must be ENTRY or OUTFLOW');
+      throw new BadRequestException(
+        'Transaction type must be ENTRY or OUTFLOW',
+      );
     }
 
     if (input.amount <= 0) {
@@ -25,7 +27,9 @@ export class CreateCashTransactionUseCase {
     // Verify cash register is active
     const activeCashRegister = await this.repository.findActiveCashRegister();
     if (!activeCashRegister || activeCashRegister.id !== input.cashRegisterId) {
-      throw new BadRequestException('Cash register is not active or does not exist');
+      throw new BadRequestException(
+        'Cash register is not active or does not exist',
+      );
     }
 
     return this.repository.createTransaction({

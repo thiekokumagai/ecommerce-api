@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../../../../prisma/prisma.service';
 
@@ -26,7 +27,9 @@ export class ClearDatabaseUseCase {
       for (const { tablename } of result) {
         if (!tablesToKeep.includes(tablename)) {
           this.logger.log(`Truncando tabela: ${tablename}`);
-          await this.prisma.$executeRawUnsafe(`TRUNCATE TABLE "${tablename}" CASCADE;`);
+          await this.prisma.$executeRawUnsafe(
+            `TRUNCATE TABLE "${tablename}" CASCADE;`,
+          );
         }
       }
 

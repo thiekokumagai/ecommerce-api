@@ -54,7 +54,13 @@ export class CashRegistersController {
   @Post(':id/transactions')
   async createTransaction(
     @Param('id') id: string,
-    @Body() data: { type: 'ENTRY' | 'OUTFLOW'; amount: number; description: string; category?: string },
+    @Body()
+    data: {
+      type: 'ENTRY' | 'OUTFLOW';
+      amount: number;
+      description: string;
+      category?: string;
+    },
   ) {
     return this.createTransactionUseCase.execute({
       cashRegisterId: id,

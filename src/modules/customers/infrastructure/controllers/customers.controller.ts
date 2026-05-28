@@ -1,5 +1,19 @@
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Put, Post, Param, Body, Query, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Put,
+  Post,
+  Param,
+  Body,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { ListCustomersUseCase } from '../../domain/use-cases/list-customers.use-case';
 import { GetCustomerUseCase } from '../../domain/use-cases/get-customer.use-case';
@@ -21,14 +35,23 @@ export class CustomersController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Listar clientes', description: 'Retorna a lista de clientes com paginação e filtros' })
-  @ApiResponse({ status: 200, description: 'Lista de clientes retornada com sucesso.' })
+  @ApiOperation({
+    summary: 'Listar clientes',
+    description: 'Retorna a lista de clientes com paginação e filtros',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de clientes retornada com sucesso.',
+  })
   async list(@Query() filters: any) {
     return this.listCustomersUseCase.execute(filters);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Buscar cliente por ID', description: 'Retorna os detalhes de um cliente específico' })
+  @ApiOperation({
+    summary: 'Buscar cliente por ID',
+    description: 'Retorna os detalhes de um cliente específico',
+  })
   @ApiResponse({ status: 200, description: 'Cliente encontrado com sucesso.' })
   @ApiResponse({ status: 404, description: 'Cliente não encontrado.' })
   async getById(@Param('id') id: string) {
@@ -36,7 +59,10 @@ export class CustomersController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Atualizar cliente', description: 'Atualiza as informações básicas do cliente (nome, telefone)' })
+  @ApiOperation({
+    summary: 'Atualizar cliente',
+    description: 'Atualiza as informações básicas do cliente (nome, telefone)',
+  })
   @ApiResponse({ status: 200, description: 'Cliente atualizado com sucesso.' })
   @ApiResponse({ status: 404, description: 'Cliente não encontrado.' })
   async update(@Param('id') id: string, @Body() data: UpdateCustomerDto) {
@@ -44,10 +70,17 @@ export class CustomersController {
   }
 
   @Post(':id/addresses')
-  @ApiOperation({ summary: 'Cadastrar endereço', description: 'Adiciona um novo endereço para o cliente. Se isDefault for true, este passa a ser o principal.' })
+  @ApiOperation({
+    summary: 'Cadastrar endereço',
+    description:
+      'Adiciona um novo endereço para o cliente. Se isDefault for true, este passa a ser o principal.',
+  })
   @ApiResponse({ status: 201, description: 'Endereço cadastrado com sucesso.' })
   @ApiResponse({ status: 404, description: 'Cliente não encontrado.' })
-  async addAddress(@Param('id') id: string, @Body() data: CreateCustomerAddressDto) {
+  async addAddress(
+    @Param('id') id: string,
+    @Body() data: CreateCustomerAddressDto,
+  ) {
     return this.addCustomerAddressUseCase.execute(id, data);
   }
 }

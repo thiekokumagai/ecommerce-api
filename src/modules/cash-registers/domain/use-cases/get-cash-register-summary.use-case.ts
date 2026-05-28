@@ -35,7 +35,8 @@ export class GetCashRegisterSummaryUseCase {
       totalReceived += order.totalReceived;
       totalCardFees += order.cardFee || 0;
       const method = order.paymentMethod || 'Outros';
-      totalsByMethod[method] = (totalsByMethod[method] || 0) + order.totalReceived;
+      totalsByMethod[method] =
+        (totalsByMethod[method] || 0) + order.totalReceived;
     }
 
     let totalEntries = 0;
@@ -65,7 +66,8 @@ export class GetCashRegisterSummaryUseCase {
     totalGross = Math.round(totalGross * 100) / 100;
 
     // Saldo Líquido de Caixa = Faturamento Comercial Bruto + Entradas Manuais - Taxas Cartão - Saídas/Custos Fixos
-    const totalNet = Math.round((totalGross - totalCardFees - totalOutflows) * 100) / 100;
+    const totalNet =
+      Math.round((totalGross - totalCardFees - totalOutflows) * 100) / 100;
 
     return {
       cashRegister: register,

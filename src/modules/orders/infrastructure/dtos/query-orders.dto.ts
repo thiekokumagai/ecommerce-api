@@ -18,7 +18,6 @@ export class QueryOrdersDto {
   @IsOptional()
   paymentStatus?: PaymentStatus;
 
-
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
@@ -37,4 +36,3 @@ export class QueryOrdersDto {
   @IsOptional()
   limit?: any;
 }
-

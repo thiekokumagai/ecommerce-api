@@ -1,6 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { ICustomersRepository } from '../repositories/icustomers.repository';
-import { PaginatedCustomers, CustomerFilters } from '../repositories/icustomers.repository';
+import {
+  PaginatedCustomers,
+  CustomerFilters,
+} from '../repositories/icustomers.repository';
 
 @Injectable()
 export class ListCustomersUseCase {
