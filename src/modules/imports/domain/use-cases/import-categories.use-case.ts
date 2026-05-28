@@ -17,8 +17,9 @@ export class ImportCategoriesUseCase {
     this.logger.log('Starting categories import from Vendizap');
     const data = await this.vendizapService.getCategories();
     
-    // Assuming data is an array of categories
-    for (const item of (data.data || [])) {
+    // Assuming data is an array of categories or has a data property
+    const categories = Array.isArray(data) ? data : (data.data || []);
+    for (const item of categories) {
       try {
         let imageUrl = item.image;
         if (imageUrl) {
