@@ -64,7 +64,7 @@ export class ImportProductsUseCase {
             // Find mapping category
             let categoryId = defaultCategory.id;
             
-            const externalCatId = item.id_categoria || item.category_id || item.categoria_id;
+            const externalCatId = item.id_categoria || item.category_id || item.categoria_id || (item.categorias && item.categorias.length > 0 ? item.categorias[0].id : undefined);
             
             if (externalCatId) {
               const mappedCat = await this.prisma.category.findUnique({
