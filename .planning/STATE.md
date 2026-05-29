@@ -62,6 +62,8 @@ Progresso: [██████████] 100%
 - Fase 12 adicionada: Pedidos pagos irem para o caixa admin e api
 - Fase 16 adicionada: Contas fixas
 - Fase 23 adicionada: Módulo importação vendizap
+- Fase 24 adicionada: criar pedidos cliente fazer no back e front cliente
+- Fase 25 adicionada: Rota pedido cliente especifica, implementação no front cliente
 
 ### Decisões
 

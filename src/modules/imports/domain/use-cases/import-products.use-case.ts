@@ -63,16 +63,22 @@ export class ImportProductsUseCase {
           try {
             // Find mapping category
             let categoryId = defaultCategory.id;
-            // The API might use `categorias_old` (array of category names) or we might map to default if none.
-            if (item.categorias_old && item.categorias_old.length > 0) {
+            
+            const externalCatId = item.id_categoria || item.category_id || item.categoria_id;
+            
+            if (externalCatId) {
+              const mappedCat = await this.prisma.category.findUnique({
+                where: { externalId: externalCatId.toString() },
+              });
+              if (mappedCat) {
+                categoryId = mappedCat.id;
+              }
+            }
+            
+            if (categoryId === defaultCategory.id && item.categorias_old && item.categorias_old.length > 0) {
               const categoryName = item.categorias_old[0];
               const mappedCat = await this.prisma.category.findFirst({
                 where: { title: categoryName },
-              });
-              if (mappedCat) categoryId = mappedCat.id;
-            } else if (item.category_id) {
-              const mappedCat = await this.prisma.category.findUnique({
-                where: { externalId: item.category_id.toString() },
               });
               if (mappedCat) categoryId = mappedCat.id;
             }

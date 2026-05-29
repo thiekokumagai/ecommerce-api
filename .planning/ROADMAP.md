@@ -277,7 +277,30 @@ Planos:
 **Plans:** 1/1 plans complete
 
 Plans:
+
 - [x] TBD (run /gsd-plan-phase 23 to break down) (completed 2026-05-28)
+
+### Phase 24: criar pedidos cliente fazer no back e front cliente
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 23
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 24 to break down)
+
+### Phase 25: Rota pedido cliente especifica, implementacao no front cliente
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 24
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 25 to break down)
 
 ---
 

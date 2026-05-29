@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unused-vars */
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import { MinioService } from '../../../../minio/minio.service';
 import { v4 as uuidv4 } from 'uuid';
-import * as path from 'path';
+import sharp from 'sharp';
 
 @Injectable()
 export class ImageMigrationService {
@@ -21,18 +20,43 @@ export class ImageMigrationService {
       const response = await axios.get(imageUrl, {
         responseType: 'arraybuffer',
       });
-      const buffer = Buffer.from(response.data, 'binary');
+      const originalBuffer = Buffer.from(response.data, 'binary');
 
-      const result = await this.minioService.uploadFile(
+      const uuid = uuidv4();
+
+      // Process main image (800x800 webp)
+      const mainBuffer = await sharp(originalBuffer)
+        .resize(800, 800, { fit: 'cover', position: 'center' })
+        .webp({ quality: 90 })
+        .toBuffer();
+
+      const mainUpload = await this.minioService.uploadFile(
         {
-          buffer,
-          size: buffer.length,
-          mimetype: response.headers['content-type'] || 'image/jpeg',
+          customName: `${uuid}.webp`,
+          buffer: mainBuffer,
+          size: mainBuffer.length,
+          mimetype: 'image/webp',
         } as any,
         folder,
       );
 
-      return result.fileName;
+      // Process thumbnail image (450x450 webp)
+      const thumbBuffer = await sharp(originalBuffer)
+        .resize(450, 450, { fit: 'cover', position: 'center' })
+        .webp({ quality: 90 })
+        .toBuffer();
+
+      await this.minioService.uploadFile(
+        {
+          customName: `${uuid}-thumb.webp`,
+          buffer: thumbBuffer,
+          size: thumbBuffer.length,
+          mimetype: 'image/webp',
+        } as any,
+        folder,
+      );
+
+      return mainUpload.fileName;
     } catch (error) {
       this.logger.error(`Error migrating image ${imageUrl}`, error.message);
       return imageUrl; // Fallback to original url

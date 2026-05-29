@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OrdersController } from './infrastructure/controllers/orders.controller';
+import { StoreOrdersController } from './infrastructure/controllers/store-orders.controller';
 import { IOrdersRepository } from './domain/repositories/iorders.repository';
 import { PrismaOrdersRepository } from './infrastructure/database/prisma-orders.repository';
 
@@ -15,7 +16,7 @@ import { CouponsModule } from '../coupons/coupons.module';
 
 @Module({
   imports: [SettingsModule, CouponsModule],
-  controllers: [OrdersController],
+  controllers: [OrdersController, StoreOrdersController],
   providers: [
     ListOrdersUseCase,
     GetOrderDetailUseCase,
