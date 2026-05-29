@@ -62,6 +62,7 @@ export class Order {
   paymentStatus: PaymentStatus;
   installments?: number;
   paymentDate?: Date | null;
+  isPrinted: boolean;
 
   createdAt: Date;
   updatedAt: Date;

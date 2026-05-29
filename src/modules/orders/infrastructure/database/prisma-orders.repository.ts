@@ -57,6 +57,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       paymentDate: record.paymentDate,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
+      isPrinted: record.isPrinted,
       items:
         record.items?.map((item: any) => {
           let imageUrl = undefined;
@@ -236,6 +237,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       paymentDate: order.paymentDate,
       cardFee: order.cardFee,
       couponId: order.couponId || undefined,
+      isPrinted: order.isPrinted || false,
     };
 
     let record;
@@ -427,6 +429,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         paymentDate: order.paymentDate,
         cardFee: order.cardFee,
         couponId: order.couponId || undefined,
+        isPrinted: order.isPrinted || false,
       };
 
       const createdOrder = await tx.order.create({
@@ -450,6 +453,8 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       });
 
       return createdOrder;
+    }, {
+      timeout: 15000,
     });
 
     return this.mapToDomain(record);
@@ -500,6 +505,8 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       });
 
       return updatedOrder;
+    }, {
+      timeout: 15000,
     });
 
     return this.mapToDomain(record);

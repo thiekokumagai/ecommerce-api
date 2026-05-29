@@ -307,6 +307,7 @@ model Order {
   paymentStatus PaymentStatus @default(PENDING)
   installments  Int?          @default(1)
   paymentDate   DateTime?
+  isPrinted     Boolean       @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
