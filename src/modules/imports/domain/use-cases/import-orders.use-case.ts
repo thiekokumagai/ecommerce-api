@@ -110,8 +110,19 @@ export class ImportOrdersUseCase {
               }
 
               // 3. Upsert order
-              const dtString = item.dt_criacao || item.created_at ? (item.dt_criacao || item.created_at).replace(' ', 'T') : undefined;
-              
+              let createdAtDate: Date | undefined = undefined;
+              const rawDate = item.dt_criacao || item.created_at;
+              if (rawDate) {
+                const parts = rawDate.split(' ');
+                if (parts[0] && parts[0].includes('/')) {
+                  const [day, month, year] = parts[0].split('/');
+                  const time = parts[1] || '00:00:00';
+                  const parsed = new Date(`${year}-${month}-${day}T${time}.000Z`);
+                  if (!isNaN(parsed.getTime())) {
+                    createdAtDate = parsed;
+                  }
+                }
+              }
               const order = await this.prisma.order.upsert({
                 where: { externalId: item.id.toString() },
                 update: {
@@ -150,7 +161,7 @@ export class ImportOrdersUseCase {
                   complement,
                   status: 'COMPLETED',
                   paymentStatus: 'PAID',
-                  ...(dtString ? { createdAt: new Date(dtString) } : {}),
+                  ...(createdAtDate ? { createdAt: createdAtDate } : {}),
                 },
               });
 
