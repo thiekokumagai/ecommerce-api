@@ -7,6 +7,7 @@ import { ImportCategoriesUseCase } from './domain/use-cases/import-categories.us
 import { ImportProductsUseCase } from './domain/use-cases/import-products.use-case';
 import { ImportProductImagesUseCase } from './domain/use-cases/import-product-images.use-case';
 import { ImportOrdersUseCase } from './domain/use-cases/import-orders.use-case';
+import { ImportProductVariationsUseCase } from './domain/use-cases/import-product-variations.use-case';
 import { ClearDatabaseUseCase } from './domain/use-cases/clear-database.use-case';
 import { PrismaService } from '../../../prisma/prisma.service';
 
@@ -20,6 +21,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
     ImportCategoriesUseCase,
     ImportProductsUseCase,
     ImportProductImagesUseCase,
+    ImportProductVariationsUseCase,
     ImportOrdersUseCase,
     ClearDatabaseUseCase,
   ],

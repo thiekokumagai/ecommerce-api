@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -80,8 +81,12 @@ export class ProductsController {
     description: 'Lista de produtos',
     type: [ProductResponseDto],
   })
-  async findAll(@Query() query: ListProductsDto) {
-    const products = await this.listProductsUseCase.execute(query);
+  async findAll(@Query() query: ListProductsDto, @Res({ passthrough: true }) res: any) {
+    const { products, total } = await this.listProductsUseCase.execute(query);
+    
+    // Send total in headers so we don't break existing payload structure
+    res.header('x-total-count', total.toString());
+    
     return products.map((p) => ({
       ...p,
       imageUrl: p.images?.[0]?.url ?? null,

@@ -32,9 +32,11 @@ export class VendizapService {
     }
   }
 
-  async getProducts() {
+  async getProducts(skip: number = 0, limit: number = 100) {
     try {
-      const response = await this.client.get('/produtos');
+      const response = await this.client.get('/produtos', {
+        params: { skip, limit },
+      });
       return response.data;
     } catch (error) {
       this.logger.error('Error fetching products from Vendizap', error.message);

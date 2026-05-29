@@ -64,17 +64,21 @@ export class PrismaProductsRepository implements IProductsRepository {
     search?: string;
     categoryId?: string;
   }): Promise<ProductWithDetails[]> {
+    const searchWords = params.search?.trim().split(/\s+/).filter(Boolean);
+
     const products = await this.prisma.product.findMany({
       skip: params.skip,
       take: params.take,
       where: {
         deletedAt: null,
-        ...(params.search
+        ...(searchWords && searchWords.length > 0
           ? {
-              title: {
-                contains: params.search,
-                mode: 'insensitive',
-              },
+              AND: searchWords.map((word) => ({
+                title: {
+                  contains: word,
+                  mode: 'insensitive',
+                },
+              })),
             }
           : {}),
         ...(params.categoryId ? { categoryId: params.categoryId } : {}),
@@ -92,6 +96,30 @@ export class PrismaProductsRepository implements IProductsRepository {
         (product) => this.findById(product.id) as Promise<ProductWithDetails>,
       ),
     );
+  }
+
+  async count(params: {
+    search?: string;
+    categoryId?: string;
+  }): Promise<number> {
+    const searchWords = params.search?.trim().split(/\s+/).filter(Boolean);
+
+    return this.prisma.product.count({
+      where: {
+        deletedAt: null,
+        ...(searchWords && searchWords.length > 0
+          ? {
+              AND: searchWords.map((word) => ({
+                title: {
+                  contains: word,
+                  mode: 'insensitive',
+                },
+              })),
+            }
+          : {}),
+        ...(params.categoryId ? { categoryId: params.categoryId } : {}),
+      },
+    });
   }
 
   async checkCategoryExists(categoryId: string): Promise<boolean> {

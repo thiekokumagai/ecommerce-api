@@ -15,11 +15,19 @@ export class ListProductsUseCase {
     const limit = query.limit ?? 10;
     const skip = (page - 1) * limit;
 
-    return this.productsRepository.findAll({
-      skip,
-      take: limit,
-      search: query.search,
-      categoryId: query.categoryId,
-    });
+    const [products, total] = await Promise.all([
+      this.productsRepository.findAll({
+        skip,
+        take: limit,
+        search: query.search,
+        categoryId: query.categoryId,
+      }),
+      this.productsRepository.count({
+        search: query.search,
+        categoryId: query.categoryId,
+      }),
+    ]);
+
+    return { products, total };
   }
 }

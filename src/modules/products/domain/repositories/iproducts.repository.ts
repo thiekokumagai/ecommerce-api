@@ -38,6 +38,11 @@ export abstract class IProductsRepository {
     categoryId?: string;
   }): Promise<ProductWithDetails[]>;
 
+  abstract count(params: {
+    search?: string;
+    categoryId?: string;
+  }): Promise<number>;
+
   abstract findById(id: string): Promise<ProductWithDetails | null>;
 
   abstract checkCategoryExists(categoryId: string): Promise<boolean>;

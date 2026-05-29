@@ -387,3 +387,15 @@ model InvestmentTransaction {
 
   @@map("investment_transactions")
 }
+
+model ImportJob {
+  id           String   @id @default(uuid())
+  type         String   // "PRODUCTS", "CATEGORIES", "ORDERS"
+  status       String   // "RUNNING", "COMPLETED", "FAILED"
+  lastSkip     Int      @default(0)
+  totalFetched Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("import_jobs")
+}

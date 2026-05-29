@@ -16,6 +16,8 @@ export class ClearDatabaseUseCase {
       'users',
       '_prisma_migrations',
       'cash_registers',
+      'variations',
+      'variation_options',
     ];
 
     try {

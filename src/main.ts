@@ -11,6 +11,7 @@ async function bootstrap() {
   app.enableCors({
     origin: true,
     credentials: true,
+    exposedHeaders: ['x-total-count'],
   });
 
   app.useGlobalFilters(new DomainExceptionsFilter());

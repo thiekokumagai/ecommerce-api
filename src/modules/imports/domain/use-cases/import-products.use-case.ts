@@ -16,8 +16,6 @@ export class ImportProductsUseCase {
 
   async execute() {
     this.logger.log('Starting products import from Vendizap');
-    const data = await this.vendizapService.getProducts();
-    console.log(data);
     // First ensure we have a default category if items don't map well
     let defaultCategory = await this.prisma.category.findFirst();
     if (!defaultCategory) {
@@ -26,70 +24,133 @@ export class ImportProductsUseCase {
       });
     }
 
-    const products = Array.isArray(data) ? data : data.data || [];
-    for (const item of products) {
-      try {
-        // Find mapping category
-        let categoryId = defaultCategory.id;
-        // The API might use `categorias_old` (array of category names) or we might map to default if none.
-        if (item.categorias_old && item.categorias_old.length > 0) {
-          const categoryName = item.categorias_old[0];
-          const mappedCat = await this.prisma.category.findFirst({
-            where: { title: categoryName },
-          });
-          if (mappedCat) categoryId = mappedCat.id;
-        } else if (item.category_id) {
-          const mappedCat = await this.prisma.category.findUnique({
-            where: { externalId: item.category_id.toString() },
-          });
-          if (mappedCat) categoryId = mappedCat.id;
+    // Check for an incomplete job
+    let job = await this.prisma.importJob.findFirst({
+      where: { type: 'PRODUCTS', status: 'RUNNING' },
+    });
+
+    let skip = 0;
+    const limit = 50;
+
+    if (job) {
+      skip = job.lastSkip; // Retoma do último skip salvo
+      this.logger.log(`Resuming previous import job from skip ${skip}`);
+    } else {
+      job = await this.prisma.importJob.create({
+        data: {
+          type: 'PRODUCTS',
+          status: 'RUNNING',
+          lastSkip: 0,
+          totalFetched: 0,
+        },
+      });
+    }
+
+    let hasMore = true;
+
+    try {
+      while (hasMore) {
+        this.logger.log(`Fetching products with skip ${skip} and limit ${limit}`);
+        const data = await this.vendizapService.getProducts(skip, limit);
+        const products = Array.isArray(data) ? data : data.data || [];
+
+        if (products.length === 0) {
+          hasMore = false;
+          break;
         }
 
-        const product = await this.prisma.product.upsert({
-          where: { externalId: item.id.toString() },
-          update: {
-            title: item.descricao || item.title || item.name || 'Sem Título',
-            categoryId: categoryId,
-            price: item.preco || item.price || 0,
-            description: item.detalhesFormatado || item.description || '',
-          },
-          create: {
-            externalId: item.id.toString(),
-            title: item.descricao || item.title || item.name || 'Sem Título',
-            categoryId: categoryId,
-            price: item.preco || item.price || 0,
-            description: item.detalhesFormatado || item.description || '',
+        for (const item of products) {
+          try {
+            // Find mapping category
+            let categoryId = defaultCategory.id;
+            // The API might use `categorias_old` (array of category names) or we might map to default if none.
+            if (item.categorias_old && item.categorias_old.length > 0) {
+              const categoryName = item.categorias_old[0];
+              const mappedCat = await this.prisma.category.findFirst({
+                where: { title: categoryName },
+              });
+              if (mappedCat) categoryId = mappedCat.id;
+            } else if (item.category_id) {
+              const mappedCat = await this.prisma.category.findUnique({
+                where: { externalId: item.category_id.toString() },
+              });
+              if (mappedCat) categoryId = mappedCat.id;
+            }
+
+            const product = await this.prisma.product.upsert({
+              where: { externalId: item.id.toString() },
+              update: {
+                title: item.descricao || item.title || item.name || 'Sem Título',
+                categoryId: categoryId,
+                price: item.preco || item.price || 0,
+                description: item.detalhesFormatado || item.description || '',
+              },
+              create: {
+                externalId: item.id.toString(),
+                title: item.descricao || item.title || item.name || 'Sem Título',
+                categoryId: categoryId,
+                price: item.preco || item.price || 0,
+                description: item.detalhesFormatado || item.description || '',
+              },
+            });
+
+            // Upsert images
+            let imagesToMigrate: any[] = [];
+            if (item.foto) imagesToMigrate.push(item.foto);
+            if (item.images && item.images.length > 0) {
+              imagesToMigrate = item.images.map((img: any) => img.url || img);
+            }
+
+            if (imagesToMigrate.length > 0) {
+              for (const img of imagesToMigrate) {
+                const migratedUrl = await this.imageMigrationService.migrateImage(
+                  img,
+                  'products',
+                );
+                if (migratedUrl) {
+                  await this.prisma.productImage.create({
+                    data: {
+                      url: migratedUrl,
+                      productId: product.id,
+                    },
+                  });
+                }
+              }
+            }
+          } catch (error) {
+            this.logger.error(`Failed to import product ${item.id}`, error);
+          }
+        }
+
+        skip += limit;
+
+        // Save progress to database
+        await this.prisma.importJob.update({
+          where: { id: job.id },
+          data: {
+            lastSkip: skip,
+            totalFetched: { increment: products.length },
           },
         });
 
-        // Upsert images
-        let imagesToMigrate: any[] = [];
-        if (item.foto) imagesToMigrate.push(item.foto);
-        if (item.images && item.images.length > 0) {
-          imagesToMigrate = item.images.map((img: any) => img.url || img);
+        if (products.length < limit) {
+          hasMore = false;
         }
-
-        if (imagesToMigrate.length > 0) {
-          for (const img of imagesToMigrate) {
-            const migratedUrl = await this.imageMigrationService.migrateImage(
-              img,
-              'products',
-            );
-            if (migratedUrl) {
-              await this.prisma.productImage.create({
-                data: {
-                  url: migratedUrl,
-                  productId: product.id,
-                },
-              });
-            }
-          }
-        }
-      } catch (error) {
-        this.logger.error(`Failed to import product ${item.id}`, error);
       }
-    }
 
-    this.logger.log('Finished products import');
+      await this.prisma.importJob.update({
+        where: { id: job.id },
+        data: { status: 'COMPLETED' },
+      });
+
+      this.logger.log('Finished products import');
+    } catch (error) {
+      await this.prisma.importJob.update({
+        where: { id: job.id },
+        data: { status: 'FAILED' },
+      });
+      this.logger.error('Import process failed and was marked as FAILED', error);
+      throw error;
+    }
   }
 }
