@@ -23,7 +23,7 @@ export class ImportOrdersUseCase {
     const now = new Date();
     let currentDate = new Date(now.getFullYear(), now.getMonth(), 1); // Start at the current month
     //const stopDate = new Date(2023, 9, 1); // Stop at Oct 1, 2023
-    const stopDate = new Date(2026, 5, 1);
+    const stopDate = new Date(2026, 4, 1);
 
     while (currentDate >= stopDate) {
       const year = currentDate.getFullYear();
