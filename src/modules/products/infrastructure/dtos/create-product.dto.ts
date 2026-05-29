@@ -50,4 +50,8 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   createdAt?: string;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  isVisible?: boolean;
 }

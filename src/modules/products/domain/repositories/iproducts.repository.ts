@@ -17,6 +17,7 @@ export abstract class IProductsRepository {
     promotionalPrice?: any;
     costPrice?: any;
     createdAt?: Date | string;
+    isVisible?: boolean;
   }): Promise<Product>;
 
   abstract update(
@@ -29,6 +30,7 @@ export abstract class IProductsRepository {
       price?: any;
       promotionalPrice?: any;
       costPrice?: any;
+      isVisible?: boolean;
     },
   ): Promise<Product>;
 

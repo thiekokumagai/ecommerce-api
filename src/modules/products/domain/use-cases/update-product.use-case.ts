@@ -19,6 +19,7 @@ export class UpdateProductUseCase {
       price?: any;
       promotionalPrice?: any;
       costPrice?: any;
+      isVisible?: boolean;
     },
   ) {
     const existing = await this.productsRepository.findById(id);
@@ -43,6 +44,7 @@ export class UpdateProductUseCase {
       price: dto.price,
       promotionalPrice: dto.promotionalPrice,
       costPrice: dto.costPrice,
+      isVisible: dto.isVisible,
     });
 
     return this.productsRepository.findById(id);
