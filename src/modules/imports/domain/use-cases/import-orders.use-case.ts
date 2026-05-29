@@ -170,7 +170,7 @@ export class ImportOrdersUseCase {
                   cep,
                   complement,
                   isPrinted: true,
-                  ...(createdAtDate ? { createdAt: createdAtDate } : {}),
+                  ...(createdAtDate ? { createdAt: createdAtDate, paymentDate: createdAtDate } : {}),
                 },
                 create: {
                   externalId: item.id.toString(),
@@ -194,7 +194,7 @@ export class ImportOrdersUseCase {
                   status: 'COMPLETED',
                   paymentStatus: 'PAID',
                   isPrinted: true,
-                  ...(createdAtDate ? { createdAt: createdAtDate } : {}),
+                  ...(createdAtDate ? { createdAt: createdAtDate, paymentDate: createdAtDate } : {}),
                 },
               });
 
