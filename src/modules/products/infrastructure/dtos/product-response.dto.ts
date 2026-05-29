@@ -98,4 +98,7 @@ export class ProductResponseDto {
 
   @ApiProperty({ required: false, nullable: true, example: '25.00' })
   costPrice?: string | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  isVisible?: boolean;
 }

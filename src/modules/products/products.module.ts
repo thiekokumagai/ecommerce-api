@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MinioModule } from '../../minio/minio.module';
 import { ProductsController } from './infrastructure/controllers/products.controller';
+import { StoreProductsController } from './infrastructure/controllers/store-products.controller';
 import { IProductsRepository } from './domain/repositories/iproducts.repository';
 import { PrismaProductsRepository } from './infrastructure/database/prisma-products.repository';
 
@@ -20,7 +21,7 @@ import { DuplicateProductUseCase } from './domain/use-cases/duplicate-product.us
 
 @Module({
   imports: [MinioModule],
-  controllers: [ProductsController],
+  controllers: [ProductsController, StoreProductsController],
   providers: [
     ListProductsUseCase,
     FindProductByIdUseCase,

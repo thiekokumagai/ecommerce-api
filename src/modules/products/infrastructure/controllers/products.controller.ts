@@ -52,6 +52,7 @@ import { DeleteProductVariationUseCase } from '../../domain/use-cases/delete-pro
 import { DeleteProductVariationOptionUseCase } from '../../domain/use-cases/delete-product-variation-option.use-case';
 import { DuplicateProductUseCase } from '../../domain/use-cases/duplicate-product.use-case';
 
+
 @ApiTags('Products')
 @ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)

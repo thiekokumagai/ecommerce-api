@@ -87,15 +87,34 @@ export class PrismaProductsRepository implements IProductsRepository {
       include: {
         category: true,
         images: true,
+        variations: {
+          include: {
+            variation: {
+              include: {
+                options: {
+                  orderBy: { value: 'asc' },
+                },
+              },
+            },
+          },
+        },
+        items: {
+          include: {
+            options: {
+              include: {
+                option: {
+                  include: {
+                    variation: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
-    // To simulate findOne behavior in findAll, we need the heavy include
-    return Promise.all(
-      products.map(
-        (product) => this.findById(product.id) as Promise<ProductWithDetails>,
-      ),
-    );
+    return products as ProductWithDetails[];
   }
 
   async count(params: {

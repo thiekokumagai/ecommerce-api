@@ -84,6 +84,7 @@ export class ImportProductsUseCase {
                 categoryId: categoryId,
                 price: item.preco || item.price || 0,
                 description: item.detalhesFormatado || item.description || '',
+                isVisible: item.exibir ?? true,
               },
               create: {
                 externalId: item.id.toString(),
@@ -91,6 +92,7 @@ export class ImportProductsUseCase {
                 categoryId: categoryId,
                 price: item.preco || item.price || 0,
                 description: item.detalhesFormatado || item.description || '',
+                isVisible: item.exibir ?? true,
               },
             });
 

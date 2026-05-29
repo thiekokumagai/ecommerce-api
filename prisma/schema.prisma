@@ -71,6 +71,7 @@ model Product {
   categoryId String
   deletedAt  DateTime?
   createdAt  DateTime  @default(now())
+  isVisible  Boolean   @default(true)
 
   category            Category           @relation(fields: [categoryId], references: [id])
   images              ProductImage[]
