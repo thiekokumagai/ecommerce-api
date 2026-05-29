@@ -57,9 +57,17 @@ export class VendizapService {
     }
   }
 
-  async getOrders() {
+  async getOrders(params?: {
+    tipoData?: string;
+    dataInicial?: string;
+    dataFinal?: string;
+    cancelados?: boolean;
+    somenteNovos?: boolean;
+    skip?: number;
+    limit?: number;
+  }) {
     try {
-      const response = await this.client.get('/pedidos');
+      const response = await this.client.get('/pedidos', { params });
       return response.data;
     } catch (error) {
       this.logger.error('Error fetching orders from Vendizap', error.message);
