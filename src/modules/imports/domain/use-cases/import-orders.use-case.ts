@@ -121,14 +121,17 @@ export class ImportOrdersUseCase {
                    if (datePart.includes('/')) {
                      const [day, month, year] = datePart.split('/');
                      const time = parts[1] || '00:00:00';
-                     const parsed = new Date(`${year}-${month}-${day}T${time}.000Z`);
+                     const [hour, minute, second] = time.split(':');
+                     const parsed = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second));
                      if (!isNaN(parsed.getTime())) {
                        createdAtDate = parsed;
                      }
                    } else if (datePart.includes('-')) {
                      // 2024-01-06 format
+                     const [year, month, day] = datePart.split('-');
                      const time = parts[1] || '00:00:00';
-                     const parsed = new Date(`${datePart}T${time}.000Z`);
+                     const [hour, minute, second] = time.split(':');
+                     const parsed = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second));
                      if (!isNaN(parsed.getTime())) {
                        createdAtDate = parsed;
                      }
@@ -167,6 +170,7 @@ export class ImportOrdersUseCase {
                   cep,
                   complement,
                   isPrinted: true,
+                  ...(createdAtDate ? { createdAt: createdAtDate } : {}),
                 },
                 create: {
                   externalId: item.id.toString(),
