@@ -1,12 +1,9 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { IOrdersRepository } from '../../domain/repositories/iorders.repository';
 
 @Injectable()
 export class MarkOrderPrintedUseCase {
-  constructor(
-    @Inject('IOrdersRepository')
-    private readonly ordersRepository: IOrdersRepository,
-  ) {}
+  constructor(private readonly ordersRepository: IOrdersRepository) {}
 
   async execute(id: string): Promise<void> {
     const order = await this.ordersRepository.findById(id);
