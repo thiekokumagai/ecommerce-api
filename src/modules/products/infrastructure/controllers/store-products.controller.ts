@@ -17,12 +17,18 @@ export class StoreProductsController {
   @Get()
   @ApiOperation({ summary: 'Listar produtos para a loja (somente ativos)' })
   async findAll(@Query() query: ListProductsDto) {
-    const { products } = await this.listProductsUseCase.execute(query);
-    const activeProducts = products.filter(p => p.isVisible !== false);
-    return activeProducts.map((p) => ({
-      ...p,
-      imageUrl: p.images?.[0]?.url ?? null,
-    }));
+    const { products, total } = await this.listProductsUseCase.execute({
+      ...query,
+      isVisible: true,
+    });
+    
+    return {
+      data: products.map((p) => ({
+        ...p,
+        imageUrl: p.images?.[0]?.url ?? null,
+      })),
+      total,
+    };
   }
 
   @Get(':id')

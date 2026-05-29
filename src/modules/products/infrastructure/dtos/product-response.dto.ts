@@ -101,4 +101,10 @@ export class ProductResponseDto {
 
   @ApiProperty({ required: false, nullable: true })
   isVisible?: boolean;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
 }

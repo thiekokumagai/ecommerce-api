@@ -18,6 +18,7 @@ export class PrismaProductsRepository implements IProductsRepository {
     price?: any;
     promotionalPrice?: any;
     costPrice?: any;
+    createdAt?: Date | string;
   }): Promise<Product> {
     return this.prisma.product.create({
       data: {
@@ -28,6 +29,7 @@ export class PrismaProductsRepository implements IProductsRepository {
         price: data.price,
         promotionalPrice: data.promotionalPrice,
         costPrice: data.costPrice,
+        ...(data.createdAt ? { createdAt: new Date(data.createdAt) } : {}),
       },
     });
   }
@@ -63,6 +65,7 @@ export class PrismaProductsRepository implements IProductsRepository {
     take: number;
     search?: string;
     categoryId?: string;
+    isVisible?: boolean;
   }): Promise<ProductWithDetails[]> {
     const searchWords = params.search?.trim().split(/\s+/).filter(Boolean);
 
@@ -71,6 +74,7 @@ export class PrismaProductsRepository implements IProductsRepository {
       take: params.take,
       where: {
         deletedAt: null,
+        ...(params.isVisible !== undefined ? { isVisible: params.isVisible } : {}),
         ...(searchWords && searchWords.length > 0
           ? {
               AND: searchWords.map((word) => ({
@@ -120,12 +124,14 @@ export class PrismaProductsRepository implements IProductsRepository {
   async count(params: {
     search?: string;
     categoryId?: string;
+    isVisible?: boolean;
   }): Promise<number> {
     const searchWords = params.search?.trim().split(/\s+/).filter(Boolean);
 
     return this.prisma.product.count({
       where: {
         deletedAt: null,
+        ...(params.isVisible !== undefined ? { isVisible: params.isVisible } : {}),
         ...(searchWords && searchWords.length > 0
           ? {
               AND: searchWords.map((word) => ({

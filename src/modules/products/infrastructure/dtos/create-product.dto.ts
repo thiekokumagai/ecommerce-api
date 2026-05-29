@@ -45,4 +45,9 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   descriptionFormated?: string;
+
+  @ApiPropertyOptional({ example: '2023-11-20T19:18:26.000Z' })
+  @IsOptional()
+  @IsString()
+  createdAt?: string;
 }

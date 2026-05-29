@@ -16,6 +16,7 @@ export abstract class IProductsRepository {
     price?: any;
     promotionalPrice?: any;
     costPrice?: any;
+    createdAt?: Date | string;
   }): Promise<Product>;
 
   abstract update(
@@ -36,11 +37,13 @@ export abstract class IProductsRepository {
     take: number;
     search?: string;
     categoryId?: string;
+    isVisible?: boolean;
   }): Promise<ProductWithDetails[]>;
 
   abstract count(params: {
     search?: string;
     categoryId?: string;
+    isVisible?: boolean;
   }): Promise<number>;
 
   abstract findById(id: string): Promise<ProductWithDetails | null>;

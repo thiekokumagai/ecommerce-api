@@ -13,6 +13,7 @@ export class CreateProductUseCase {
     price?: any;
     promotionalPrice?: any;
     costPrice?: any;
+    createdAt?: string;
   }) {
     const categoryExists = await this.productsRepository.checkCategoryExists(
       dto.categoryId,
@@ -29,6 +30,7 @@ export class CreateProductUseCase {
       price: dto.price,
       promotionalPrice: dto.promotionalPrice,
       costPrice: dto.costPrice,
+      createdAt: dto.createdAt,
     });
 
     return this.productsRepository.findById(product.id);

@@ -77,6 +77,9 @@ export class ImportProductsUseCase {
               if (mappedCat) categoryId = mappedCat.id;
             }
 
+            const dtString = item.dt_cadastro ? item.dt_cadastro.replace(' ', 'T') : undefined;
+            const dtAlteracaoString = item.dt_alteracao ? item.dt_alteracao.replace(' ', 'T') : undefined;
+
             const product = await this.prisma.product.upsert({
               where: { externalId: item.id.toString() },
               update: {
@@ -85,6 +88,8 @@ export class ImportProductsUseCase {
                 price: item.preco || item.price || 0,
                 description: item.detalhesFormatado || item.description || '',
                 isVisible: item.exibir ?? true,
+                ...(dtString ? { createdAt: new Date(dtString) } : {}),
+                ...(dtAlteracaoString ? { updatedAt: new Date(dtAlteracaoString) } : {}),
               },
               create: {
                 externalId: item.id.toString(),
@@ -93,6 +98,8 @@ export class ImportProductsUseCase {
                 price: item.preco || item.price || 0,
                 description: item.detalhesFormatado || item.description || '',
                 isVisible: item.exibir ?? true,
+                ...(dtString ? { createdAt: new Date(dtString) } : {}),
+                ...(dtAlteracaoString ? { updatedAt: new Date(dtAlteracaoString) } : {}),
               },
             });
 

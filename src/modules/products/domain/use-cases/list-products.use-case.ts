@@ -10,6 +10,7 @@ export class ListProductsUseCase {
     limit?: number;
     search?: string;
     categoryId?: string;
+    isVisible?: boolean;
   }) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 10;
@@ -21,10 +22,12 @@ export class ListProductsUseCase {
         take: limit,
         search: query.search,
         categoryId: query.categoryId,
+        isVisible: query.isVisible,
       }),
       this.productsRepository.count({
         search: query.search,
         categoryId: query.categoryId,
+        isVisible: query.isVisible,
       }),
     ]);
 
