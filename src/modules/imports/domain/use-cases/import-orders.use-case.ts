@@ -23,7 +23,7 @@ export class ImportOrdersUseCase {
     const now = new Date();
     let currentDate = new Date(now.getFullYear(), now.getMonth(), 1); // Start at the current month
     //const stopDate = new Date(2023, 9, 1); // Stop at Oct 1, 2023
-    const stopDate = new Date('2026-05-01 23:59:59');
+    const stopDate = new Date(2026, 5, 1);
 
     while (currentDate >= stopDate) {
       const year = currentDate.getFullYear();
@@ -140,7 +140,13 @@ export class ImportOrdersUseCase {
               const valorPedido = item.valorPedido || item.total || 0;
               const subtotal = valorPedido - taxaEntrega;
               const valorFinal = item.pagamento?.valores?.valorFinal || valorPedido;
-              const desconto = item.taxaAplicada?.valorDesconto || item.pagamento?.valores?.desconto || 0;
+              const desconto = item.taxaAplicada?.valorDesconto 
+                || item.pagamento?.taxaAplicada?.valorDesconto 
+                || item.logPagamento?.[0]?.taxaAplicada?.valorDesconto 
+                || item.pagamento?.valores?.desconto 
+                || 0;
+              const paymentMethodStr = item.pagamento?.descricao || item.payment_method || item.forma_pagamento || 'PIX';
+              const paymentTypeStr = paymentMethodStr.toUpperCase().includes('PIX') ? 'Online' : 'Na Entrega';
 
               const order = await this.prisma.order.upsert({
                 where: { externalId: item.id.toString() },
@@ -151,8 +157,8 @@ export class ImportOrdersUseCase {
                   totalOrder: valorPedido,
                   totalReceived: valorFinal,
                   paymentDiscount: desconto,
-                  paymentType: item.pagamento?.tipoPagamento?.tipo || item.payment_type || item.tipo_pagamento || 'Online',
-                  paymentMethod: item.pagamento?.descricao || item.payment_method || item.forma_pagamento || 'PIX',
+                  paymentType: paymentTypeStr,
+                  paymentMethod: paymentMethodStr,
                   street,
                   number,
                   neighborhood,
@@ -172,8 +178,8 @@ export class ImportOrdersUseCase {
                   totalOrder: valorPedido,
                   totalReceived: valorFinal,
                   paymentDiscount: desconto,
-                  paymentType: item.pagamento?.tipoPagamento?.tipo || item.payment_type || item.tipo_pagamento || 'Online',
-                  paymentMethod: item.pagamento?.descricao || item.payment_method || item.forma_pagamento || 'PIX',
+                  paymentType: paymentTypeStr,
+                  paymentMethod: paymentMethodStr,
                   street,
                   number,
                   neighborhood,
