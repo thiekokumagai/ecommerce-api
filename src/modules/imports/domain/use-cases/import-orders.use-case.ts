@@ -20,10 +20,12 @@ export class ImportOrdersUseCase {
   async execute() {
     this.logger.log('Starting orders import from Vendizap (Month by Month)');
 
-    let currentDate = new Date(2023, 0, 1); // Jan 1, 2023
     const now = new Date();
+    let currentDate = new Date(now.getFullYear(), now.getMonth(), 1); // Start at the current month
+    //const stopDate = new Date(2023, 9, 1); // Stop at Oct 1, 2023
+    const stopDate = new Date('2026-05-01 23:59:59');
 
-    while (currentDate <= now) {
+    while (currentDate >= stopDate) {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
 
@@ -63,8 +65,9 @@ export class ImportOrdersUseCase {
           for (const item of orders) {
             try {
               // 1. Customer upsert
-              const customerPhone = item.customer_phone || item.telefone || `NO-PHONE-${item.id}`;
-              const customerName = item.customer_name || item.nome || 'Imported Customer';
+              const clienteData = item.cliente || {};
+              const customerPhone = clienteData.telefone || item.customer_phone || item.telefone || `NO-PHONE-${item.id}`;
+              const customerName = clienteData.nome || item.customer_name || item.nome || 'Imported Customer';
               
               const customer = await this.prisma.customer.upsert({
                 where: { phone: customerPhone },
@@ -76,15 +79,14 @@ export class ImportOrdersUseCase {
               });
 
               // 2. CustomerAddress upsert
-              // Check if address data is present in order
-              const addressData = item.costumer_adress || item.customer_address || {};
-              const street = addressData.rua || addressData.street || item.street || item.rua || '';
-              const number = addressData.numero || addressData.number || item.number || item.numero || '';
-              const neighborhood = addressData.bairro || addressData.neighborhood || item.neighborhood || item.bairro || '';
-              const city = addressData.cidade || addressData.city || item.city || item.cidade || '';
-              const state = addressData.estado || addressData.state || item.state || item.estado || '';
-              const cep = addressData.cep || item.cep || '';
-              const complement = addressData.complemento || addressData.complement || item.complement || item.complemento || '';
+              const enderecoData = clienteData.endereco || item.costumer_adress || item.customer_address || {};
+              const street = String(enderecoData.logradouro || enderecoData.rua || enderecoData.street || item.street || item.rua || '');
+              const number = String(enderecoData.numero || enderecoData.number || item.number || item.numero || '');
+              const neighborhood = String(enderecoData.bairro || enderecoData.neighborhood || item.neighborhood || item.bairro || '');
+              const city = String(enderecoData.cidade || enderecoData.city || item.city || item.cidade || '');
+              const state = String(enderecoData.estado || enderecoData.state || item.state || item.estado || '');
+              const cep = String(enderecoData.cep || item.cep || '');
+              const complement = String(enderecoData.complemento || enderecoData.complement || item.complement || item.complemento || '');
 
               if (street) {
                 // Try to find if customer already has this address
@@ -111,47 +113,67 @@ export class ImportOrdersUseCase {
 
               // 3. Upsert order
               let createdAtDate: Date | undefined = undefined;
-              const rawDate = item.dt_criacao || item.created_at;
+              const rawDate = item.data || item.dt_criacao || item.created_at;
               if (rawDate) {
                 const parts = rawDate.split(' ');
-                if (parts[0] && parts[0].includes('/')) {
-                  const [day, month, year] = parts[0].split('/');
-                  const time = parts[1] || '00:00:00';
-                  const parsed = new Date(`${year}-${month}-${day}T${time}.000Z`);
-                  if (!isNaN(parsed.getTime())) {
-                    createdAtDate = parsed;
-                  }
+                const datePart = parts[0];
+                if (datePart) {
+                   if (datePart.includes('/')) {
+                     const [day, month, year] = datePart.split('/');
+                     const time = parts[1] || '00:00:00';
+                     const parsed = new Date(`${year}-${month}-${day}T${time}.000Z`);
+                     if (!isNaN(parsed.getTime())) {
+                       createdAtDate = parsed;
+                     }
+                   } else if (datePart.includes('-')) {
+                     // 2024-01-06 format
+                     const time = parts[1] || '00:00:00';
+                     const parsed = new Date(`${datePart}T${time}.000Z`);
+                     if (!isNaN(parsed.getTime())) {
+                       createdAtDate = parsed;
+                     }
+                   }
                 }
               }
+
+              const taxaEntrega = item.taxaEntrega || item.freight || item.frete || 0;
+              const valorPedido = item.valorPedido || item.total || 0;
+              const subtotal = valorPedido - taxaEntrega;
+              const valorFinal = item.pagamento?.valores?.valorFinal || valorPedido;
+              const desconto = item.taxaAplicada?.valorDesconto || item.pagamento?.valores?.desconto || 0;
+
               const order = await this.prisma.order.upsert({
                 where: { externalId: item.id.toString() },
                 update: {
                   status: 'COMPLETED',
-                  itemsTotal: item.subtotal || 0,
-                  freight: item.freight || item.frete || 0,
-                  totalOrder: item.total || 0,
-                  totalReceived: item.total || 0,
-                  paymentType: item.payment_type || item.tipo_pagamento || 'Online',
-                  paymentMethod: item.payment_method || item.forma_pagamento || 'PIX',
+                  itemsTotal: subtotal,
+                  freight: taxaEntrega,
+                  totalOrder: valorPedido,
+                  totalReceived: valorFinal,
+                  paymentDiscount: desconto,
+                  paymentType: item.pagamento?.tipoPagamento?.tipo || item.payment_type || item.tipo_pagamento || 'Online',
+                  paymentMethod: item.pagamento?.descricao || item.payment_method || item.forma_pagamento || 'PIX',
                   street,
                   number,
                   neighborhood,
                   city,
                   state,
                   cep,
-                  complement
+                  complement,
+                  isPrinted: true,
                 },
                 create: {
                   externalId: item.id.toString(),
                   customerId: customer.id,
                   customerName: customer.name,
                   customerPhone: customer.phone,
-                  itemsTotal: item.subtotal || 0,
-                  freight: item.freight || item.frete || 0,
-                  totalOrder: item.total || 0,
-                  totalReceived: item.total || 0,
-                  paymentType: item.payment_type || item.tipo_pagamento || 'Online',
-                  paymentMethod: item.payment_method || item.forma_pagamento || 'PIX',
+                  itemsTotal: subtotal,
+                  freight: taxaEntrega,
+                  totalOrder: valorPedido,
+                  totalReceived: valorFinal,
+                  paymentDiscount: desconto,
+                  paymentType: item.pagamento?.tipoPagamento?.tipo || item.payment_type || item.tipo_pagamento || 'Online',
+                  paymentMethod: item.pagamento?.descricao || item.payment_method || item.forma_pagamento || 'PIX',
                   street,
                   number,
                   neighborhood,
@@ -161,6 +183,7 @@ export class ImportOrdersUseCase {
                   complement,
                   status: 'COMPLETED',
                   paymentStatus: 'PAID',
+                  isPrinted: true,
                   ...(createdAtDate ? { createdAt: createdAtDate } : {}),
                 },
               });
@@ -176,6 +199,7 @@ export class ImportOrdersUseCase {
                 for (const orderItem of itensList) {
                   const itemExternalId = orderItem.id_produto || orderItem.product_id;
                   let productId: string | null = null;
+                  let productItemId: string | null = null;
 
                   if (itemExternalId) {
                     const product = await this.prisma.product.findUnique({
@@ -186,14 +210,41 @@ export class ImportOrdersUseCase {
                     }
                   }
 
+                  let variationName = orderItem.variacao || orderItem.variation || null;
+                  if (!variationName && orderItem.relacaoVariacao && orderItem.relacaoVariacao.length > 0) {
+                    const vars = orderItem.relacaoVariacao[0].variaveis;
+                    if (vars && vars.length > 0) {
+                      variationName = vars[0].nome;
+                    }
+                  }
+
+                  if (productId && variationName) {
+                    const pItem = await this.prisma.productItem.findFirst({
+                      where: {
+                        productId: productId,
+                        options: {
+                          some: {
+                            option: {
+                              value: variationName
+                            }
+                          }
+                        }
+                      }
+                    });
+                    if (pItem) {
+                      productItemId = pItem.id;
+                    }
+                  }
+
                   await this.prisma.orderItem.create({
                     data: {
                       orderId: order.id,
                       productId: productId,
-                      productName: orderItem.nome || orderItem.name || 'Produto Importado',
+                      productItemId: productItemId,
+                      productName: orderItem.descricao || orderItem.nome || orderItem.name || 'Produto Importado',
                       price: orderItem.preco || orderItem.price || 0,
                       quantity: orderItem.quantidade || orderItem.quantity || 1,
-                      variation: orderItem.variacao || orderItem.variation || null
+                      variation: variationName
                     }
                   });
                 }
@@ -214,7 +265,7 @@ export class ImportOrdersUseCase {
         }
       }
 
-      currentDate = new Date(year, month + 1, 1);
+      currentDate = new Date(year, month - 1, 1); // Go backwards one month
     }
 
     this.logger.log('Finished orders import');
