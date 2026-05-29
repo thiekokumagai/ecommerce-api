@@ -116,7 +116,11 @@ export class ImportProductsUseCase {
               imagesToMigrate = item.images.map((img: any) => img.url || img);
             }
 
-            if (imagesToMigrate.length > 0) {
+            const existingImages = await this.prisma.productImage.count({
+              where: { productId: product.id }
+            });
+
+            if (existingImages === 0 && imagesToMigrate.length > 0) {
               for (const img of imagesToMigrate) {
                 const migratedUrl = await this.imageMigrationService.migrateImage(
                   img,
