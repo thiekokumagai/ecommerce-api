@@ -164,7 +164,7 @@ export class ImportOrdersUseCase {
 
                 for (const orderItem of itensList) {
                   const itemExternalId = orderItem.id_produto || orderItem.product_id;
-                  let productId = null;
+                  let productId: string | null = null;
 
                   if (itemExternalId) {
                     const product = await this.prisma.product.findUnique({
