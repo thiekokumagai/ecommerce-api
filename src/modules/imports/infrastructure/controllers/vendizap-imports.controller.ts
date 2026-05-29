@@ -16,6 +16,7 @@ import { ImportProductImagesUseCase } from '../../domain/use-cases/import-produc
 import { ImportProductVariationsUseCase } from '../../domain/use-cases/import-product-variations.use-case';
 import { ImportOrdersUseCase } from '../../domain/use-cases/import-orders.use-case';
 import { ClearDatabaseUseCase } from '../../domain/use-cases/clear-database.use-case';
+import { FixProductCategoriesUseCase } from '../../domain/use-cases/fix-product-categories.use-case';
 
 @ApiTags('Imports')
 @ApiBearerAuth('access-token')
@@ -29,6 +30,7 @@ export class VendizapImportsController {
     private readonly importProductVariationsUseCase: ImportProductVariationsUseCase,
     private readonly importOrdersUseCase: ImportOrdersUseCase,
     private readonly clearDatabaseUseCase: ClearDatabaseUseCase,
+    private readonly fixProductCategoriesUseCase: FixProductCategoriesUseCase,
   ) {}
 
   @Post('categories')
@@ -52,6 +54,23 @@ export class VendizapImportsController {
       return res
         .status(HttpStatus.OK)
         .json({ message: 'Produtos importados com sucesso' });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
+    }
+  }
+
+  @Post('products/fix-categories')
+  async fixProductCategories(@Res() res: Response) {
+    try {
+      const result = await this.fixProductCategoriesUseCase.execute();
+      return res
+        .status(HttpStatus.OK)
+        .json({ 
+          message: 'Categorias de produtos corrigidas com sucesso',
+          data: result
+        });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

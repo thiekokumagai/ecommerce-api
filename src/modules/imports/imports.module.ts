@@ -9,6 +9,7 @@ import { ImportProductImagesUseCase } from './domain/use-cases/import-product-im
 import { ImportOrdersUseCase } from './domain/use-cases/import-orders.use-case';
 import { ImportProductVariationsUseCase } from './domain/use-cases/import-product-variations.use-case';
 import { ClearDatabaseUseCase } from './domain/use-cases/clear-database.use-case';
+import { FixProductCategoriesUseCase } from './domain/use-cases/fix-product-categories.use-case';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 @Module({
@@ -23,6 +24,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
     ImportProductImagesUseCase,
     ImportProductVariationsUseCase,
     ImportOrdersUseCase,
+    FixProductCategoriesUseCase,
     ClearDatabaseUseCase,
   ],
 })
