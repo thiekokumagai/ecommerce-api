@@ -74,6 +74,19 @@ export class ImportProductImagesUseCase {
                 const imgUrl = typeof img === 'string' ? img : img.url;
                 if (!imgUrl) continue;
 
+                const crypto = require('crypto');
+                const hash = crypto.createHash('md5').update(imgUrl).digest('hex');
+                const expectedFileName = `products/${hash}.webp`;
+
+                // Check if image already exists for this product in DB before migrating
+                const existing = await this.prisma.productImage.findFirst({
+                  where: { url: expectedFileName, productId: product.id },
+                });
+
+                if (existing) {
+                  continue; // Skip migration entirely, already in DB
+                }
+
                 const migratedUrl =
                   await this.imageMigrationService.migrateImage(
                     imgUrl,
@@ -81,19 +94,12 @@ export class ImportProductImagesUseCase {
                   );
 
                 if (migratedUrl) {
-                  // Check if image already exists for this product
-                  const existing = await this.prisma.productImage.findFirst({
-                    where: { url: migratedUrl, productId: product.id },
+                  await this.prisma.productImage.create({
+                    data: {
+                      url: migratedUrl,
+                      productId: product.id,
+                    },
                   });
-
-                  if (!existing) {
-                    await this.prisma.productImage.create({
-                      data: {
-                        url: migratedUrl,
-                        productId: product.id,
-                      },
-                    });
-                  }
                 }
               }
               this.logger.log(

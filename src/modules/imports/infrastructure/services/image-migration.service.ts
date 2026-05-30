@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import { MinioService } from '../../../../minio/minio.service';
-import { v4 as uuidv4 } from 'uuid';
+import * as crypto from 'crypto';
 import sharp from 'sharp';
 
 @Injectable()
@@ -16,13 +16,25 @@ export class ImageMigrationService {
   ): Promise<string | null> {
     if (!imageUrl) return null;
 
+    // Se a imagem já é um path interno gerado anteriormente
+    if (imageUrl.startsWith(`${folder}/`)) {
+      return imageUrl;
+    }
+
     try {
+      const hash = crypto.createHash('md5').update(imageUrl).digest('hex');
+      const expectedFileName = `${folder}/${hash}.webp`;
+
+      // Verifica se a imagem já existe no MinIO para evitar re-upload
+      const exists = await this.minioService.fileExists(expectedFileName);
+      if (exists) {
+        return expectedFileName;
+      }
+
       const response = await axios.get(imageUrl, {
         responseType: 'arraybuffer',
       });
       const originalBuffer = Buffer.from(response.data, 'binary');
-
-      const uuid = uuidv4();
 
       // Process main image (800x800 webp)
       const mainBuffer = await sharp(originalBuffer)
@@ -32,7 +44,7 @@ export class ImageMigrationService {
 
       const mainUpload = await this.minioService.uploadFile(
         {
-          customName: `${uuid}.webp`,
+          customName: `${hash}.webp`,
           buffer: mainBuffer,
           size: mainBuffer.length,
           mimetype: 'image/webp',
@@ -48,7 +60,7 @@ export class ImageMigrationService {
 
       await this.minioService.uploadFile(
         {
-          customName: `${uuid}-thumb.webp`,
+          customName: `${hash}-thumb.webp`,
           buffer: thumbBuffer,
           size: thumbBuffer.length,
           mimetype: 'image/webp',
