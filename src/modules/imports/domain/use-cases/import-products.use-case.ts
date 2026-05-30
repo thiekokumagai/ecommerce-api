@@ -116,14 +116,25 @@ export class ImportProductsUseCase {
               imagesToMigrate = item.images.map((img: any) => img.url || img);
             }
 
-            const existingImages = await this.prisma.productImage.count({
-              where: { productId: product.id }
-            });
-
-            if (existingImages === 0 && imagesToMigrate.length > 0) {
+            if (imagesToMigrate.length > 0) {
+              const crypto = require('crypto');
               for (const img of imagesToMigrate) {
+                const imgUrl = typeof img === 'string' ? img : img.url;
+                if (!imgUrl) continue;
+
+                const hash = crypto.createHash('md5').update(imgUrl).digest('hex');
+                const expectedFileName = `products/${hash}.webp`;
+
+                const existing = await this.prisma.productImage.findFirst({
+                  where: { url: expectedFileName, productId: product.id }
+                });
+
+                if (existing) {
+                  continue; // se ja existe imagem nao altera no banco e nem sobe no minio
+                }
+
                 const migratedUrl = await this.imageMigrationService.migrateImage(
-                  img,
+                  imgUrl,
                   'products',
                 );
                 if (migratedUrl) {

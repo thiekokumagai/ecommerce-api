@@ -24,7 +24,19 @@ export class ImportCategoriesUseCase {
       try {
         let imageUrl = item.imagem || item.image;
         if (imageUrl) {
-          imageUrl = await this.imageMigrationService.migrateImage(imageUrl, 'categories');
+          const crypto = require('crypto');
+          const hash = crypto.createHash('md5').update(imageUrl).digest('hex');
+          const expectedFileName = `categories/${hash}.webp`;
+
+          const existingCategory = await this.prisma.category.findUnique({
+            where: { externalId: item.id.toString() }
+          });
+
+          if (existingCategory && existingCategory.image === expectedFileName) {
+            imageUrl = expectedFileName; // skip migration, already in minio and db
+          } else {
+            imageUrl = await this.imageMigrationService.migrateImage(imageUrl, 'categories');
+          }
         }
 
         await this.prisma.category.upsert({
