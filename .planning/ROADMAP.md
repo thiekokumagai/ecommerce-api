@@ -316,3 +316,16 @@ Planos:
 - [x] 22-01: Atualização do Prisma Schema
 - [x] 22-02: Lógica de Vinculação Automática no Repositório de Pedidos
 - [x] 22-03: Módulo de Clientes (Clean Architecture)
+
+---
+
+### Fase 26: Quando criar pedido e zerar produto desabilitar ele, caso cancelar o pedido adicionar o estoque de volta
+
+**Objetivo:** [A ser planejado]
+**Requisitos**: TBD
+**Depende de:** Fase 25
+**Planos:** 1/1 planos concluídos
+
+Planos:
+
+- [x] 26-01: Desabilitar e reabilitar produto conforme o estoque nas operações do pedido

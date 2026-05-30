@@ -64,6 +64,7 @@ Progresso: [██████████] 100%
 - Fase 23 adicionada: Módulo importação vendizap
 - Fase 24 adicionada: criar pedidos cliente fazer no back e front cliente
 - Fase 25 adicionada: Rota pedido cliente especifica, implementação no front cliente
+- Fase 26 adicionada: Quando criar pedido e zerar produto desabilitar ele, caso cancelar o pedido adicionar o estoque de volta
 
 ### Decisões
 

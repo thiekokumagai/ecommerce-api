@@ -332,6 +332,18 @@ export class PrismaOrdersRepository implements IOrdersRepository {
             },
           });
 
+          // Check if total stock for this product is 0 or less, if so disable it
+          const allItems = await tx.productItem.findMany({
+            where: { productId: item.productId },
+          });
+          const totalStock = allItems.reduce((acc, curr) => acc + curr.stock, 0);
+          if (totalStock <= 0) {
+            await tx.product.update({
+              where: { id: item.productId },
+              data: { isVisible: false },
+            });
+          }
+
           item.productItemId = productItem.id;
         }
       }
@@ -491,6 +503,13 @@ export class PrismaOrdersRepository implements IOrdersRepository {
               },
             },
           });
+
+          if (item.productId) {
+            await tx.product.update({
+              where: { id: item.productId },
+              data: { isVisible: true },
+            });
+          }
         }
       }
 
