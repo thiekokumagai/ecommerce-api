@@ -148,8 +148,12 @@ export class ImportOrdersUseCase {
                 || item.logPagamento?.[0]?.taxaAplicada?.valorDesconto 
                 || item.pagamento?.valores?.desconto 
                 || 0;
-              const paymentMethodStr = item.pagamento?.descricao || item.payment_method || item.forma_pagamento || 'PIX';
-              const paymentTypeStr = paymentMethodStr.toUpperCase().includes('PIX') ? 'Online' : 'Na Entrega';
+              let paymentMethodStr = item.pagamento?.descricao || item.payment_method || item.forma_pagamento || 'PIX';
+              if (paymentMethodStr.toUpperCase().includes('PIX')) paymentMethodStr = 'pix';
+              else if (paymentMethodStr.toUpperCase().includes('CRÉDITO') || paymentMethodStr.toUpperCase().includes('CREDITO')) paymentMethodStr = 'credito';
+              else if (paymentMethodStr.toUpperCase().includes('DÉBITO') || paymentMethodStr.toUpperCase().includes('DEBITO')) paymentMethodStr = 'debito';
+              else if (paymentMethodStr.toUpperCase().includes('DINHEIRO')) paymentMethodStr = 'dinheiro';
+              const paymentTypeStr = paymentMethodStr.toUpperCase().includes('PIX') ? 'online' : 'entrega';
 
               const order = await this.prisma.order.upsert({
                 where: { externalId: item.id.toString() },

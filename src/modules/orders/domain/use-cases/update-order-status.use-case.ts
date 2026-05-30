@@ -63,6 +63,10 @@ export class UpdateOrderStatusUseCase {
               'Cartão de Débito': 'debit',
               PIX: 'pix',
               Dinheiro: 'cash',
+              'credito': 'credit',
+              'debito': 'debit',
+              'pix': 'pix',
+              'dinheiro': 'cash',
             };
 
             const normalizedMethod = methodMap[order.paymentMethod || ''];
