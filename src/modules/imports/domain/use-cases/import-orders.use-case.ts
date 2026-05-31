@@ -154,6 +154,7 @@ export class ImportOrdersUseCase {
               else if (paymentMethodStr.toUpperCase().includes('DÉBITO') || paymentMethodStr.toUpperCase().includes('DEBITO')) paymentMethodStr = 'debito';
               else if (paymentMethodStr.toUpperCase().includes('DINHEIRO')) paymentMethodStr = 'dinheiro';
               const paymentTypeStr = paymentMethodStr.toUpperCase().includes('PIX') ? 'online' : 'entrega';
+              const parcelas = Number(item.parcelas || item.pagamento?.parcelas || 1);
 
               const order = await this.prisma.order.upsert({
                 where: { externalId: item.id.toString() },
@@ -174,6 +175,7 @@ export class ImportOrdersUseCase {
                   cep,
                   complement,
                   isPrinted: true,
+                  installments: parcelas,
                   ...(createdAtDate ? { createdAt: createdAtDate, paymentDate: createdAtDate } : {}),
                 },
                 create: {
@@ -198,6 +200,7 @@ export class ImportOrdersUseCase {
                   status: 'COMPLETED',
                   paymentStatus: 'PAID',
                   isPrinted: true,
+                  installments: parcelas,
                   ...(createdAtDate ? { createdAt: createdAtDate, paymentDate: createdAtDate } : {}),
                 },
               });
