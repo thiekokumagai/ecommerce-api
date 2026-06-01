@@ -150,10 +150,10 @@ export class ImportOrdersUseCase {
                 || 0;
               let paymentMethodStr = item.pagamento?.descricao || item.payment_method || item.forma_pagamento || 'PIX';
               if (paymentMethodStr.toUpperCase().includes('PIX')) paymentMethodStr = 'pix';
-              else if (paymentMethodStr.toUpperCase().includes('CRÉDITO') || paymentMethodStr.toUpperCase().includes('CREDITO')) paymentMethodStr = 'credito';
-              else if (paymentMethodStr.toUpperCase().includes('DÉBITO') || paymentMethodStr.toUpperCase().includes('DEBITO')) paymentMethodStr = 'debito';
-              else if (paymentMethodStr.toUpperCase().includes('DINHEIRO')) paymentMethodStr = 'dinheiro';
-              const paymentTypeStr = paymentMethodStr.toUpperCase().includes('PIX') ? 'online' : 'entrega';
+              else if (paymentMethodStr.toUpperCase().includes('CRÉDITO') || paymentMethodStr.toUpperCase().includes('CREDITO')) paymentMethodStr = 'credit';
+              else if (paymentMethodStr.toUpperCase().includes('DÉBITO') || paymentMethodStr.toUpperCase().includes('DEBITO')) paymentMethodStr = 'debit';
+              else if (paymentMethodStr.toUpperCase().includes('DINHEIRO')) paymentMethodStr = 'cash';
+              const paymentTypeStr = paymentMethodStr === 'pix' ? 'online' : 'entrega';
               const parcelas = Number(item.parcelas || item.pagamento?.parcelas || 1);
 
               const order = await this.prisma.order.upsert({
