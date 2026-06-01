@@ -41,6 +41,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       street: record.street,
       number: record.number,
       neighborhood: record.neighborhood,
+      city: record.city,
       state: record.state,
       cep: record.cep,
       complement: record.complement,
