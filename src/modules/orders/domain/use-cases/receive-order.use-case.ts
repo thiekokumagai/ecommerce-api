@@ -95,12 +95,19 @@ export class ReceiveOrderUseCase {
     let cardFee = 0;
     const methodMap: Record<string, string> = {
       'Cartão de Crédito': 'credit',
+      'credito': 'credit',
+      'credit': 'credit',
       'Cartão de Débito': 'debit',
-      PIX: 'pix',
-      Dinheiro: 'cash',
+      'debito': 'debit',
+      'debit': 'debit',
+      'PIX': 'pix',
+      'pix': 'pix',
+      'Dinheiro': 'cash',
+      'dinheiro': 'cash',
+      'cash': 'cash',
     };
 
-    const normalizedMethod = methodMap[order.paymentMethod];
+    const normalizedMethod = methodMap[order.paymentMethod] || order.paymentMethod;
     if (normalizedMethod) {
       const settings = await this.settingsRepository.get();
       if (settings && Array.isArray(settings.paymentRules)) {

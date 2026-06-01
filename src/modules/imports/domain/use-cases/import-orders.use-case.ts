@@ -20,6 +20,10 @@ export class ImportOrdersUseCase {
   async execute() {
     this.logger.log('Starting orders import from Vendizap (Month by Month)');
 
+    // Puxa as regras de pagamento para calcular cardFee na importação
+    const settings = await this.prisma.storeSettings.findFirst();
+    const rules = settings && Array.isArray(settings.paymentRules) ? settings.paymentRules : [];
+
     const now = new Date();
     let currentDate = new Date(now.getFullYear(), now.getMonth(), 1); // Start at the current month
     //const stopDate = new Date(2023, 9, 1); // Stop at Oct 1, 2023
@@ -156,6 +160,24 @@ export class ImportOrdersUseCase {
               const paymentTypeStr = paymentMethodStr === 'pix' ? 'online' : 'entrega';
               const parcelas = Number(item.parcelas || item.pagamento?.parcelas || 1);
 
+              let cardFee = 0;
+              let matchingRule: any = null;
+              if (paymentMethodStr === 'credit') {
+                matchingRule = rules.find((r: any) =>
+                  r.paymentMethod === 'credit' && r.type === 'charge' &&
+                  parcelas >= (r.parcelaMin || 0) && parcelas <= (r.parcelaMax || 99)
+                );
+              } else {
+                matchingRule = rules.find((r: any) =>
+                  r.paymentMethod === paymentMethodStr && r.type === 'charge'
+                );
+              }
+
+              if (matchingRule && typeof matchingRule.value === 'number') {
+                const rawFee = valorFinal * (matchingRule.value / 100);
+                cardFee = Math.round(rawFee * 100) / 100;
+              }
+
               const order = await this.prisma.order.upsert({
                 where: { externalId: item.id.toString() },
                 update: {
@@ -167,6 +189,7 @@ export class ImportOrdersUseCase {
                   paymentDiscount: desconto,
                   paymentType: paymentTypeStr,
                   paymentMethod: paymentMethodStr,
+                  cardFee: cardFee,
                   street,
                   number,
                   neighborhood,
@@ -190,6 +213,7 @@ export class ImportOrdersUseCase {
                   paymentDiscount: desconto,
                   paymentType: paymentTypeStr,
                   paymentMethod: paymentMethodStr,
+                  cardFee: cardFee,
                   street,
                   number,
                   neighborhood,
