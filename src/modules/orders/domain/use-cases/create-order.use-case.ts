@@ -3,6 +3,8 @@ import { IOrdersRepository } from '../repositories/iorders.repository';
 import { Order } from '../entities/order.entity';
 import { ValidateCouponUseCase } from '../../../coupons/domain/use-cases/validate-coupon.use-case';
 import type { ICouponsRepository } from '../../../coupons/domain/repositories/icoupons.repository';
+import { PushNotificationService } from '../../../../shared/services/push-notification.service';
+import { IUsersRepository } from '../../../users/domain/repositories/iusers.repository';
 
 @Injectable()
 export class CreateOrderUseCase {
@@ -11,6 +13,8 @@ export class CreateOrderUseCase {
     private readonly validateCouponUseCase: ValidateCouponUseCase,
     @Inject('ICouponsRepository')
     private readonly couponsRepository: ICouponsRepository,
+    private readonly pushNotificationService: PushNotificationService,
+    private readonly usersRepository: IUsersRepository,
   ) {}
 
   async execute(
@@ -77,6 +81,22 @@ export class CreateOrderUseCase {
             currentUses: coupon.currentUses + 1,
           });
         }
+      }
+
+      // Disparar Notificação Push
+      try {
+        const admins = await this.usersRepository.findAll();
+        const tokens = admins.map(u => u.expoPushToken).filter(Boolean) as string[];
+        if (tokens.length > 0) {
+          this.pushNotificationService.sendNotifications(
+            tokens,
+            'Novo Pedido Recebido! 🛍️',
+            `Pedido #${savedOrder.orderNumber} - R$ ${Number(savedOrder.totalOrder).toFixed(2).replace('.', ',')} de ${savedOrder.customerName}`,
+            { orderId: savedOrder.id }
+          ).catch(e => console.error(e));
+        }
+      } catch (err) {
+        console.error('Erro ao buscar tokens para notificação', err);
       }
 
       return savedOrder;

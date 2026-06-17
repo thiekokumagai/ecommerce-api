@@ -5,6 +5,7 @@ import { IUsersRepository } from './domain/repositories/iusers.repository';
 import { ListUsersUseCase } from './domain/use-cases/list-users.use-case';
 import { CreateUserUseCase } from './domain/use-cases/create-user.use-case';
 import { DeleteUserUseCase } from './domain/use-cases/delete-user.use-case';
+import { UpdatePushTokenUseCase } from './domain/use-cases/update-push-token.use-case';
 
 @Module({
   controllers: [UsersController],
@@ -12,6 +13,7 @@ import { DeleteUserUseCase } from './domain/use-cases/delete-user.use-case';
     ListUsersUseCase,
     CreateUserUseCase,
     DeleteUserUseCase,
+    UpdatePushTokenUseCase,
     {
       provide: IUsersRepository,
       useClass: PrismaUsersRepository,

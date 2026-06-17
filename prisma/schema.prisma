@@ -19,6 +19,7 @@ model User {
   password     String
   role         Role     @default(USER)
   refreshToken String?
+  expoPushToken String?
   createdAt    DateTime @default(now())
 
   @@map("users")
