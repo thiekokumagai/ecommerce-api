@@ -15,8 +15,8 @@ import { CreateUserUseCase } from '../../domain/use-cases/create-user.use-case';
 import { DeleteUserUseCase } from '../../domain/use-cases/delete-user.use-case';
 import { UpdatePushTokenUseCase } from '../../domain/use-cases/update-push-token.use-case';
 import { UpdatePushTokenDto } from '../dtos/update-push-token.dto';
-import { CurrentUser } from '../../../../modules/auth/decorators/current-user.decorator';
-import { JwtPayload } from '../../../../modules/auth/infrastructure/types/jwt-payload.type';
+import { CurrentUser } from '../../../auth/infrastructure/decorators/current-user.decorator';
+import type { JwtPayload } from '../../../auth/infrastructure/types/jwt-payload.type';
 
 @ApiTags('Users')
 @ApiBearerAuth('access-token')

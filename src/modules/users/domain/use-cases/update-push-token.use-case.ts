@@ -10,7 +10,7 @@ export class UpdatePushTokenUseCase {
     const user = await this.usersRepository.findById(userId);
     
     if (!user) {
-      throw new UserNotFoundError();
+      throw new UserNotFoundError(userId);
     }
 
     await this.usersRepository.update(userId, { expoPushToken });
