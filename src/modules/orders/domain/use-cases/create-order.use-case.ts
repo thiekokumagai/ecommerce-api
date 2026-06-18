@@ -87,6 +87,7 @@ export class CreateOrderUseCase {
       try {
         const admins = await this.usersRepository.findAll();
         const tokens = admins.map(u => u.expoPushToken).filter(Boolean) as string[];
+        console.log(`[Push Notification] Found ${tokens.length} tokens to send notifications.`);
         if (tokens.length > 0) {
           this.pushNotificationService.sendNotifications(
             tokens,

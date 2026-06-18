@@ -27,9 +27,18 @@ export class PushNotificationService {
     const chunks = this.expo.chunkPushNotifications(messages);
     for (const chunk of chunks) {
       try {
-        await this.expo.sendPushNotificationsAsync(chunk);
+        const ticketChunks = await this.expo.sendPushNotificationsAsync(chunk);
+        console.log('Push notification tickets:', ticketChunks);
+        for (const ticket of ticketChunks) {
+          if (ticket.status === 'error') {
+            console.error('Expo Push Error (Ticket):', ticket.message);
+            if (ticket.details && (ticket.details as any).error) {
+              console.error('Expo Push Error Code:', (ticket.details as any).error);
+            }
+          }
+        }
       } catch (error) {
-        console.error('Error sending push notification', error);
+        console.error('Exception sending push notification chunk:', error);
       }
     }
   }
