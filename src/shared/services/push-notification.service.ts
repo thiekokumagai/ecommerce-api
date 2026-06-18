@@ -3,7 +3,7 @@ import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 
 @Injectable()
 export class PushNotificationService {
-  private expo = new Expo();
+  private expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
 
   async sendNotifications(tokens: string[], title: string, body: string, data?: any) {
     if (!tokens || tokens.length === 0) return;
