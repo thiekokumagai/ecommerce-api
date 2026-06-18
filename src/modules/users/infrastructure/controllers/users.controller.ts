@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+
+import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserResponseDto } from '../dtos/user-response.dto';
@@ -20,6 +22,7 @@ import type { JwtPayload } from '../../../auth/infrastructure/types/jwt-payload.
 
 @ApiTags('Users')
 @ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(
