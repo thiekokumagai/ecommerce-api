@@ -51,7 +51,7 @@ export class CreateProductItemsUseCase {
       await this.productsRepository.updateSimpleItemTransaction(
         productId,
         item.stock,
-        item.sku,
+
       );
 
       return this.productsRepository.listItems(productId);
@@ -108,7 +108,7 @@ export class CreateProductItemsUseCase {
 
       if (requestHashes.has(hash)) {
         throw new ConflictException(
-          'Não pode existir duplicação de combinação de item (SKU)',
+          'Não pode existir duplicação de combinação de item',
         );
       }
 
@@ -156,7 +156,7 @@ export class CreateProductItemsUseCase {
         const optionIds = this.extractOptionIds(item.options);
         return {
           stock: item.stock,
-          sku: item.sku,
+
           hash: this.generateHash(optionIds),
           optionIds,
         };

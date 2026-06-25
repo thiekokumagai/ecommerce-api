@@ -33,11 +33,6 @@ export class CreateProductItemInputDto {
   @IsInt()
   @Min(0)
   stock: number;
-
-  @ApiPropertyOptional({ example: 'SKU-001' })
-  @IsOptional()
-  @IsString()
-  sku?: string;
 }
 
 export class CreateProductItemsDto {
@@ -45,7 +40,7 @@ export class CreateProductItemsDto {
     type: [CreateProductItemInputDto],
     example: [
       {
-        sku: 'SKU-001',
+
         stock: 10,
       },
     ],

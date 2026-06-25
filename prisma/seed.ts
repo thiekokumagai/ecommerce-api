@@ -62,7 +62,7 @@ async function main() {
       id: productItemId,
       productId: productId,
       stock: 100,
-      sku: 'NASTY-PFL-35',
+
       hash: '35mg',
     },
   });

@@ -267,7 +267,7 @@ export class PrismaProductsRepository implements IProductsRepository {
     variationStructureChanged: boolean,
     itemsToCreate: {
       stock: number;
-      sku?: string | null;
+
       hash: string;
       optionIds: string[];
     }[],
@@ -292,7 +292,7 @@ export class PrismaProductsRepository implements IProductsRepository {
           data: {
             productId,
             stock: item.stock,
-            sku: item.sku,
+
             hash: item.hash,
           },
         });
@@ -310,7 +310,7 @@ export class PrismaProductsRepository implements IProductsRepository {
   async updateSimpleItemTransaction(
     productId: string,
     stock: number,
-    sku?: string | null,
+
     hash?: string,
   ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
@@ -322,7 +322,7 @@ export class PrismaProductsRepository implements IProductsRepository {
         data: {
           productId,
           stock: stock,
-          sku: sku,
+
           hash: hash || `simple_${productId}`,
         },
       });
@@ -464,7 +464,7 @@ export class PrismaProductsRepository implements IProductsRepository {
           productId,
           stock: 0,
           hash: `simple_${productId}`,
-          sku: null,
+
         },
       });
     });
@@ -558,7 +558,7 @@ export class PrismaProductsRepository implements IProductsRepository {
           data: {
             productId: clone.id,
             stock: 0,
-            sku: original.items[0]?.sku ?? null,
+
             hash: `simple_${clone.id}`,
           },
         });
@@ -568,7 +568,7 @@ export class PrismaProductsRepository implements IProductsRepository {
             data: {
               productId: clone.id,
               stock: 0,
-              sku: item.sku ?? null,
+
               hash: item.hash,
             },
           });

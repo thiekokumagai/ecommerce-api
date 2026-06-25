@@ -76,7 +76,7 @@ export class ImportProductVariationsUseCase {
                 const rawTitulo = combinacaoKeys[0]; // Ex: "TEOR DE NICOTINA"
                 const valorOpcao = comb.combinacao[rawTitulo]; // Ex: "35mg"
                 const estoque = comb.quantidade || 0;
-                const sku = comb.id?.$oid || null;
+
 
                 // Mapeamento amigável para coincidir com a variação "Nicotina" já criada localmente
                 let tituloVariacao = rawTitulo;
@@ -156,14 +156,14 @@ export class ImportProductVariationsUseCase {
                       productId: product.id,
                       hash: hash,
                       stock: estoque,
-                      sku: sku,
+
                     },
                   });
                 } else {
-                  // Atualizar o estoque e SKU se já existir
+                  // Atualizar o estoque se já existir
                   await this.prisma.productItem.update({
                     where: { id: productItem.id },
-                    data: { stock: estoque, sku: sku },
+                    data: { stock: estoque },
                   });
                 }
 
@@ -205,7 +205,7 @@ export class ImportProductVariationsUseCase {
                     productId: product.id,
                     hash: `simple_${product.id}`,
                     stock: estoqueSimples,
-                    sku: vendizapProduct.codigo || null,
+
                   },
                 });
               } else {
@@ -213,7 +213,7 @@ export class ImportProductVariationsUseCase {
                   where: { id: productItem.id },
                   data: { 
                     stock: estoqueSimples, 
-                    sku: vendizapProduct.codigo || productItem.sku 
+
                   },
                 });
               }

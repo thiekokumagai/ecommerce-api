@@ -118,7 +118,7 @@ model ProductItem {
   id        String  @id @default(uuid())
   productId String
   stock     Int     @default(0)
-  sku       String?
+
 
   hash      String
   createdAt DateTime @default(now())

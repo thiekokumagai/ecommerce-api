@@ -59,7 +59,7 @@ class ProductItemDto {
   stock: number;
 
   @ApiProperty({ required: false, nullable: true })
-  sku?: string | null;
+
 
   @ApiProperty()
   hash: string;

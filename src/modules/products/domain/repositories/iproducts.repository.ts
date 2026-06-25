@@ -79,7 +79,7 @@ export abstract class IProductsRepository {
     variationStructureChanged: boolean,
     itemsToCreate: {
       stock: number;
-      sku?: string | null;
+
       hash: string;
       optionIds: string[];
     }[],
@@ -88,7 +88,7 @@ export abstract class IProductsRepository {
   abstract updateSimpleItemTransaction(
     productId: string,
     stock: number,
-    sku?: string | null,
+
     hash?: string,
   ): Promise<void>;
 
