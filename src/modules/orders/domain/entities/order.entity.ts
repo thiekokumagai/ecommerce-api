@@ -21,6 +21,7 @@ export interface OrderItem {
   quantity: number;
   variation: string | null;
   imageUrl?: string;
+  costPrice?: number;
 }
 
 export class Order {

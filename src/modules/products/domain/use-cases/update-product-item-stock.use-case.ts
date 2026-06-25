@@ -5,12 +5,20 @@ import { IProductsRepository } from '../repositories/iproducts.repository';
 export class UpdateProductItemStockUseCase {
   constructor(private readonly productsRepository: IProductsRepository) {}
 
-  async execute(itemId: string, dto: { stock: number }) {
+  async execute(
+    itemId: string,
+    dto: { type: 'ADD' | 'SUBTRACT' | 'SET'; quantity: number; observation?: string },
+  ) {
     const item = await this.productsRepository.findItemById(itemId);
     if (!item) {
       throw new NotFoundException('Item do produto não encontrado');
     }
 
-    return this.productsRepository.updateItemStock(itemId, dto.stock);
+    return this.productsRepository.updateItemStock(
+      itemId,
+      dto.type,
+      dto.quantity,
+      dto.observation,
+    );
   }
 }

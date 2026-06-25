@@ -46,6 +46,7 @@ import { AttachProductVariationsUseCase } from '../../domain/use-cases/attach-pr
 import { CreateProductItemsUseCase } from '../../domain/use-cases/create-product-items.use-case';
 import { ListProductItemsUseCase } from '../../domain/use-cases/list-product-items.use-case';
 import { UpdateProductItemStockUseCase } from '../../domain/use-cases/update-product-item-stock.use-case';
+import { GetStockHistoryUseCase } from '../../domain/use-cases/get-stock-history.use-case';
 import { ManageProductImagesUseCase } from '../../domain/use-cases/manage-product-images.use-case';
 import { DeleteProductUseCase } from '../../domain/use-cases/delete-product.use-case';
 import { DeleteProductVariationUseCase } from '../../domain/use-cases/delete-product-variation.use-case';
@@ -67,6 +68,7 @@ export class ProductsController {
     private readonly createProductItemsUseCase: CreateProductItemsUseCase,
     private readonly listProductItemsUseCase: ListProductItemsUseCase,
     private readonly updateProductItemStockUseCase: UpdateProductItemStockUseCase,
+    private readonly getStockHistoryUseCase: GetStockHistoryUseCase,
     private readonly manageProductImagesUseCase: ManageProductImagesUseCase,
     private readonly deleteProductUseCase: DeleteProductUseCase,
     private readonly deleteProductVariationUseCase: DeleteProductVariationUseCase,
@@ -160,6 +162,12 @@ export class ProductsController {
     @Body() dto: UpdateProductItemStockDto,
   ) {
     return this.updateProductItemStockUseCase.execute(itemId, dto);
+  }
+
+  @Get(':id/stock-history')
+  @ApiOperation({ summary: 'Obter histórico de movimentações de estoque' })
+  getStockHistory(@Param('id') id: string) {
+    return this.getStockHistoryUseCase.execute(id);
   }
 
   @Post(':id/images')

@@ -96,7 +96,14 @@ export abstract class IProductsRepository {
 
   abstract findItemById(itemId: string): Promise<{ id: string } | null>;
 
-  abstract updateItemStock(itemId: string, stock: number): Promise<any>;
+  abstract updateItemStock(
+    itemId: string,
+    type: 'ADD' | 'SUBTRACT' | 'SET',
+    quantity: number,
+    observation?: string,
+  ): Promise<any>;
+
+  abstract getStockHistory(productId: string): Promise<any[]>;
 
   abstract softDelete(id: string): Promise<string[]>; // Returns imageUrls
 

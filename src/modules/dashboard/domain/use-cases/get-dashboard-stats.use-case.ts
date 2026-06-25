@@ -73,6 +73,17 @@ export class GetDashboardStatsUseCase {
 
     const ticketMedio = totalPedidos > 0 ? totalVendas / totalPedidos : 0;
 
+    // 2.5 Count Active and Inactive Products
+    const baseProductWhere = filters.categoryId ? { categoryId: filters.categoryId, deletedAt: null } : { deletedAt: null };
+    
+    const produtosAtivos = await this.prisma.product.count({
+      where: { ...baseProductWhere, isVisible: true },
+    });
+    
+    const produtosInativos = await this.prisma.product.count({
+      where: { ...baseProductWhere, isVisible: false },
+    });
+
     // 3. Dynamic Chart Data based on time range
     const diffTime = Math.abs(end.getTime() - start.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -283,6 +294,8 @@ export class GetDashboardStatsUseCase {
         totalPedidos,
         ticketMedio,
         totalProdutosVendidos,
+        produtosAtivos,
+        produtosInativos,
       },
       chartData,
       bestSellers,

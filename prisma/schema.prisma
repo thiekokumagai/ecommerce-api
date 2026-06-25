@@ -85,6 +85,7 @@ model Product {
   description         String?            @db.Text
   descriptionFormated String?            @db.Text
   orderItems          OrderItem[]
+  stockMovements      StockMovement[]
 
   @@map("products")
 }
@@ -126,6 +127,7 @@ model ProductItem {
   product    Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
   options    ProductItemOption[]
   orderItems OrderItem[]
+  stockMovements StockMovement[]
 
   @@unique([productId, hash])
   @@index([productId])
@@ -402,4 +404,30 @@ model ImportJob {
   updatedAt    DateTime @updatedAt
 
   @@map("import_jobs")
+}
+
+enum StockMovementType {
+  ADD
+  SUBTRACT
+  SET
+}
+
+model StockMovement {
+  id            String            @id @default(uuid())
+  type          StockMovementType
+  quantity      Int
+  previousStock Int
+  newStock      Int
+  observation   String?           @db.Text
+  createdAt     DateTime          @default(now())
+  
+  productId     String
+  product       Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  productItemId String?
+  productItem   ProductItem?      @relation(fields: [productItemId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([productItemId])
+  @@map("stock_movements")
 }

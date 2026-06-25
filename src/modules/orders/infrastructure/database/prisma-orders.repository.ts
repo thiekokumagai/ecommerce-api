@@ -78,6 +78,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
             quantity: item.quantity,
             variation: item.variation || null,
             imageUrl,
+            costPrice: item.product?.costPrice ? Number(item.product.costPrice) : 0,
           };
         }) ?? [],
     });
@@ -169,7 +170,11 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         },
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: true,
+          }
+        },
       },
       orderBy: {
         paymentDate: 'desc',

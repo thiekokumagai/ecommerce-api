@@ -353,16 +353,67 @@ export class PrismaProductsRepository implements IProductsRepository {
     });
   }
 
-  async updateItemStock(itemId: string, stock: number): Promise<any> {
-    return this.prisma.productItem.update({
-      where: { id: itemId },
-      data: { stock },
+  async updateItemStock(
+    itemId: string,
+    type: 'ADD' | 'SUBTRACT' | 'SET',
+    quantity: number,
+    observation?: string,
+  ): Promise<any> {
+    return this.prisma.$transaction(async (tx) => {
+      const item = await tx.productItem.findUnique({ where: { id: itemId } });
+      if (!item) throw new NotFoundException('Item não encontrado');
+
+      let newStock = item.stock;
+      if (type === 'ADD') newStock += quantity;
+      else if (type === 'SUBTRACT') newStock = Math.max(0, newStock - quantity);
+      else if (type === 'SET') newStock = quantity;
+
+      const updatedItem = await tx.productItem.update({
+        where: { id: itemId },
+        data: { stock: newStock },
+        include: {
+          options: {
+            include: {
+              option: {
+                include: {
+                  variation: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      await tx.stockMovement.create({
+        data: {
+          type,
+          quantity,
+          previousStock: item.stock,
+          newStock,
+          observation,
+          productId: item.productId,
+          productItemId: item.id,
+        },
+      });
+
+      return updatedItem;
+    });
+  }
+
+  async getStockHistory(productId: string): Promise<any[]> {
+    return this.prisma.stockMovement.findMany({
+      where: { productId },
+      orderBy: { createdAt: 'desc' },
       include: {
-        options: {
+        productItem: {
           include: {
-            option: {
+            options: {
               include: {
-                variation: true,
+                option: {
+                  include: {
+                    variation: true,
+                  },
+                },
               },
             },
           },

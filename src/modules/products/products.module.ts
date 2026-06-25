@@ -13,6 +13,7 @@ import { AttachProductVariationsUseCase } from './domain/use-cases/attach-produc
 import { CreateProductItemsUseCase } from './domain/use-cases/create-product-items.use-case';
 import { ListProductItemsUseCase } from './domain/use-cases/list-product-items.use-case';
 import { UpdateProductItemStockUseCase } from './domain/use-cases/update-product-item-stock.use-case';
+import { GetStockHistoryUseCase } from './domain/use-cases/get-stock-history.use-case';
 import { ManageProductImagesUseCase } from './domain/use-cases/manage-product-images.use-case';
 import { DeleteProductUseCase } from './domain/use-cases/delete-product.use-case';
 import { DeleteProductVariationUseCase } from './domain/use-cases/delete-product-variation.use-case';
@@ -31,6 +32,7 @@ import { DuplicateProductUseCase } from './domain/use-cases/duplicate-product.us
     CreateProductItemsUseCase,
     ListProductItemsUseCase,
     UpdateProductItemStockUseCase,
+    GetStockHistoryUseCase,
     ManageProductImagesUseCase,
     DeleteProductUseCase,
     DeleteProductVariationUseCase,

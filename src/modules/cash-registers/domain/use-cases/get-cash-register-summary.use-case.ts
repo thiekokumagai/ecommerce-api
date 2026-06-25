@@ -42,14 +42,20 @@ export class GetCashRegisterSummaryUseCase {
     let totalEntries = 0;
     let totalOutflows = 0;
     let motoboyOutflows = 0;
+    let totalInvestment = 0;
 
     for (const tx of transactions) {
       if (tx.type === 'ENTRY') {
         totalEntries += Number(tx.amount);
       } else if (tx.type === 'OUTFLOW') {
-        totalOutflows += Number(tx.amount);
-        if (tx.category === 'MOTOBOY') {
-          motoboyOutflows += Number(tx.amount);
+        const isInvestment = tx.category === 'INVESTMENT' || (tx.description && tx.description.toLowerCase().includes('investimento'));
+        if (isInvestment) {
+          totalInvestment += Number(tx.amount);
+        } else {
+          totalOutflows += Number(tx.amount);
+          if (tx.category === 'MOTOBOY') {
+            motoboyOutflows += Number(tx.amount);
+          }
         }
       }
     }
@@ -65,9 +71,11 @@ export class GetCashRegisterSummaryUseCase {
     motoboyOutflows = Math.round(motoboyOutflows * 100) / 100;
     totalGross = Math.round(totalGross * 100) / 100;
 
-    // Saldo Líquido de Caixa = Faturamento Comercial Bruto + Entradas Manuais - Taxas Cartão - Saídas/Custos Fixos
+    // Saldo Líquido de Caixa = Faturamento Comercial Bruto + Entradas Manuais - Taxas Cartão - Saídas/Custos Fixos - Investimentos
     const totalNet =
-      Math.round((totalGross - totalCardFees - totalOutflows) * 100) / 100;
+      Math.round((totalGross - totalCardFees - totalOutflows - totalInvestment) * 100) / 100;
+    
+    totalInvestment = Math.round(totalInvestment * 100) / 100;
 
     return {
       cashRegister: register,
@@ -79,6 +87,7 @@ export class GetCashRegisterSummaryUseCase {
         totalOutflows,
         motoboyOutflows,
         totalNet,
+        totalInvestment,
         totalsByMethod,
         orderCount: orders.length,
       },
