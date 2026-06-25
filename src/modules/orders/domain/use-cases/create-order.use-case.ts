@@ -46,6 +46,7 @@ export class CreateOrderUseCase {
         couponFreightDiscount: couponFreightDiscountValue,
         couponId: couponId,
         status: data.status || undefined,
+        paymentDate: data.paymentStatus === 'PAID' ? new Date() : undefined,
       });
 
       // Recalcular o totalOrder para garantir a precisão no backend
