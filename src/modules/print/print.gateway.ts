@@ -19,7 +19,7 @@ export class PrintGateway implements OnGatewayConnection, OnGatewayDisconnect {
       try {
         const pedidosPendentes = await this.prisma.order.findMany({
           where: { isPrinted: false },
-          include: { orderItems: true } // Garante que traga os itens pro cupom
+          include: { items: true } // A relação no Prisma se chama 'items', não 'orderItems'
         });
         
         if (pedidosPendentes.length > 0) {
