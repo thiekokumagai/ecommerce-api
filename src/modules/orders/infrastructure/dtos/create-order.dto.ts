@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsEnum,
   IsArray,
+  IsBoolean,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -205,4 +206,12 @@ export class CreateOrderDto {
   @IsString()
   @IsOptional()
   couponTitle?: string;
+
+  @ApiPropertyOptional({
+    example: true,
+    description: 'Mostrar preço dos produtos na impressão',
+  })
+  @IsBoolean()
+  @IsOptional()
+  showProductPrices?: boolean;
 }

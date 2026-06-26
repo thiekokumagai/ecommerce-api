@@ -21,6 +21,8 @@ import { UpdateCustomerUseCase } from '../../domain/use-cases/update-customer.us
 import { UpdateCustomerDto } from '../dtos/update-customer.dto';
 import { CreateCustomerAddressDto } from '../dtos/create-customer-address.dto';
 import { AddCustomerAddressUseCase } from '../../domain/use-cases/add-customer-address.use-case';
+import { CreateCustomerUseCase } from '../../domain/use-cases/create-customer.use-case';
+import { CreateCustomerDto } from '../dtos/create-customer.dto';
 
 @ApiTags('customers')
 @Controller('customers')
@@ -32,6 +34,7 @@ export class CustomersController {
     private readonly getCustomerUseCase: GetCustomerUseCase,
     private readonly updateCustomerUseCase: UpdateCustomerUseCase,
     private readonly addCustomerAddressUseCase: AddCustomerAddressUseCase,
+    private readonly createCustomerUseCase: CreateCustomerUseCase,
   ) {}
 
   @Get()
@@ -67,6 +70,16 @@ export class CustomersController {
   @ApiResponse({ status: 404, description: 'Cliente não encontrado.' })
   async update(@Param('id') id: string, @Body() data: UpdateCustomerDto) {
     return this.updateCustomerUseCase.execute(id, data);
+  }
+
+  @Post()
+  @ApiOperation({
+    summary: 'Criar cliente',
+    description: 'Cria um novo cliente',
+  })
+  @ApiResponse({ status: 201, description: 'Cliente criado com sucesso.' })
+  async create(@Body() data: CreateCustomerDto) {
+    return this.createCustomerUseCase.execute(data);
   }
 
   @Post(':id/addresses')

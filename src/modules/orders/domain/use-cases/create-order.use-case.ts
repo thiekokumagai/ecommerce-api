@@ -62,7 +62,7 @@ export class CreateOrderUseCase {
       const cFDiscount = Number(order.couponFreightDiscount) || 0;
 
       // Mantemos suporte aos campos legados se ainda chegarem
-      order.totalOrder =
+      const calculatedTotal =
         Math.round(
           (itemsTotal +
             freight +
@@ -74,6 +74,8 @@ export class CreateOrderUseCase {
             cFDiscount) *
             100,
         ) / 100;
+        
+      order.totalOrder = data.totalOrder !== undefined ? data.totalOrder : calculatedTotal;
       const savedOrder =
         await this.ordersRepository.saveWithStockDecrement(order);
 

@@ -73,6 +73,17 @@ export class PrismaCustomersRepository implements ICustomersRepository {
     return this.mapToDomain(record);
   }
 
+  async create(data: { name: string; phone: string }): Promise<Customer> {
+    const record = await this.prisma.customer.create({
+      data: {
+        name: data.name,
+        phone: data.phone,
+      },
+      include: { addresses: true },
+    });
+    return this.mapToDomain(record);
+  }
+
   async update(id: string, data: Partial<Customer>): Promise<Customer> {
     const record = await this.prisma.customer.update({
       where: { id },

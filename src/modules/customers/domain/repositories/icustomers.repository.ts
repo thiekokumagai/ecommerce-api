@@ -20,5 +20,6 @@ export interface ICustomersRepository {
   findMany(filters: CustomerFilters): Promise<PaginatedCustomers>;
   findById(id: string): Promise<Customer | null>;
   update(id: string, data: Partial<Customer>): Promise<Customer>;
+  create(data: { name: string; phone: string }): Promise<Customer>;
   addAddress(id: string, address: any): Promise<Customer>;
 }
