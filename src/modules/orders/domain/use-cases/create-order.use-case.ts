@@ -5,6 +5,7 @@ import { ValidateCouponUseCase } from '../../../coupons/domain/use-cases/validat
 import type { ICouponsRepository } from '../../../coupons/domain/repositories/icoupons.repository';
 import { PushNotificationService } from '../../../../shared/services/push-notification.service';
 import { IUsersRepository } from '../../../users/domain/repositories/iusers.repository';
+import { PrintGateway } from '../../../print/print.gateway';
 
 @Injectable()
 export class CreateOrderUseCase {
@@ -15,6 +16,7 @@ export class CreateOrderUseCase {
     private readonly couponsRepository: ICouponsRepository,
     private readonly pushNotificationService: PushNotificationService,
     private readonly usersRepository: IUsersRepository,
+    private readonly printGateway: PrintGateway,
   ) {}
 
   async execute(
@@ -99,6 +101,14 @@ export class CreateOrderUseCase {
         }
       } catch (err) {
         console.error('Erro ao buscar tokens para notificação', err);
+      }
+
+      // Disparar WebSocket para impressão
+      try {
+        // Envia para a loja 1 (ajuste se tiver multi-tenant)
+        this.printGateway.emitNovoPedido('1', savedOrder);
+      } catch (err) {
+        console.error('Erro ao emitir pedido para impressão', err);
       }
 
       return savedOrder;

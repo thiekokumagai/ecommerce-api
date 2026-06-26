@@ -15,10 +15,11 @@ import { MarkOrderPrintedUseCase } from './domain/use-cases/mark-order-printed.u
 import { SettingsModule } from '../settings/settings.module';
 import { CouponsModule } from '../coupons/coupons.module';
 import { UsersModule } from '../users/users.module';
+import { PrintModule } from '../print/print.module';
 import { PushNotificationService } from '../../shared/services/push-notification.service';
 
 @Module({
-  imports: [SettingsModule, CouponsModule, UsersModule],
+  imports: [SettingsModule, CouponsModule, UsersModule, PrintModule],
   controllers: [OrdersController, StoreOrdersController],
   providers: [
     PushNotificationService,
