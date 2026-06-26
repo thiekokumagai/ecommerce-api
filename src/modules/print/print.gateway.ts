@@ -9,11 +9,29 @@ export class PrintGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  handleConnection(client: Socket) {
+  async handleConnection(client: Socket) {
     const storeId = client.handshake.query.store_id;
     if (storeId) {
       client.join(`loja_${storeId}`);
       console.log(`🖨️ Print Agent conectado! Loja: ${storeId} (Socket: ${client.id})`);
+      
+      // Auto-recuperação: Buscar pedidos que não foram impressos (ex: PC estava desligado)
+      try {
+        const pedidosPendentes = await this.prisma.order.findMany({
+          where: { isPrinted: false },
+          include: { orderItems: true } // Garante que traga os itens pro cupom
+        });
+        
+        if (pedidosPendentes.length > 0) {
+          console.log(`📦 Encontrados ${pedidosPendentes.length} pedidos pendentes para impressão. Disparando...`);
+          for (const pedido of pedidosPendentes) {
+            this.emitNovoPedido(storeId as string, pedido);
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao buscar pedidos pendentes:', error.message);
+      }
+      
     } else {
       console.log(`⚠️ Print Agent conectou sem store_id (Socket: ${client.id})`);
     }
