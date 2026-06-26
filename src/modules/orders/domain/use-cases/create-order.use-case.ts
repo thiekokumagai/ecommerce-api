@@ -20,7 +20,7 @@ export class CreateOrderUseCase {
   ) {}
 
   async execute(
-    data: Partial<Order> & { couponTitle?: string },
+    data: Partial<Order> & { couponTitle?: string, showProductPrices?: boolean },
   ): Promise<Order> {
     try {
       let couponId: string | undefined = undefined;
