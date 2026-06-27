@@ -12,6 +12,7 @@ import { UpdateOrderStatusUseCase } from './domain/use-cases/update-order-status
 import { ReceiveOrderUseCase } from './domain/use-cases/receive-order.use-case';
 import { RevertReceiveOrderUseCase } from './domain/use-cases/revert-receive-order.use-case';
 import { MarkOrderPrintedUseCase } from './domain/use-cases/mark-order-printed.use-case';
+import { ReprintOrderUseCase } from './domain/use-cases/reprint-order.use-case';
 import { SettingsModule } from '../settings/settings.module';
 import { CouponsModule } from '../coupons/coupons.module';
 import { UsersModule } from '../users/users.module';
@@ -31,6 +32,7 @@ import { PushNotificationService } from '../../shared/services/push-notification
     ReceiveOrderUseCase,
     RevertReceiveOrderUseCase,
     MarkOrderPrintedUseCase,
+    ReprintOrderUseCase,
     {
       provide: IOrdersRepository,
       useClass: PrismaOrdersRepository,

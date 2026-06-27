@@ -28,6 +28,7 @@ import { UpdateOrderStatusUseCase } from '../../domain/use-cases/update-order-st
 import { ReceiveOrderUseCase } from '../../domain/use-cases/receive-order.use-case';
 import { RevertReceiveOrderUseCase } from '../../domain/use-cases/revert-receive-order.use-case';
 import { MarkOrderPrintedUseCase } from '../../domain/use-cases/mark-order-printed.use-case';
+import { ReprintOrderUseCase } from '../../domain/use-cases/reprint-order.use-case';
 import { OrderStatus, PaymentStatus } from '../../domain/entities/order.entity';
 import { ReceiveOrderDto } from '../dtos/receive-order.dto';
 
@@ -45,6 +46,7 @@ export class OrdersController {
     private readonly receiveOrderUseCase: ReceiveOrderUseCase,
     private readonly revertReceiveOrderUseCase: RevertReceiveOrderUseCase,
     private readonly markOrderPrintedUseCase: MarkOrderPrintedUseCase,
+    private readonly reprintOrderUseCase: ReprintOrderUseCase,
   ) {}
 
   @Get()
@@ -130,5 +132,13 @@ export class OrdersController {
   @ApiResponse({ status: 200, description: 'Pedido marcado como impresso com sucesso' })
   async markPrinted(@Param('id') id: string) {
     return this.markOrderPrintedUseCase.execute(id);
+  }
+
+  @Post(':id/reprint')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reenviar pedido para a impressora (Print Agent)' })
+  @ApiResponse({ status: 200, description: 'Comando de impressão enviado com sucesso' })
+  async reprint(@Param('id') id: string) {
+    return this.reprintOrderUseCase.execute(id);
   }
 }
