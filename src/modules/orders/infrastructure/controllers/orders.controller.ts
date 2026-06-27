@@ -29,6 +29,7 @@ import { ReceiveOrderUseCase } from '../../domain/use-cases/receive-order.use-ca
 import { RevertReceiveOrderUseCase } from '../../domain/use-cases/revert-receive-order.use-case';
 import { MarkOrderPrintedUseCase } from '../../domain/use-cases/mark-order-printed.use-case';
 import { ReprintOrderUseCase } from '../../domain/use-cases/reprint-order.use-case';
+import { UpdateOrderUseCase } from '../../domain/use-cases/update-order.use-case';
 import { OrderStatus, PaymentStatus } from '../../domain/entities/order.entity';
 import { ReceiveOrderDto } from '../dtos/receive-order.dto';
 
@@ -47,6 +48,7 @@ export class OrdersController {
     private readonly revertReceiveOrderUseCase: RevertReceiveOrderUseCase,
     private readonly markOrderPrintedUseCase: MarkOrderPrintedUseCase,
     private readonly reprintOrderUseCase: ReprintOrderUseCase,
+    private readonly updateOrderUseCase: UpdateOrderUseCase,
   ) {}
 
   @Get()
@@ -84,6 +86,17 @@ export class OrdersController {
   })
   async create(@Body() body: CreateOrderDto) {
     return this.createOrderUseCase.execute(body as any);
+  }
+
+  @Post(':id/update-full')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Atualizar um pedido completo com verificação de estoque' })
+  @ApiResponse({
+    status: 200,
+    description: 'Pedido atualizado com sucesso',
+  })
+  async updateFull(@Param('id') id: string, @Body() body: CreateOrderDto) {
+    return this.updateOrderUseCase.execute(id, body as any);
   }
 
   @Post(':id/cancel')

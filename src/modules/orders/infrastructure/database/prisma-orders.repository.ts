@@ -478,6 +478,125 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     return this.mapToDomain(record);
   }
 
+  async updateWithStockAdjustment(id: string, order: Order): Promise<Order> {
+    const record = await this.prisma.$transaction(async (tx) => {
+      const existingOrder = await tx.order.findUnique({
+        where: { id },
+        include: { items: true },
+      });
+
+      if (!existingOrder) throw new Error(`Order with ID ${id} not found`);
+
+      // 1. Restaurar o estoque dos itens antigos
+      for (const oldItem of existingOrder.items) {
+        if (oldItem.productItemId) {
+          await tx.productItem.update({
+            where: { id: oldItem.productItemId },
+            data: { stock: { increment: oldItem.quantity } },
+          });
+          if (oldItem.productId) {
+            await tx.product.update({
+              where: { id: oldItem.productId },
+              data: { isVisible: true },
+            });
+          }
+        }
+      }
+
+      // 2. Deletar itens antigos
+      await tx.orderItem.deleteMany({
+        where: { orderId: id },
+      });
+
+      // 3. Decrementar estoque dos novos itens
+      if (order.items && order.items.length > 0) {
+        for (const item of order.items) {
+          if (!item.productId) throw new Error(`Item must be linked to a productId`);
+
+          let productItem: any;
+          if (item.productItemId) {
+            productItem = await tx.productItem.findUnique({ where: { id: item.productItemId } });
+          } else {
+            productItem = await tx.productItem.findFirst({ where: { productId: item.productId } });
+          }
+
+          if (!productItem) throw new Error(`Estoque do produto "${item.productName}" não cadastrado.`);
+          if (productItem.stock < item.quantity) throw new Error(`Estoque insuficiente para "${item.productName}". Disponível: ${productItem.stock}, Solicitado: ${item.quantity}`);
+
+          await tx.productItem.update({
+            where: { id: productItem.id },
+            data: { stock: { decrement: item.quantity } },
+          });
+
+          const allItems = await tx.productItem.findMany({ where: { productId: item.productId } });
+          const totalStock = allItems.reduce((acc, curr) => acc + curr.stock, 0);
+          if (totalStock <= 0) {
+            await tx.product.update({
+              where: { id: item.productId },
+              data: { isVisible: false },
+            });
+          }
+
+          item.productItemId = productItem.id;
+        }
+      }
+
+      // 4. Atualizar o pedido e criar os novos itens
+      const payload = {
+        itemsTotal: order.itemsTotal,
+        freight: order.freight,
+        paymentDiscount: order.paymentDiscount,
+        installmentSurcharge: order.installmentSurcharge,
+        couponDiscount: order.couponDiscount,
+        couponFreightDiscount: order.couponFreightDiscount,
+        receiptDiscount: order.receiptDiscount,
+        receiptSurcharge: order.receiptSurcharge,
+
+        totalOrder: order.totalOrder,
+        totalReceived: order.totalReceived,
+        paymentType: order.paymentType,
+        paymentMethod: order.paymentMethod,
+        pixKey: order.pixKey,
+        street: order.street,
+        number: order.number,
+        neighborhood: order.neighborhood,
+        city: order.city,
+        state: order.state,
+        cep: order.cep,
+        complement: order.complement,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        installments: order.installments,
+        paymentDate: order.paymentDate,
+        cardFee: order.cardFee,
+        couponId: order.couponId || undefined,
+        isPrinted: order.isPrinted || false,
+      };
+
+      const updatedOrder = await tx.order.update({
+        where: { id },
+        data: {
+          ...payload,
+          items: {
+            create: order.items?.map(item => ({
+              productId: item.productId,
+              productItemId: item.productItemId,
+              productName: item.productName,
+              price: item.price,
+              quantity: item.quantity,
+              variation: item.variation,
+            })) ?? []
+          }
+        },
+        include: { items: true },
+      });
+
+      return updatedOrder;
+    }, { timeout: 15000 });
+
+    return this.mapToDomain(record);
+  }
+
   async cancelAndRestoreStock(id: string): Promise<Order> {
     const record = await this.prisma.$transaction(async (tx) => {
       const orderRecord = await tx.order.findUnique({

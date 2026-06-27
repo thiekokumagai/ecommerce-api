@@ -30,5 +30,6 @@ export abstract class IOrdersRepository {
   abstract updateStatus(id: string, status: OrderStatus): Promise<void>;
   abstract save(order: Order): Promise<Order>;
   abstract saveWithStockDecrement(order: Order): Promise<Order>;
+  abstract updateWithStockAdjustment(id: string, order: Order): Promise<Order>;
   abstract cancelAndRestoreStock(id: string): Promise<Order>;
 }
