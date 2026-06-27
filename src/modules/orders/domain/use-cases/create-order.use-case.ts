@@ -6,6 +6,7 @@ import type { ICouponsRepository } from '../../../coupons/domain/repositories/ic
 import { PushNotificationService } from '../../../../shared/services/push-notification.service';
 import { IUsersRepository } from '../../../users/domain/repositories/iusers.repository';
 import { PrintGateway } from '../../../print/print.gateway';
+import { EventsGateway } from '../../../events/events.gateway';
 
 @Injectable()
 export class CreateOrderUseCase {
@@ -17,6 +18,7 @@ export class CreateOrderUseCase {
     private readonly pushNotificationService: PushNotificationService,
     private readonly usersRepository: IUsersRepository,
     private readonly printGateway: PrintGateway,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   async execute(
@@ -112,6 +114,15 @@ export class CreateOrderUseCase {
         this.printGateway.emitNovoPedido('1', orderForPrint);
       } catch (err) {
         console.error('Erro ao emitir pedido para impressão', err);
+      }
+
+      // Disparar Eventos WebSocket (Admin e Client)
+      try {
+        this.eventsGateway.notifyNewOrder(savedOrder);
+        // Também disparamos um evento genérico para atualizar o catálogo no front cliente
+        this.eventsGateway.server.emit('products.refresh');
+      } catch (err) {
+        console.error('Erro ao emitir eventos websocket', err);
       }
 
       return savedOrder;

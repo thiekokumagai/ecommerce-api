@@ -19,6 +19,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { CustomersModule } from './modules/customers/customers.module';
 import { ImportsModule } from './modules/imports/imports.module';
 import { PrintModule } from './modules/print/print.module';
+import { EventsModule } from './modules/events/events.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { PrintModule } from './modules/print/print.module';
     CustomersModule,
     ImportsModule,
     PrintModule,
+    EventsModule,
   ],
 })
 export class AppModule {}

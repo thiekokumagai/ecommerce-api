@@ -317,6 +317,18 @@ Planos:
 - [x] 22-02: Lógica de Vinculação Automática no Repositório de Pedidos
 - [x] 22-03: Módulo de Clientes (Clean Architecture)
 
+### Phase 27: Atualizações em Tempo Real (Websockets)
+
+**Goal:** Implementar WebSocket para atualizar a lista de pedidos no painel admin e a disponibilidade de produtos no front cliente em tempo real.
+**Requirements**: TBD
+**Depends on:** Phase 26
+**Plans:** 2/2 plans complete
+
+Plans:
+
+- [x] 27-01: Implementar WebSocket (Backend)
+- [x] 27-02: Integração WebSocket (Frontend Cliente e Admin)
+
 ---
 
 ### Fase 26: Quando criar pedido e zerar produto desabilitar ele, caso cancelar o pedido adicionar o estoque de volta
