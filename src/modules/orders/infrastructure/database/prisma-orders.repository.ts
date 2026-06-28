@@ -97,18 +97,30 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       if (cleanSearch.length > 0) {
         where.OR.push({ customerPhone: { contains: cleanSearch, mode: 'insensitive' } });
         
-        let f1 = cleanSearch;
-        if (cleanSearch.length >= 2) f1 = '(' + cleanSearch.substring(0, 2) + (cleanSearch.length > 2 ? ') ' + cleanSearch.substring(2) : '');
-        if (cleanSearch.length >= 7) f1 = f1.substring(0, 10) + '-' + f1.substring(10);
-        where.OR.push({ customerPhone: { contains: f1, mode: 'insensitive' } });
-
-        let f2 = cleanSearch;
-        if (cleanSearch.length >= 5) f2 = cleanSearch.substring(0, 5) + '-' + cleanSearch.substring(5);
-        where.OR.push({ customerPhone: { contains: f2, mode: 'insensitive' } });
-
-        let f3 = cleanSearch;
-        if (cleanSearch.length >= 4) f3 = cleanSearch.substring(0, 4) + '-' + cleanSearch.substring(4);
-        where.OR.push({ customerPhone: { contains: f3, mode: 'insensitive' } });
+        if (cleanSearch.length === 11) {
+          const ddd = cleanSearch.substring(0, 2);
+          const p1 = cleanSearch.substring(2, 7);
+          const p2 = cleanSearch.substring(7);
+          
+          where.OR.push({ customerPhone: { contains: `(${ddd}) ${p1}-${p2}`, mode: 'insensitive' } });
+          where.OR.push({ customerPhone: { contains: `(${ddd})${p1}-${p2}`, mode: 'insensitive' } });
+          where.OR.push({ customerPhone: { contains: `(${ddd}) ${p1}${p2}`, mode: 'insensitive' } });
+          where.OR.push({ customerPhone: { contains: `${ddd} ${p1}-${p2}`, mode: 'insensitive' } });
+          where.OR.push({ customerPhone: { contains: `(${ddd}) ${p1.substring(0,1)} ${p1.substring(1)}-${p2}`, mode: 'insensitive' } });
+        } else if (cleanSearch.length === 10) {
+          const ddd = cleanSearch.substring(0, 2);
+          const p1 = cleanSearch.substring(2, 6);
+          const p2 = cleanSearch.substring(6);
+          
+          where.OR.push({ customerPhone: { contains: `(${ddd}) ${p1}-${p2}`, mode: 'insensitive' } });
+          where.OR.push({ customerPhone: { contains: `(${ddd})${p1}-${p2}`, mode: 'insensitive' } });
+          where.OR.push({ customerPhone: { contains: `(${ddd}) ${p1}${p2}`, mode: 'insensitive' } });
+        } else {
+          let f1 = cleanSearch;
+          if (cleanSearch.length >= 2) f1 = '(' + cleanSearch.substring(0, 2) + (cleanSearch.length > 2 ? ') ' + cleanSearch.substring(2) : '');
+          if (cleanSearch.length >= 7) f1 = f1.substring(0, 10) + '-' + f1.substring(10);
+          where.OR.push({ customerPhone: { contains: f1, mode: 'insensitive' } });
+        }
       }
 
       // Check if filters.search looks like an order number
