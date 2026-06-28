@@ -223,7 +223,10 @@ export class UpdateOrderStatusUseCase {
         }
       }
 
-      return await this.ordersRepository.save(order);
+      const savedOrder = await this.ordersRepository.save(order);
+      this.eventsGateway.notifyNewOrder(savedOrder);
+      this.eventsGateway.server.emit('products.refresh'); // Update stock info if any
+      return savedOrder;
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
