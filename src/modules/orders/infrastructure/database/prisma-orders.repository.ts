@@ -90,9 +90,29 @@ export class PrismaOrdersRepository implements IOrdersRepository {
     if (filters.search) {
       where.OR = [
         { customerName: { contains: filters.search, mode: 'insensitive' } },
+        { customerPhone: { contains: filters.search, mode: 'insensitive' } },
       ];
+      
+      const cleanSearch = filters.search.replace(/\D/g, '');
+      if (cleanSearch.length > 0) {
+        where.OR.push({ customerPhone: { contains: cleanSearch, mode: 'insensitive' } });
+        
+        let f1 = cleanSearch;
+        if (cleanSearch.length >= 2) f1 = '(' + cleanSearch.substring(0, 2) + (cleanSearch.length > 2 ? ') ' + cleanSearch.substring(2) : '');
+        if (cleanSearch.length >= 7) f1 = f1.substring(0, 10) + '-' + f1.substring(10);
+        where.OR.push({ customerPhone: { contains: f1, mode: 'insensitive' } });
+
+        let f2 = cleanSearch;
+        if (cleanSearch.length >= 5) f2 = cleanSearch.substring(0, 5) + '-' + cleanSearch.substring(5);
+        where.OR.push({ customerPhone: { contains: f2, mode: 'insensitive' } });
+
+        let f3 = cleanSearch;
+        if (cleanSearch.length >= 4) f3 = cleanSearch.substring(0, 4) + '-' + cleanSearch.substring(4);
+        where.OR.push({ customerPhone: { contains: f3, mode: 'insensitive' } });
+      }
+
       // Check if filters.search looks like an order number
-      const numSearch = Number(filters.search.replace(/\D/g, ''));
+      const numSearch = Number(cleanSearch);
       if (!isNaN(numSearch) && numSearch > 0) {
         where.OR.push({ orderNumber: numSearch });
       }
