@@ -5,10 +5,14 @@ import {
 } from '@nestjs/common';
 import { IOrdersRepository } from '../repositories/iorders.repository';
 import { Order } from '../entities/order.entity';
+import { EventsGateway } from '../../../events/events.gateway';
 
 @Injectable()
 export class CancelOrderUseCase {
-  constructor(private readonly ordersRepository: IOrdersRepository) {}
+  constructor(
+    private readonly ordersRepository: IOrdersRepository,
+    private readonly eventsGateway: EventsGateway,
+  ) {}
 
   async execute(id: string): Promise<Order> {
     const order = await this.ordersRepository.findById(id);
@@ -17,7 +21,12 @@ export class CancelOrderUseCase {
     }
 
     try {
-      return await this.ordersRepository.cancelAndRestoreStock(id);
+      const canceledOrder = await this.ordersRepository.cancelAndRestoreStock(id);
+      
+      // Notify client front to update catalog since stock changed
+      this.eventsGateway.server.emit('products.refresh');
+      
+      return canceledOrder;
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }

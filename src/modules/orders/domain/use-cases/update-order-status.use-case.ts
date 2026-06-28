@@ -6,12 +6,14 @@ import {
 import { IOrdersRepository } from '../repositories/iorders.repository';
 import { Order, OrderStatus, PaymentStatus } from '../entities/order.entity';
 import { ISettingsRepository } from '../../../settings/domain/repositories/isettings.repository';
+import { EventsGateway } from '../../../events/events.gateway';
 
 @Injectable()
 export class UpdateOrderStatusUseCase {
   constructor(
     private readonly ordersRepository: IOrdersRepository,
     private readonly settingsRepository: ISettingsRepository,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   async execute(
@@ -24,6 +26,18 @@ export class UpdateOrderStatusUseCase {
     }
 
     try {
+      if (payload.status === 'CANCELLED' && order.status !== 'CANCELLED') {
+        const canceledOrder = await this.ordersRepository.cancelAndRestoreStock(id);
+        this.eventsGateway.server.emit('products.refresh');
+        
+        // If paymentStatus is also passed (unlikely but possible), apply it after cancellation
+        if (payload.paymentStatus) {
+           canceledOrder.paymentStatus = payload.paymentStatus;
+           return await this.ordersRepository.save(canceledOrder);
+        }
+        return canceledOrder;
+      }
+
       if (payload.status) {
         order.status = payload.status;
       }
@@ -124,7 +138,19 @@ export class UpdateOrderStatusUseCase {
                   }
                 }
 
-                // Calculate Totals
+                // Calculate standard total to check if there is a manual override
+                const previousCalculatedTotal =
+                  Math.round(
+                    (baseTotal +
+                      (order.installmentSurcharge || 0) +
+                      (order.receiptSurcharge || 0) -
+                      (order.paymentDiscount || 0) -
+                      totalDiscount) *
+                      100,
+                  ) / 100;
+
+                const isCustomTotal = order.totalOrder && order.totalOrder !== previousCalculatedTotal;
+
                 const calculatedTotal =
                   Math.round(
                     (baseTotal +
@@ -134,10 +160,16 @@ export class UpdateOrderStatusUseCase {
                       totalDiscount) *
                       100,
                   ) / 100;
-                order.totalReceived = calculatedTotal;
-                order.paymentDiscount = pixDiscount;
-                order.installmentSurcharge = cardSurcharge;
-                order.totalOrder = calculatedTotal;
+                  
+                if (isCustomTotal) {
+                  order.totalReceived = order.totalOrder;
+                  // We do not overwrite totalOrder, paymentDiscount, or installmentSurcharge
+                } else {
+                  order.totalReceived = calculatedTotal;
+                  order.paymentDiscount = pixDiscount;
+                  order.installmentSurcharge = cardSurcharge;
+                  order.totalOrder = calculatedTotal;
+                }
 
                 // Card Fee (Kept by Shop)
                 let matchingRule: any = null;

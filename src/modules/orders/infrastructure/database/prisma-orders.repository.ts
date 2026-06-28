@@ -298,6 +298,7 @@ export class PrismaOrdersRepository implements IOrdersRepository {
 
   async saveWithStockDecrement(order: Order): Promise<Order> {
     const record = await this.prisma.$transaction(async (tx) => {
+      const createdStockMovementIds: string[] = [];
       if (order.items && order.items.length > 0) {
         for (const item of order.items) {
           if (!item.productId) {
@@ -337,6 +338,19 @@ export class PrismaOrdersRepository implements IOrdersRepository {
               },
             },
           });
+
+          const sm = await tx.stockMovement.create({
+            data: {
+              type: 'SUBTRACT',
+              quantity: item.quantity,
+              previousStock: productItem.stock,
+              newStock: productItem.stock - item.quantity,
+              observation: `Venda via pedido`,
+              productId: item.productId,
+              productItemId: productItem.id,
+            },
+          });
+          createdStockMovementIds.push(sm.id);
 
           // Check if total stock for this product is 0 or less, if so disable it
           const allItems = await tx.productItem.findMany({
@@ -470,6 +484,13 @@ export class PrismaOrdersRepository implements IOrdersRepository {
         },
       });
 
+      if (createdStockMovementIds.length > 0) {
+        await tx.stockMovement.updateMany({
+          where: { id: { in: createdStockMovementIds } },
+          data: { observation: `Venda via pedido #${createdOrder.orderNumber}` }
+        });
+      }
+
       return createdOrder;
     }, {
       timeout: 15000,
@@ -489,12 +510,30 @@ export class PrismaOrdersRepository implements IOrdersRepository {
 
       // 1. Restaurar o estoque dos itens antigos
       for (const oldItem of existingOrder.items) {
-        if (oldItem.productItemId) {
-          await tx.productItem.update({
-            where: { id: oldItem.productItemId },
-            data: { stock: { increment: oldItem.quantity } },
-          });
-          if (oldItem.productId) {
+        if (oldItem.productId) {
+          let productItem: any;
+          if (oldItem.productItemId) {
+            productItem = await tx.productItem.findUnique({ where: { id: oldItem.productItemId } });
+          } else {
+            productItem = await tx.productItem.findFirst({ where: { productId: oldItem.productId } });
+          }
+
+          if (productItem) {
+            await tx.productItem.update({
+              where: { id: productItem.id },
+              data: { stock: { increment: oldItem.quantity } },
+            });
+            await tx.stockMovement.create({
+              data: {
+                type: 'ADD',
+                quantity: oldItem.quantity,
+                previousStock: productItem.stock,
+                newStock: productItem.stock + oldItem.quantity,
+                observation: `Restaurado por edição do pedido #${existingOrder.orderNumber}`,
+                productId: oldItem.productId,
+                productItemId: productItem.id,
+              },
+            });
             await tx.product.update({
               where: { id: oldItem.productId },
               data: { isVisible: true },
@@ -526,6 +565,18 @@ export class PrismaOrdersRepository implements IOrdersRepository {
           await tx.productItem.update({
             where: { id: productItem.id },
             data: { stock: { decrement: item.quantity } },
+          });
+
+          await tx.stockMovement.create({
+            data: {
+              type: 'SUBTRACT',
+              quantity: item.quantity,
+              previousStock: productItem.stock,
+              newStock: productItem.stock - item.quantity,
+              observation: `Venda via edição do pedido #${existingOrder.orderNumber}`,
+              productId: item.productId,
+              productItemId: productItem.id,
+            },
           });
 
           const allItems = await tx.productItem.findMany({ where: { productId: item.productId } });
@@ -619,17 +670,36 @@ export class PrismaOrdersRepository implements IOrdersRepository {
       }
 
       for (const item of orderRecord.items) {
-        if (item.productItemId) {
-          await tx.productItem.update({
-            where: { id: item.productItemId },
-            data: {
-              stock: {
-                increment: item.quantity,
-              },
-            },
-          });
+        if (item.productId) {
+          let productItem: any;
+          if (item.productItemId) {
+            productItem = await tx.productItem.findUnique({ where: { id: item.productItemId } });
+          } else {
+            productItem = await tx.productItem.findFirst({ where: { productId: item.productId } });
+          }
 
-          if (item.productId) {
+          if (productItem) {
+            await tx.productItem.update({
+              where: { id: productItem.id },
+              data: {
+                stock: {
+                  increment: item.quantity,
+                },
+              },
+            });
+
+            await tx.stockMovement.create({
+              data: {
+                type: 'ADD',
+                quantity: item.quantity,
+                previousStock: productItem.stock,
+                newStock: productItem.stock + item.quantity,
+                observation: `Cancelamento do pedido #${orderRecord.orderNumber}`,
+                productId: item.productId,
+                productItemId: productItem.id,
+              },
+            });
+
             await tx.product.update({
               where: { id: item.productId },
               data: { isVisible: true },

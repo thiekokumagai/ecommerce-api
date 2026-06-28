@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { IProductsRepository } from '../repositories/iproducts.repository';
+import { EventsGateway } from '../../../events/events.gateway';
 
 @Injectable()
 export class UpdateProductItemStockUseCase {
-  constructor(private readonly productsRepository: IProductsRepository) {}
+  constructor(
+    private readonly productsRepository: IProductsRepository,
+    private readonly eventsGateway: EventsGateway,
+  ) {}
 
   async execute(
     itemId: string,
@@ -14,11 +18,15 @@ export class UpdateProductItemStockUseCase {
       throw new NotFoundException('Item do produto não encontrado');
     }
 
-    return this.productsRepository.updateItemStock(
+    const updatedItem = await this.productsRepository.updateItemStock(
       itemId,
       dto.type,
       dto.quantity,
       dto.observation,
     );
+
+    this.eventsGateway.server.emit('products.refresh');
+
+    return updatedItem;
   }
 }

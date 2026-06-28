@@ -5,9 +5,14 @@ import {
 } from '@nestjs/common';
 import { IProductsRepository } from '../repositories/iproducts.repository';
 
+import { EventsGateway } from '../../../events/events.gateway';
+
 @Injectable()
 export class UpdateProductUseCase {
-  constructor(private readonly productsRepository: IProductsRepository) {}
+  constructor(
+    private readonly productsRepository: IProductsRepository,
+    private readonly eventsGateway: EventsGateway,
+  ) {}
 
   async execute(
     id: string,
@@ -47,6 +52,11 @@ export class UpdateProductUseCase {
       isVisible: dto.isVisible,
     });
 
-    return this.productsRepository.findById(id);
+    const updatedProduct = await this.productsRepository.findById(id);
+    
+    // Se a visibilidade foi alterada ou algo importante que afete o catálogo
+    this.eventsGateway.server.emit('products.refresh');
+
+    return updatedProduct;
   }
 }
