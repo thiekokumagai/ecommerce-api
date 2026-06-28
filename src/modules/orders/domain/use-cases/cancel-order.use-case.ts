@@ -25,6 +25,7 @@ export class CancelOrderUseCase {
       
       // Notify client front to update catalog since stock changed
       this.eventsGateway.server.emit('products.refresh');
+      this.eventsGateway.notifyOrderUpdated(canceledOrder);
       
       return canceledOrder;
     } catch (error: any) {

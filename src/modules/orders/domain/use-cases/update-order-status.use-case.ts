@@ -29,6 +29,7 @@ export class UpdateOrderStatusUseCase {
       if (payload.status === 'CANCELLED' && order.status !== 'CANCELLED') {
         const canceledOrder = await this.ordersRepository.cancelAndRestoreStock(id);
         this.eventsGateway.server.emit('products.refresh');
+        this.eventsGateway.notifyOrderUpdated(canceledOrder);
         
         // If paymentStatus is also passed (unlikely but possible), apply it after cancellation
         if (payload.paymentStatus) {
@@ -224,7 +225,7 @@ export class UpdateOrderStatusUseCase {
       }
 
       const savedOrder = await this.ordersRepository.save(order);
-      this.eventsGateway.notifyNewOrder(savedOrder);
+      this.eventsGateway.notifyOrderUpdated(savedOrder);
       this.eventsGateway.server.emit('products.refresh'); // Update stock info if any
       return savedOrder;
     } catch (error: any) {

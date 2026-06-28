@@ -5,10 +5,14 @@ import {
 } from '@nestjs/common';
 import { IOrdersRepository } from '../repositories/iorders.repository';
 import { Order, PaymentStatus } from '../entities/order.entity';
+import { EventsGateway } from '../../../events/events.gateway';
 
 @Injectable()
 export class RevertReceiveOrderUseCase {
-  constructor(private readonly ordersRepository: IOrdersRepository) {}
+  constructor(
+    private readonly ordersRepository: IOrdersRepository,
+    private readonly eventsGateway: EventsGateway,
+  ) {}
 
   async execute(id: string): Promise<Order> {
     const order = await this.ordersRepository.findById(id);
@@ -25,6 +29,8 @@ export class RevertReceiveOrderUseCase {
     order.installmentSurcharge = 0;
     order.cardFee = 0;
 
-    return await this.ordersRepository.save(order);
+    const savedOrder = await this.ordersRepository.save(order);
+    this.eventsGateway.notifyOrderUpdated(savedOrder);
+    return savedOrder;
   }
 }

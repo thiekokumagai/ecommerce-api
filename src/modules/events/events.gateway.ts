@@ -35,6 +35,11 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.server.emit('order.new', order);
   }
 
+  notifyOrderUpdated(order: any) {
+    this.logger.log(`Emitting order.updated event for ${order?.id}`);
+    this.server.emit('order.updated', order);
+  }
+
   notifyProductStockUpdate(productId: string, stock: number) {
     this.logger.log(`Emitting product.stock_updated event for ${productId}`);
     this.server.emit('product.stock_updated', { productId, stock });

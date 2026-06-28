@@ -6,12 +6,14 @@ import {
 import { IOrdersRepository } from '../repositories/iorders.repository';
 import { Order, OrderStatus, PaymentStatus } from '../entities/order.entity';
 import { ISettingsRepository } from '../../../settings/domain/repositories/isettings.repository';
+import { EventsGateway } from '../../../events/events.gateway';
 
 @Injectable()
 export class ReceiveOrderUseCase {
   constructor(
     private readonly ordersRepository: IOrdersRepository,
     private readonly settingsRepository: ISettingsRepository,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   async execute(
@@ -140,6 +142,8 @@ export class ReceiveOrderUseCase {
 
     order.cardFee = cardFee;
 
-    return await this.ordersRepository.save(order);
+    const savedOrder = await this.ordersRepository.save(order);
+    this.eventsGateway.notifyOrderUpdated(savedOrder);
+    return savedOrder;
   }
 }
