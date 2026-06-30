@@ -17,9 +17,15 @@ export class GetCashRegisterSummaryUseCase {
       throw new NotFoundException(`CashRegister with ID ${id} not found`);
     }
 
+    const startOfDay = new Date(register.startDate);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(register.endDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
     const orders = await this.ordersRepo.findPaidOrdersByPaymentDateRange(
-      register.startDate,
-      register.endDate,
+      startOfDay,
+      endOfDay,
     );
 
     const transactions = await this.prisma.cashTransaction.findMany({

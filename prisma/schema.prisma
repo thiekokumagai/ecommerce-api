@@ -343,8 +343,8 @@ model OrderItem {
 model CashRegister {
   id           String            @id @default(uuid())
   title        String
-  startDate    DateTime
-  endDate      DateTime
+  startDate    DateTime          @db.Date
+  endDate      DateTime          @db.Date
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
   transactions CashTransaction[]
