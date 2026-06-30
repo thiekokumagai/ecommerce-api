@@ -29,6 +29,7 @@ export class GetSettingsUseCase {
         deliveryOriginNumber: null,
         deliveryRanges: [],
         installmentRules: [],
+        businessHours: [],
         pixEnabled: false,
         pixKeyType: null,
         pixKey: null,

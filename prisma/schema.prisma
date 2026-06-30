@@ -183,6 +183,7 @@ model StoreSettings {
   deliveryOriginNumber String?
   deliveryRanges       Json?
   installmentRules     Json?
+  businessHours        Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -35,7 +35,7 @@ export class StoreProductsController {
   @ApiOperation({ summary: 'Buscar produto completo para a loja' })
   async findOne(@Param('id') id: string) {
     const product = await this.findProductByIdUseCase.execute(id);
-    if (!product || product.isVisible === false) return null;
+    if (!product) return null;
     return {
       ...product,
       imageUrl: product.images?.[0]?.url ?? null,

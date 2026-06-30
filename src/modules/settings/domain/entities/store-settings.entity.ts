@@ -30,6 +30,7 @@ export interface StoreSettings {
   deliveryOriginNumber: string | null;
   deliveryRanges: any;
   installmentRules: any;
+  businessHours: any;
 
   // Pagamentos
   pixEnabled: boolean;

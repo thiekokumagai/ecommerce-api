@@ -22,6 +22,7 @@ export interface UpdateSettingsInput {
   deliveryOriginNumber?: string | null;
   deliveryRanges?: any;
   installmentRules?: any;
+  businessHours?: any;
   pixEnabled?: boolean;
   pixKeyType?: string | null;
   pixKey?: string | null;
@@ -59,6 +60,7 @@ export class UpdateSettingsUseCase {
       deliveryOriginNumber: null,
       deliveryRanges: [],
       installmentRules: [],
+      businessHours: [],
       pixEnabled: false,
       pixKeyType: null,
       pixKey: null,
@@ -136,6 +138,10 @@ export class UpdateSettingsUseCase {
         input.paymentRules !== undefined
           ? input.paymentRules
           : base.paymentRules,
+      businessHours:
+        input.businessHours !== undefined
+          ? input.businessHours
+          : base.businessHours,
     });
   }
 }

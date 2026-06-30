@@ -100,11 +100,18 @@ export class UpdateSettingsDto {
 
   @ApiProperty({ example: [], required: false })
   @IsOptional()
+  @IsArray()
   deliveryRanges?: any;
 
   @ApiProperty({ example: [], required: false })
   @IsOptional()
+  @IsArray()
   installmentRules?: any;
+
+  @ApiProperty({ example: [], required: false })
+  @IsOptional()
+  @IsArray()
+  businessHours?: any;
 
   // Pagamentos
   @ApiProperty({ example: true, required: false })
@@ -144,5 +151,6 @@ export class UpdateSettingsDto {
 
   @ApiProperty({ example: [], required: false })
   @IsOptional()
+  @IsArray()
   paymentRules?: any;
 }
