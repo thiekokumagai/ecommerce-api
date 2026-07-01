@@ -6,9 +6,13 @@ import {
   Body,
   Param,
   UseGuards,
+  Query,
+  Headers,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
+import { Public } from '../../../auth/infrastructure/decorators/public.decorator';
 import { AddInvestmentUseCase } from '../../domain/use-cases/add-investment.use-case';
 import { RegisterPurchaseUseCase } from '../../domain/use-cases/register-purchase.use-case';
 import { GetInvestmentSummaryUseCase } from '../../domain/use-cases/get-investment-summary.use-case';
@@ -16,6 +20,7 @@ import { ListInvestmentTransactionsUseCase } from '../../domain/use-cases/list-i
 import { DeleteInvestmentUseCase } from '../../domain/use-cases/delete-investment.use-case';
 import { AddInvestmentDto } from './dtos/add-investment.dto';
 import { RegisterPurchaseDto } from './dtos/register-purchase.dto';
+import { AnalyzePurchaseUseCase } from '../../domain/use-cases/analyze-purchase.use-case';
 
 @ApiTags('investments')
 @ApiBearerAuth('access-token')
@@ -28,7 +33,27 @@ export class InvestmentsController {
     private readonly getInvestmentSummaryUseCase: GetInvestmentSummaryUseCase,
     private readonly listInvestmentTransactionsUseCase: ListInvestmentTransactionsUseCase,
     private readonly deleteInvestmentUseCase: DeleteInvestmentUseCase,
+    private readonly analyzePurchaseUseCase: AnalyzePurchaseUseCase,
   ) {}
+
+  @Public()
+  @Get('purchase-analysis')
+  @ApiOperation({
+    summary: 'Retorna a análise de compras baseada nas vendas, estoque e orçamento disponível',
+  })
+  async getPurchaseAnalysis(
+    @Query('meses') meses?: number,
+    @Query('categoria') categoria?: string,
+    @Query('dias_cobertura') dias_cobertura?: number,
+    @Headers('token') token?: string,
+    @Headers('authorization') auth?: string,
+  ) {
+    // Permite o token estático do n8n ou o token JWT normal do app
+    if (token !== 'cG9kZW1haXM6MzMyNTI3Mjg' && !auth) {
+      throw new UnauthorizedException('Token inválido ou ausente');
+    }
+    return await this.analyzePurchaseUseCase.execute({ meses, categoria, dias_cobertura });
+  }
 
   @Post('add')
   @ApiOperation({

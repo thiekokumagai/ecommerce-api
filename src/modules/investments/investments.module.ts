@@ -8,6 +8,7 @@ import { RegisterPurchaseUseCase } from './domain/use-cases/register-purchase.us
 import { GetInvestmentSummaryUseCase } from './domain/use-cases/get-investment-summary.use-case';
 import { ListInvestmentTransactionsUseCase } from './domain/use-cases/list-investment-transactions.use-case';
 import { DeleteInvestmentUseCase } from './domain/use-cases/delete-investment.use-case';
+import { AnalyzePurchaseUseCase } from './domain/use-cases/analyze-purchase.use-case';
 
 @Module({
   imports: [PrismaModule],
@@ -22,6 +23,7 @@ import { DeleteInvestmentUseCase } from './domain/use-cases/delete-investment.us
     GetInvestmentSummaryUseCase,
     ListInvestmentTransactionsUseCase,
     DeleteInvestmentUseCase,
+    AnalyzePurchaseUseCase,
   ],
   exports: [IInvestmentsRepository],
 })
