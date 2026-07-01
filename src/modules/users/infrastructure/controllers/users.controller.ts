@@ -16,6 +16,7 @@ import { ListUsersUseCase } from '../../domain/use-cases/list-users.use-case';
 import { CreateUserUseCase } from '../../domain/use-cases/create-user.use-case';
 import { DeleteUserUseCase } from '../../domain/use-cases/delete-user.use-case';
 import { UpdatePushTokenUseCase } from '../../domain/use-cases/update-push-token.use-case';
+import { TestPushNotificationUseCase } from '../../domain/use-cases/test-push-notification.use-case';
 import { UpdatePushTokenDto } from '../dtos/update-push-token.dto';
 import { CurrentUser } from '../../../auth/infrastructure/decorators/current-user.decorator';
 import type { JwtPayload } from '../../../auth/infrastructure/types/jwt-payload.type';
@@ -30,6 +31,7 @@ export class UsersController {
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
     private readonly updatePushTokenUseCase: UpdatePushTokenUseCase,
+    private readonly testPushNotificationUseCase: TestPushNotificationUseCase,
   ) {}
 
   @Get()
@@ -75,6 +77,19 @@ export class UsersController {
     @Body() dto: UpdatePushTokenDto,
   ) {
     await this.updatePushTokenUseCase.execute(user.sub, dto.token);
+    return { success: true };
+  }
+
+  @Post('test-push')
+  @ApiOperation({ summary: 'Enviar notificação push de teste para o próprio usuário' })
+  @ApiResponse({
+    status: 200,
+    description: 'Notificação enviada com sucesso',
+  })
+  async testPushNotification(
+    @CurrentUser() user: JwtPayload,
+  ) {
+    await this.testPushNotificationUseCase.execute(user.sub);
     return { success: true };
   }
 }

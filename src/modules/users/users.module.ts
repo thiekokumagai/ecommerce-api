@@ -6,6 +6,8 @@ import { ListUsersUseCase } from './domain/use-cases/list-users.use-case';
 import { CreateUserUseCase } from './domain/use-cases/create-user.use-case';
 import { DeleteUserUseCase } from './domain/use-cases/delete-user.use-case';
 import { UpdatePushTokenUseCase } from './domain/use-cases/update-push-token.use-case';
+import { TestPushNotificationUseCase } from './domain/use-cases/test-push-notification.use-case';
+import { PushNotificationService } from '../../shared/services/push-notification.service';
 
 @Module({
   controllers: [UsersController],
@@ -14,6 +16,8 @@ import { UpdatePushTokenUseCase } from './domain/use-cases/update-push-token.use
     CreateUserUseCase,
     DeleteUserUseCase,
     UpdatePushTokenUseCase,
+    TestPushNotificationUseCase,
+    PushNotificationService,
     {
       provide: IUsersRepository,
       useClass: PrismaUsersRepository,
