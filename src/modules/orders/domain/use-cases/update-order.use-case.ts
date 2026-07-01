@@ -80,7 +80,7 @@ export class UpdateOrderUseCase {
       }
 
       try {
-        if (savedOrder.status !== 'Cancelado' && savedOrder.status !== 'CANCELLED') {
+        if (savedOrder.status !== 'CANCELLED') {
           const orderForPrint = { ...savedOrder, showProductPrices: data.showProductPrices };
           this.printGateway.emitNovoPedido('1', orderForPrint);
         }

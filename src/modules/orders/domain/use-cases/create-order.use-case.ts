@@ -110,7 +110,7 @@ export class CreateOrderUseCase {
       // Disparar WebSocket para impressão
       try {
         // Envia para a loja 1 (ajuste se tiver multi-tenant)
-        if (savedOrder.status !== 'Cancelado' && savedOrder.status !== 'CANCELLED') {
+        if (savedOrder.status !== 'CANCELLED') {
           const orderForPrint = { ...savedOrder, showProductPrices: data.showProductPrices };
           this.printGateway.emitNovoPedido('1', orderForPrint);
         }
