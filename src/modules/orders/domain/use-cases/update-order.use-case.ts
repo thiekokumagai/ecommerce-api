@@ -80,8 +80,10 @@ export class UpdateOrderUseCase {
       }
 
       try {
-        const orderForPrint = { ...savedOrder, showProductPrices: data.showProductPrices };
-        this.printGateway.emitNovoPedido('1', orderForPrint);
+        if (savedOrder.status !== 'Cancelado' && savedOrder.status !== 'CANCELLED') {
+          const orderForPrint = { ...savedOrder, showProductPrices: data.showProductPrices };
+          this.printGateway.emitNovoPedido('1', orderForPrint);
+        }
       } catch (err) {
         console.error('Erro ao emitir pedido para impressão', err);
       }
