@@ -45,6 +45,7 @@ export class InvestmentsController {
     @Query('meses') meses?: number,
     @Query('categoria') categoria?: string,
     @Query('dias_cobertura') dias_cobertura?: number,
+    @Query('valor') valor?: number,
     @Headers('token') token?: string,
     @Headers('authorization') auth?: string,
   ) {
@@ -52,7 +53,7 @@ export class InvestmentsController {
     if (token !== 'cG9kZW1haXM6MzMyNTI3Mjg' && !auth) {
       throw new UnauthorizedException('Token inválido ou ausente');
     }
-    return await this.analyzePurchaseUseCase.execute({ meses, categoria, dias_cobertura });
+    return await this.analyzePurchaseUseCase.execute({ meses, categoria, dias_cobertura, valor });
   }
 
   @Post('add')

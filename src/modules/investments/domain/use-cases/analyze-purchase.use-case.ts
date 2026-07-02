@@ -5,6 +5,7 @@ interface AnalyzePurchaseRequest {
   meses?: number;
   categoria?: string;
   dias_cobertura?: number;
+  valor?: number;
 }
 
 @Injectable()
@@ -27,7 +28,13 @@ export class AnalyzePurchaseUseCase {
 
     const entryTotal = Number(entryTransactions._sum.amount || 0);
     const outflowTotal = Number(outflowTransactions._sum.amount || 0);
-    const orcamentoDisponivel = entryTotal - outflowTotal;
+    
+    let orcamentoDisponivel = 0;
+    if (params.valor !== undefined && params.valor > 0) {
+      orcamentoDisponivel = Number(params.valor);
+    } else {
+      orcamentoDisponivel = entryTotal - outflowTotal;
+    }
 
     let categoriasFiltro: string[] = [];
     if (params.categoria) {
